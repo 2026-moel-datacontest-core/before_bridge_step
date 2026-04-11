@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.vscode/
+backend/data/law_chunks/
+scripts/*.json
