@@ -235,7 +235,7 @@ def select_for_law(law_name: str, as_of: date) -> list[dict[str, Any]]:
     for commit in commits:
         rel_paths = [
             p
-            for p in git_lines("ls-tree", "-r", "--name-only", commit, f"kr/{law_name}")
+            for p in git_lines("-c", "core.quotepath=false", "ls-tree", "-r", "--name-only", commit, f"kr/{law_name}")
             if p.endswith(".md")
         ]
 
