@@ -24,6 +24,7 @@ PART_RE = re.compile(r"^#\s*제\d+편(?:의\d+)?\b")
 CHAPTER_RE = re.compile(r"^##\s*제\d+장(?:의\d+)?\b")
 SECTION_RE = re.compile(r"^###\s*제\d+절(?:의\d+)?\b")
 SUBSECTION_RE = re.compile(r"^####\s*제\d+관(?:의\d+)?\b")
+DELETION_ONLY_BODY_RE = re.compile(r"^삭제(?:\s*<[^>]*>)*$")
 
 ARTICLE_RE = re.compile(
     r"^#####\s*"
@@ -47,6 +48,10 @@ def build_structure_path(
 ) -> Optional[str]:
     parts = [p for p in (part, chapter, section, subsection) if p]
     return " > ".join(parts) if parts else None
+
+
+def is_deletion_only_body(body: str) -> bool:
+    return bool(DELETION_ONLY_BODY_RE.fullmatch(body.strip()))
 
 
 def chunk_snapshot(snapshot: dict[str, Any]) -> list[dict[str, Any]]:
@@ -75,7 +80,7 @@ def chunk_snapshot(snapshot: dict[str, Any]) -> list[dict[str, Any]]:
         body = "\n".join(current["body_lines"]).strip()
 
         # 삭제 조문은 청크로 만들지 않음
-        if current["is_deleted"]:
+        if current["is_deleted"] or is_deletion_only_body(body):
             current = None
             return
 

@@ -5,11 +5,23 @@ Step 8: 중복 제거 및 검증
 import json
 from collections import Counter
 import hashlib
+import re
+
+
+DELETION_ONLY_BODY_RE = re.compile(r"^삭제(?:\s*<[^>]*>)*$")
 
 
 def content_hash(text: str) -> str:
     """본문 내용 해시"""
     return hashlib.md5(text.encode("utf-8")).hexdigest()
+
+
+def is_deletion_only_chunk(chunk: dict) -> bool:
+    normalized = (chunk.get("content_normalized") or "").strip()
+    parts = normalized.split("\n\n", 1)
+    if len(parts) < 2:
+        return False
+    return bool(DELETION_ONLY_BODY_RE.fullmatch(parts[1].strip()))
 
 
 def main():
@@ -32,13 +44,11 @@ def main():
         print("✓ chunk_id 중복 없음")
     
     # 2. 내용 중복 검사
-    content_hashes = Counter(
-        content_hash(c["content_normalized"]) for c in chunks
-    )
+    content_hashes = Counter(content_hash(c["content_normalized"]) for c in chunks)
     content_dups = {k: v for k, v in content_hashes.items() if v > 1}
     
     if content_dups:
-        print(f"\n⚠️  내용 중복 발견: {len(content_dups)}건")
+        print(f"\n⚠️  내용 중복 발견: {len(content_dups)}그룹 / {sum(content_dups.values())}개 청크")
         # 중복 내용 샘플 출력
         for h, count in list(content_dups.items())[:3]:
             same = [c for c in chunks if content_hash(c["content_normalized"]) == h]
@@ -56,19 +66,30 @@ def main():
     "citation_label",
     "law_mst", "enforcement_date", "tier"
     ]       
-    missing_field_count = 0
+    missing_field_counts = Counter()
     for c in chunks:
         for f in required_fields:
             if f not in c or c[f] is None:
-                if f == "content_normalized":
-                    missing_field_count += 1
+                missing_field_counts[f] += 1
     
-    if missing_field_count:
-        print(f"\n⚠️  필수 필드 누락: {missing_field_count}건")
+    if missing_field_counts:
+        print(f"\n⚠️  필수 필드 누락:")
+        for field, count in sorted(missing_field_counts.items()):
+            print(f"  {field}: {count}건")
     else:
         print("✓ 필수 필드 모두 존재")
     
-    # 4. 빈 청크 검사
+    # 4. deletion-only 청크 검사 및 제거
+    deletion_only_chunks = [c for c in chunks if is_deletion_only_chunk(c)]
+    if deletion_only_chunks:
+        print(f"\n⚠️  deletion-only 청크 발견: {len(deletion_only_chunks)}건")
+        for c in deletion_only_chunks[:5]:
+            print(f"  - {c['citation_label']}")
+        chunks = [c for c in chunks if not is_deletion_only_chunk(c)]
+    else:
+        print("✓ deletion-only 청크 없음")
+
+    # 5. 빈 청크 검사
     empty_chunks = [c for c in chunks if len(c["content_normalized"].strip()) < 20]
     if empty_chunks:
         print(f"\n⚠️  내용이 너무 짧은 청크: {len(empty_chunks)}건 (20자 미만)")
@@ -76,13 +97,23 @@ def main():
     else:
         print("✓ 짧은 청크 없음")
     
-    # 5. 중복 제거 (chunk_id 기준)
+    # 6. 중복 제거 (chunk_id 기준)
     seen_ids = set()
     unique_chunks = []
     for c in chunks:
         if c["chunk_id"] not in seen_ids:
             seen_ids.add(c["chunk_id"])
             unique_chunks.append(c)
+
+    remaining_content_hashes = Counter(content_hash(c["content_normalized"]) for c in unique_chunks)
+    remaining_content_dups = {k: v for k, v in remaining_content_hashes.items() if v > 1}
+    if remaining_content_dups:
+        print(
+            f"\n⚠️  최종 normalized 내용 중복 남음: "
+            f"{len(remaining_content_dups)}그룹 / {sum(remaining_content_dups.values())}개 청크"
+        )
+    else:
+        print("\n✓ 최종 normalized 내용 중복 없음")
     
     print(f"\n최종 청크: {len(unique_chunks)}개")
     

@@ -15,6 +15,14 @@ PARAGRAPH_PATTERN = re.compile(
 )
 
 
+def mark_unsplit(chunk: dict) -> dict:
+    """분해되지 않은 청크도 필드를 일관되게 유지"""
+    chunk["parent_article"] = None
+    chunk["paragraph_no"] = None
+    chunk["chunk_id_suffix"] = ""
+    return chunk
+
+
 def split_by_paragraph(chunk: dict) -> list[dict]:
     """긴 조문을 항 단위 서브청크로 분해"""
     normalized = chunk["content_normalized"]
@@ -22,7 +30,7 @@ def split_by_paragraph(chunk: dict) -> list[dict]:
     # 조문 헤더 분리
     lines = normalized.split("\n\n", 1)
     if len(lines) < 2:
-        return [chunk]  # 분해 불가
+        return [mark_unsplit(dict(chunk))]  # 분해 불가
     
     header = lines[0]
     body = lines[1]
@@ -32,7 +40,7 @@ def split_by_paragraph(chunk: dict) -> list[dict]:
     
     if len(paragraphs) < 2:
         # 항이 2개 미만이면 분해 안 함
-        return [chunk]
+        return [mark_unsplit(dict(chunk))]
     
     subchunks = []
     for i, match in enumerate(paragraphs, 1):
@@ -53,7 +61,7 @@ def split_by_paragraph(chunk: dict) -> list[dict]:
         sub["chunk_id_suffix"] = f"_{i}항"
         subchunks.append(sub)
     
-    return subchunks if subchunks else [chunk]
+    return subchunks if subchunks else [mark_unsplit(dict(chunk))]
 
 
 def main():
@@ -74,13 +82,10 @@ def main():
                 split_count += 1
                 final_chunks.extend(subs)
             else:
-                final_chunks.append(chunk)
+                final_chunks.extend(subs)
         else:
             # 원본 유지
-            chunk["parent_article"] = None
-            chunk["paragraph_no"] = None
-            chunk["chunk_id_suffix"] = ""
-            final_chunks.append(chunk)
+            final_chunks.append(mark_unsplit(chunk))
     
     print(f"  원본 청크: {len(chunks)}")
     print(f"  긴 조문 분해: {split_count}건")
