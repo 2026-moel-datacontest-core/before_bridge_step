@@ -150,10 +150,11 @@ npm run dev
 
 ## References
 
-* `docs/planning/00_final_master_plan.md`
-* `docs/planning/01_rag_strategy.md`
-* `docs/planning/02_chunking_pipeline.md`
-* `docs/planning/03_architecture.md`
-* `docs/planning/04_eval_plan.md`
-
+* `docs/planning/00_project_overview.md`
+* `docs/planning/02_rag_strategy.md`
+* `docs/planning/03_chunking_pipeline.md`
+* `docs/planning/04_architecture.md`
+* `docs/planning/05_eval_plan.md`
+* `docs/planning/09_backend_embedding_plan.md`
+* `docs/planning/10_backend_retrieval_plan.md`
 

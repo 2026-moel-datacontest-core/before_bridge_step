@@ -4,3 +4,7 @@ __pycache__/
 .pytest_cache/
 .vscode/
 scripts/*.json
+.env
+backend/.env
+backend/.pgdata/
+backend/logs/

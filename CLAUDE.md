@@ -71,11 +71,11 @@
 
 ## Read Order
 
-1. `docs/planning/00_final_master_plan.md`
-2. `docs/planning/01_rag_strategy.md`
-3. `docs/planning/02_chunking_pipeline.md`
-4. `docs/planning/03_architecture.md`
-5. `docs/planning/04_eval_plan.md`
+1. `docs/planning/00_project_overview.md`
+2. `docs/planning/02_rag_strategy.md`
+3. `docs/planning/03_chunking_pipeline.md`
+4. `docs/planning/04_architecture.md`
+5. `docs/planning/05_eval_plan.md`
 6. current directory `CLAUDE.md`
 7. existing code
 
