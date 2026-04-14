@@ -1,5 +1,9 @@
 # Task: [Title]
 
+## Current Status Reference
+- Latest implementation/status doc:
+- Related planning docs:
+
 ## Scope
 - Goal: 
 - Out of scope: 
@@ -9,7 +13,6 @@
 
 ## Protected Files
 - `tests/`
-- `docs/planning/`
 - `data/legalize-kr/`
 
 ## Inputs
@@ -30,5 +33,4 @@
 ## Notes
 - Do not add unrelated features.
 - Keep the change minimal.
-
 
