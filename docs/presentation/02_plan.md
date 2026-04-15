@@ -4,7 +4,7 @@
 
 기준선:
 
-- RAG 및 시나리오 상태 기준일: `2026-04-14`
+- RAG 및 시나리오 상태 기준일: `2026-04-15`
 - corpus 기준일: `selected_as_of = 2026-04-11`
 
 ## 문서 목적
@@ -20,44 +20,49 @@
 - retrieval MVP 완료: `hit@5 = 60/60`
 - grounded answer MVP 완료: `citation_grounding_clean = 60/60`
 - scenario audit 완료: 주요 데모 시나리오 5개 검토
-- 남은 핵심 이슈: 데이터 부족보다 복합 질의에서의 retrieval ranking과 answer coverage
+- 남은 핵심 이슈: 데이터 부족보다 answer-side clause selection, phrasing sensitivity, 일부 복합 질의 composition 문제
 
 즉, 다음 단계의 핵심은 대규모 기능 추가가 아니라 "현재 만든 시스템을 더 안정적으로 시연 가능한 상태로 다듬는 것"입니다.
 
 ## 2. 제출 전 실행 계획
 
-### Phase 1. 기준선 고정
+### 2-1. 공통 계획
 
-이미 완료된 범위입니다.
+팀 전체 기준으로 공통으로 맞춰야 하는 계획입니다.
 
-- 청킹 파이프라인 결과 고정
-- PostgreSQL + pgvector + embedding 구성 완료
-- retrieval / answer API 구현 완료
-- eval runner 및 scenario smoke 자산 확보
+- 청킹 결과와 corpus 기준선 유지
+- PostgreSQL + pgvector + embedding 상태 유지
+- 발표용 메인 시나리오 1개와 백업 시나리오 1~2개 확정
+- 질문 문안, 기대 citation, 시연 순서 최종 고정
+- 발표 자료에서 "현재 구현 완료"와 "후속 확장"을 명확히 분리
 
-### Phase 2. RAG refinement
+즉, 공통 계획의 핵심은 새 기능을 넓히는 것보다 현재 기준선을 흔들지 않고 시연 안정성을 확보하는 것입니다.
 
-다음 세션에서 가장 먼저 해야 하는 작업입니다.
+### 2-2. After 계획
 
-- `SCN-001`, `SCN-004`, `SCN-005` 중심으로 복합 질의 안정성 보강
-- query decomposition 검토
-- sub-query retrieval + union / dedupe 검토
-- clause ranking 및 answer-side selection 개선
+현재 저장소와 구현 기준으로는 `After` 단계가 먼저 진행된 상태이며, 제출 전까지의 핵심 과제도 이쪽에 많이 몰려 있습니다.
 
-중요한 판단은 "모델 교체"보다 "retrieval-grounding-answer 연결 정교화"가 우선이라는 점입니다.
+- Step 0: `SCN-004`에서 `근로기준법 제23조` citation survival 이슈가 실제로 재현되는지 먼저 확인
+- Step 1: `SCN-005` 중심의 좁은 phrasing normalization 보강
+- Step 2: 긴 조문 / 하위 항목 / 숫자·기간·예외·절차·범위 surface를 위한 answer-side deterministic hardening 진행
+- Step 3: Step 0이 재현된 경우에만 conservative citation-diversity / coverage-aware context assembly 검토
+- Step 4: `SCN-001 Full` 같은 composition-heavy 질문에 한해서만 selective decomposition 검토
+- `After` 질문 문안별 smoke test 재확인
+- 필요 시 초기 MVP 앱도 로직을 먼저 완성한 `After` 흐름 기준으로 선행 구성
 
-### Phase 3. 데모 흐름 고정
+중요한 판단은 `After` 단계에서 decomposition을 기본 전략으로 두는 것이 아니라, low-risk fix를 먼저 적용하고 decomposition은 조건부 escalation path로 두는 것입니다.
 
-- 메인 시나리오 1개와 백업 시나리오 1~2개 확정
-- 질문 문안과 기대 citation을 최종 고정
-- 발표 중 실패 가능성이 높은 문안은 제외
-- `SCN-002`는 설명형 Before 범위로만 유지
+### 2-3. Before 계획
 
-### Phase 4. 프론트엔드/발표 자료 정리
+`Before` 단계는 팀원 담당 영역으로, 제출 전에는 아래 항목을 중심으로 정리되는 것이 적절합니다.
 
-- 최소한의 데모 화면 흐름 정리
-- `Before`, `After`, `Bridge` 결과 구조를 발표용으로 단순화
-- 시연 중 설명해야 하는 확장 기능과 실제 구현 완료 범위를 명확히 분리
+- 계약서 입력 및 분석 흐름 구체화
+- 위험 신호 탐지 기준 정리
+- `Before` 결과 구조화 방식 정리
+- `Bridge`로 넘길 핵심 필드 정의
+- `SCN-002`, `SCN-003` 등 `Before` 중심 시나리오 검증 상태 정리
+
+이 섹션은 팀원이 현재 진행 상황에 맞춰 구체 항목을 추가로 보강하면 됩니다.
 
 ## 3. 범위 고정
 
@@ -84,7 +89,7 @@
 
 | 구분 | 권장 선택 | 이유 |
 |---|---|---|
-| 메인 시나리오 | `SCN-001` | 프로젝트 정체성인 외국인 근로자 특화와 `Before -> Bridge -> After` 흐름을 모두 보여줌 |
+| 메인 시나리오 | `SCN-001` | `Before -> Bridge -> After` 흐름을 모두 보여주고 정보 취약 사용자 문제까지 함께 설명할 수 있음 |
 | 백업 시나리오 A | `SCN-004` | 근거 조문이 선명하고 After 데모 안정성이 높음 |
 | 백업 시나리오 B | `SCN-005` | 사회적 공감도가 높고 권리 + 대응 순서 설명이 자연스러움 |
 | 확장 설명용 | `SCN-003` | 약자 지원형 UX 확장성 설명에 적합 |
@@ -95,7 +100,7 @@
 ### 리스크 1. `SCN-001` Full 단일 질의 랭킹 불안정
 
 - 문제: 복합 질문 한 번에 넣으면 필요한 조문 일부가 밀릴 수 있음
-- 대응: 질의 분리, query shaping, sub-query retrieval 검토
+- 대응: 기본 경로를 바로 바꾸기보다 phrasing normalization과 answer-side hardening을 먼저 적용하고, 필요할 때만 selective decomposition 검토
 
 ### 리스크 2. snapshot 혼합 위험
 
