@@ -49,7 +49,9 @@
 
 ### Before 단계
 
-- `Before`는 팀원 담당 영역으로, 계약서 입력/분석 흐름, 위험 탐지, 결과 구조화, Bridge 연결용 결과 정리를 중심으로 진행 중입니다.
+- Phase A(표준 항목 매핑) 및 Phase B(OCR -> 비교 -> 검증 -> LLM) 구조 설계와 코드 초안이 정리되어 있습니다.
+- 계약서 이미지 2-Layer OCR 테스트와 JSON 구조화 포맷 치환을 확인했습니다.
+- `rule_validator.py`, `section_comparator.py` 중심의 deterministic 검증 초안과 T-0 ~ T-7 테스트 파이프라인이 준비되어 있습니다.
 
 ## 5. 대표 시나리오와 데모 전략
 
@@ -83,10 +85,11 @@
 
 ### Before 계획
 
-- 계약서 입력 및 분석 흐름 구체화
-- 위험 신호 탐지 기준 정리
-- 결과 구조화 및 Bridge 연결 필드 정의
-- `SCN-002`, `SCN-003` 중심 시나리오 검증 상태 정리
+- Step 0: JSON 스키마와 파이프라인 안정화
+- Step 1: 2-Layer OCR 및 핵심 항목 분류 고도화
+- Step 2: `rule_validator.py` 중심 deterministic 검증 강화
+- Step 3: `SCN-002`, `SCN-003` 중심 Before 시나리오 검증
+- Step 4: Bridge 인터페이스 정의
 
 ## 7. 팀 구성 및 역할 분담
 

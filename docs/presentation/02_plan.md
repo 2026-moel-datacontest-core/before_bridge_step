@@ -52,7 +52,6 @@
 
 중요한 판단은 `After` 단계에서 decomposition을 기본 전략으로 두는 것이 아니라, low-risk fix를 먼저 적용하고 decomposition은 조건부 escalation path로 두는 것입니다.
 
-### 2-3. Before 계획
 
 ### 2-3. Before 계획
 
