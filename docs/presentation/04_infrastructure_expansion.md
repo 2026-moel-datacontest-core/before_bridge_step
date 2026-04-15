@@ -49,11 +49,76 @@
 
 즉, 지금은 **Vertex AI로 빠르게 MVP를 검증**했고, 이후에는 **GCP GPU 자원 위에 Local LLM을 올려 self-hosted inference 경로를 추가**하는 방향이 자연스럽습니다.
 
+### 왜 AWS가 아니라 GCP인가
+
+이 부분은 "AWS는 안 되고 GCP만 된다"는 의미가 아닙니다. AWS도 Amazon Bedrock, SageMaker, EC2 GPU, RDS PostgreSQL 등으로 유사한 구성이 가능합니다.
+
+그럼에도 우리 팀이 GCP를 선택한 이유는 아래와 같습니다.
+
+- 이 프로젝트는 단순 웹 배포보다 생성형 AI, 임베딩, RAG, 이후 GPU 기반 Local LLM 확장까지 포함하는 **AI 중심 프로젝트**입니다.
+- 우리 팀은 `Vertex AI 기반 MVP -> GCP GPU 기반 Local LLM 확장`이라는 흐름이 더 단순하고 일관된 AI-first 확장 스토리라고 판단했습니다.
+- 즉, GCP 선택의 핵심 이유는 AWS가 불가능해서가 아니라, **프로젝트의 학습 목표와 인프라 확장 방향을 더 자연스럽게 설명할 수 있기 때문**입니다.
+
+정리하면:
+
+- AWS도 충분히 가능한 선택지입니다.
+- 다만 이 프로젝트에서는 `Gemini / Vertex AI -> GCP GPU / Ollama`로 이어지는 흐름이 더 명확해서 GCP를 선택했습니다.
+
+### GCP와 AWS를 함께 쓰지 않는 이유
+
+멀티클라우드 구성이 항상 나쁜 것은 아닙니다. 실제로 대규모 조직에서는 규제, 장애 대비, 특정 서비스 선택, 벤더 종속 완화 같은 이유로 GCP와 AWS를 함께 쓰기도 합니다.
+
+하지만 현재 프로젝트 단계에서는 두 클라우드를 섞는 것보다 **하나의 클라우드로 통일하는 편이 더 적절**합니다.
+
+이유는 아래와 같습니다.
+
+- RAG API, PostgreSQL, 모델 호출, 이후 GPU 기반 Local LLM 확장까지 서비스 간 연결이 긴밀함
+- 클라우드를 혼합하면 네트워크 홉이 늘고 지연 가능성이 커짐
+- 인증, 권한, 비밀값, 로그, 모니터링 관리 포인트가 늘어남
+- 교육과정 프로젝트와 포트폴리오 관점에서 아키텍처 설명이 불필요하게 복잡해짐
+
+따라서 이 프로젝트는 멀티클라우드 실험보다, **단일 클라우드 기반의 일관된 AI 서비스 아키텍처를 구성하는 것**을 우선합니다.
+
+### 강사님 방향과의 정합성: serverless-first 구성
+
+강사님이 서버리스 방식을 강조한다면, 현재 프로젝트와 가장 잘 맞는 선택지는 **Cloud Run 중심의 serverless-first 아키텍처**입니다.
+
+Google Cloud 공식 문서도 Cloud Run을 **fully managed, serverless** 플랫폼으로 설명합니다. 즉 서버를 직접 운영하지 않고도 컨테이너 기반 API와 이벤트 기반 서비스를 배포할 수 있습니다.
+
+이 프로젝트에 맞춰 보면 아래 구성이 가장 자연스럽습니다.
+
+- API 서버: `Cloud Run`
+- 배치 작업: `Cloud Run Jobs`
+- DB: `Cloud SQL for PostgreSQL`
+- 비밀값: `Secret Manager`
+- 파일/산출물 저장: `Cloud Storage`
+- 오케스트레이션: `Workflows`
+- 로그/모니터링: `Cloud Logging`, `Cloud Monitoring`
+- managed AI: `Vertex AI`
+
+이 구조의 장점은 다음과 같습니다.
+
+- 현재 FastAPI 컨테이너 구조를 거의 그대로 살릴 수 있음
+- 서버 운영보다 서비스 연결과 아키텍처 설계에 집중할 수 있음
+- 교육과정 발표에서 "서버리스 기반 AI 서비스 아키텍처"로 설명하기 쉬움
+
+다만 한 가지 예외는 **GPU 기반 Local LLM 확장**입니다.
+
+- `Vertex AI`를 사용하는 현재 MVP와 서버리스 기반 API 계층은 Cloud Run 중심으로 충분히 설명 가능합니다.
+- 하지만 `Ollama + Qwen` 같은 self-hosted Local LLM을 상시 구동하려면, 완전한 서버리스보다 `Compute Engine GPU VM`이 더 현실적일 수 있습니다.
+
+따라서 현재 프로젝트의 권장 방향은 아래처럼 정리할 수 있습니다.
+
+- **기본 방향:** serverless-first (`Cloud Run` 중심)
+- **예외적 확장:** Local LLM이 꼭 필요할 때만 GPU VM 추가
+
+즉, 발표에서는 "기본 아키텍처는 서버리스로 구성하고, 고비용 GPU 추론만 선택적으로 별도 계층으로 분리한다"는 방식으로 설명하는 것이 가장 자연스럽습니다.
+
 ## 4. 권장 인프라 확장 로드맵
 
 ### 4-1. 1단계: GCP managed baseline 구성
 
-가장 먼저 추천하는 확장입니다.
+가장 먼저 추천하는 확장입니다. 사실상 **serverless-first baseline**에 해당합니다.
 
 - backend API: `Cloud Run`
 - frontend: `Cloud Run` 또는 정적 배포 구조
