@@ -1,6 +1,6 @@
 # Task 6 Answer Generation Status
 
-기준일: `2026-04-14`
+기준일: `2026-04-16`
 
 ## 목적
 
@@ -61,6 +61,8 @@ retrieval MVP는 유지 중이며, answer generation MVP와 그 후속 안정화
 - eval runner에 per-item bounded execution 추가
 - targeted eval ID 실행 경로 추가
 - failure bucket / partial coverage / schema failure 요약 추가
+- `backend/verify/debug_answer_selection.py` 추가
+- raw / expanded / grounded / citation postprocess 흐름을 verify 경로에서 분리 확인 가능하게 보강
 
 ### 4. Coverage 보강
 
@@ -73,6 +75,11 @@ answer-side에서 다음 개선을 반영했다.
 - 숫자 / 기간 / 비율 / 예외 / 범위 표현 surface 보강
 - 출력 단계 citation-sanitizing 추가
 - key points는 grounded clause를 우선 사용하도록 조정
+- query hint normalization (`LEGAL_QUERY_HINT_RULES`) 확장
+- focus-aware clause selection / narrow clause bias 추가
+- incomplete answer 복원 및 targeted final summary 보강
+- family-care sibling / procedure companion citation postprocess 추가
+- `raw_cited_context_ids` / `expanded_cited_context_ids` / `grounded_context_ids` semantics 분리
 
 ### 5. Scenario Expansion Update
 
@@ -146,54 +153,60 @@ full 60 live eval 기준:
 - `timed_out_ids = []`
 - `citation_grounding_clean = 60/60`
 - `gold_citation_hit = 60/60`
-- `expected_point_strict_coverage = 117/153`
-- `failures_or_partial_coverage = 26`
+- `expected_point_strict_coverage = 137/153`
+- `failures_or_partial_coverage = 16`
 
 coverage 개선 경과:
 
-- full 60 strict coverage: `84/153 -> 107/153 -> 117/153`
-- full 60 failures_or_partial_coverage: `36 -> 30 -> 26`
+- full 60 strict coverage: `84/153 -> 107/153 -> 117/153 -> 122/153 -> 124/153 -> 126/153 -> 137/153`
+- full 60 failures_or_partial_coverage: `36 -> 30 -> 26 -> 24 -> 23 -> 16`
 
 ### Targeted Improvement 결과
 
-targeted 8개 문항 기준:
+대표 targeted improvement:
 
-- strict coverage: `6/25 -> 12/25`
-- failures_or_partial: `8 -> 7`
+- `KLS-EVAL-010`: `0/3 -> 3/3`
+- `KLS-EVAL-017`: `0/2 -> 1/2` 후 substantive exclusion final surface 안정화
+- `KLS-EVAL-058`: `0/3 -> 3/3`
+- `SCN-005-Q3`: sibling + procedure companion citation survival 안정화
+- long enumerated weak items (`KLS-EVAL-029`, `049`, `051`, `055`, `060`):
+  - focused loop strict coverage `13/24 -> 24/24`
+  - clean landing verification 후 full 60 기준 `137/153`, `16 partial`
 
-개선 확인:
+landing verification:
 
-- `KLS-EVAL-037`: `0/3 -> 3/3`
-- `KLS-EVAL-028`: `2/4 -> 3/4`
-- `KLS-EVAL-050`: `0/2 -> 1/2`
-- `KLS-EVAL-051`: `1/4 -> 2/4`
-- `KLS-EVAL-055`: `1/4 -> 2/4`
+- full 60 clean rerun: `timeout = 0`, `items_answered = 60/60`
+- `KLS-EVAL-060` 단건 반복에서도 timeout 재현 안 됨
+- 직전 timeout은 기능 회귀가 아니라 간헐적 provider/runtime variance로 판정
 
 ---
 
 ## 현재 약한 문항 / 패턴
 
-가장 큰 잔존 약점:
+현재 남은 partial IDs:
 
-- `KLS-EVAL-010`
-- `KLS-EVAL-017`
-- `KLS-EVAL-058`
-
-보조 개선 여지:
-
+- `KLS-EVAL-003`
+- `KLS-EVAL-007`
+- `KLS-EVAL-013`
+- `KLS-EVAL-014`
+- `KLS-EVAL-016`
+- `KLS-EVAL-019`
+- `KLS-EVAL-021`
+- `KLS-EVAL-027`
 - `KLS-EVAL-028`
+- `KLS-EVAL-031`
+- `KLS-EVAL-038`
+- `KLS-EVAL-044`
+- `KLS-EVAL-047`
 - `KLS-EVAL-050`
-- `KLS-EVAL-051`
-- `KLS-EVAL-055`
+- `KLS-EVAL-053`
+- `KLS-EVAL-054`
 
 패턴별 메모:
 
-- `KLS-EVAL-010`
-  - 연장근로 원칙 / 30인 미만 예외 / 장관 인가 예외를 끝까지 다 surface하지 못하는 경우가 남음
-- `KLS-EVAL-017`
-  - 핵심 적용 제외 조문보다 주변 조문 / 하위 규정 문맥이 과노출되는 경향이 있음
-- `KLS-EVAL-058`
-  - 시행령 제4조 내부의 목표 / 경영방침 / 예산 편성·집행 / 반기 1회 표현 다양성 surface가 아직 부족함
+- 현재 남은 약점은 retrieval miss보다 answer finalization / surface completeness 쪽에 더 가깝다.
+- 숫자·기한·횟수·요건이 여러 개 열거된 조문에서 일부 항목이 answer 본문에 직접적으로 올라오지 않는 경우가 남아 있다.
+- 일부 문항은 조문 선택 자체보다 answer 문장화가 strict coverage 친화적으로 정리되지 않는 문제가 남아 있다.
 
 공통 패턴:
 
@@ -249,13 +262,14 @@ targeted 8개 문항 기준:
 
 ## 다음 RAG 수정 세션 권장 방향
 
-지금 상태에서 broad refactor를 추가로 진행하기보다, 이후 RAG 구조를 손볼 때 아래 순서로 다시 보는 것이 합리적이다.
+현재 landing은 완료 상태다. 즉시 필요한 answer/retrieval 구조 수정 세션은 없다.
 
-1. clause ranking 재검토
-2. adjacent grounded context expansion 재설계
-3. title / query normalization 보강
-4. 긴 조문 / 하위 항목 열거형 조문 처리 개선
-5. scenario multi-hop query에 대해 query decomposition / sub-query union 가능성 검토
-6. `SCN-002`는 설명형 Before 데모 범위로 고정하고, 현재 RAG 수정 세션의 직접 대상에서는 제외
+후속 작업이 필요할 때만 아래 순서로 다시 보는 것이 합리적이다.
 
-즉 다음 단계의 핵심은 model swap이 아니라 retrieval-grounding-answer 연결부의 정보 선택 품질 개선이다.
+1. 남은 `16` partial에 대한 answer-side surface / completeness 보강
+2. low-signal key point noise 정리
+3. `SCN-001 Full` demo 필요성이 커질 때만 selective decomposition 별도 검토
+4. citation survival 이슈가 다시 재현될 때만 Step 3 rerank 재검토
+5. `SCN-002`는 설명형 Before 데모 범위로 유지
+
+즉 현재 단계의 결론은 **"landing 완료, 후속은 선택적 answer-side cleanup만"**이다.

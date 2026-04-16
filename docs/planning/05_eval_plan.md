@@ -197,7 +197,7 @@
 
 - `expected_points`를 얼마나 충족했는지 확인
 
-## Current Answer Baseline (2026-04-14)
+## Current Answer Baseline (2026-04-16)
 
 full 60 live answer eval 기준:
 
@@ -206,13 +206,13 @@ full 60 live answer eval 기준:
 - `timed_out_ids = []`
 - `citation_grounding_clean = 60/60`
 - `gold_citation_hit = 60/60`
-- `expected_point_strict_coverage = 117/153`
-- `failures_or_partial_coverage = 26`
+- `expected_point_strict_coverage = 137/153`
+- `failures_or_partial_coverage = 16`
 
 개선 경과:
 
-- strict coverage: `84/153 -> 107/153 -> 117/153`
-- partial bucket: `36 -> 30 -> 26`
+- strict coverage: `84/153 -> 107/153 -> 117/153 -> 122/153 -> 124/153 -> 126/153 -> 137/153`
+- partial bucket: `36 -> 30 -> 26 -> 24 -> 23 -> 16`
 
 현재 잔존 약점은 retrieval miss보다 answer-side coverage다. 특히 숫자/기간/예외/범위 열거형 질문과 긴 조문 / subchunk 조합에서 누락이 남는다.
 

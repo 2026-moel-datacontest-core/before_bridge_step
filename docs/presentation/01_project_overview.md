@@ -74,7 +74,7 @@
 |---|---|
 | Answer | `POST /api/v1/answer` 구현 완료, `citation_grounding_clean = 60/60` |
 | 응답 구조 | 검색 결과에 없는 조문 인용 금지, `cited_articles` 포함 응답 고정 |
-| 평가 | baseline answer eval `117/153`, partial/failure `26` |
+| 평가 | baseline answer eval `137/153`, partial/failure `16` |
 | 시나리오 검증 | `SCN-004`, `SCN-005` 안정적, `SCN-001` After/Full 연결 검증 진행 |
 
 현재 저장소 기준으로는 `After` 단계의 핵심 backend 로직과 검증 자산이 먼저 구현된 상태입니다.

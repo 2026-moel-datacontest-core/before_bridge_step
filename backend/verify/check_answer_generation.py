@@ -91,8 +91,16 @@ def main() -> None:
     print(f"model_name: {result.model_name}")
     print(f"retrieval_total: {result.retrieval_total}")
     print(f"raw_cited_context_ids: {result.raw_cited_context_ids}")
+    print(
+        "expanded_cited_context_ids: "
+        f"{getattr(result, 'expanded_cited_context_ids', result.grounded_context_ids)}"
+    )
     print(f"grounded_context_ids: {result.grounded_context_ids}")
     print(f"cited_articles: {result.cited_articles}")
+    print(
+        "citation_postprocess_additions: "
+        f"{getattr(result, 'citation_postprocess_additions', [])}"
+    )
     print(f"citation_violations: {len(citation_violations)}")
     print("-" * 72)
     print("answer:")

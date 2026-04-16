@@ -111,8 +111,8 @@
   - `timed_out_ids = []`
   - `citation_grounding_clean = 60/60`
   - `gold_citation_hit = 60/60`
-  - `expected_point_strict_coverage = 117/153`
-  - `failures_or_partial_coverage = 26`
+  - `expected_point_strict_coverage = 137/153`
+  - `failures_or_partial_coverage = 16`
 - scenario expansion / demo coverage 기준:
   - `SCN-001`: covered, retrieval ranking issue
   - `SCN-002`: partial, extra source / structured data 필요
@@ -124,10 +124,10 @@
 
 ## Next Step
 
-- retrieval / grounding / answer 연결부의 RAG 품질 개선
-- scenario multi-hop 질의에 대한 query decomposition / sub-query union 검토
-- `SCN-002` 자동 판정형 데모에 필요한 추가 source 또는 structured data 설계
-- clause ranking / adjacent context expansion / query normalization 재검토
+- 현재 landing 완료 상태이며 immediate mandatory work는 없음
+- 후속이 필요하면 남은 partial에 대한 answer-side surface / completeness cleanup 우선
+- `SCN-001` decomposition은 demo 필요성이 다시 생길 때만 별도 검토
+- `SCN-002` 자동 판정형 데모에 필요한 추가 source 또는 structured data 설계는 계속 범위 밖
 - agent / frontend 연결은 이 기준선 위에서 후속 진행
 - hybrid / reranker는 현재 baseline을 유지한 채 필요성 측정 후 결정
 

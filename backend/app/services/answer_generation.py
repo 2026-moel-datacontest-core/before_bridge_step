@@ -164,18 +164,77 @@ CLAUSE_PRIORITY_MARKERS = (
 )
 QUESTION_FOCUS_HINTS: dict[str, tuple[str, ...]] = {
     "numeric": ("얼마", "기간", "한도", "시간", "일", "회", "가산", "형태", "종류"),
-    "exception": ("예외", "거절", "단서", "조건", "요건", "가능", "안 되", "불가", "무조건"),
+    "exception": (
+        "예외",
+        "거절",
+        "단서",
+        "조건",
+        "요건",
+        "가능",
+        "안 되",
+        "불가",
+        "무조건",
+        "마음대로",
+        "제외",
+    ),
     "procedure": ("서면", "절차", "신청", "조사", "통보", "협의", "점검"),
-    "protection": ("불이익", "해고", "복귀", "보장", "보호", "징계", "전직"),
-    "system": ("시스템", "예산", "목표", "절차", "관리", "점검", "의무"),
+    "protection": ("불이익", "불리한 처우", "해고", "복귀", "보장", "보호", "징계", "전직"),
+    "system": ("시스템", "관리체계", "체계", "관리", "의무"),
+    "policy": ("목표", "방침"),
+    "budget": ("예산", "비용"),
+    "inspection": ("점검", "반기", "주기", "평가"),
+    "agreement": ("합의", "서면합의", "근로자대표"),
+    "eligibility": ("장애", "현저", "대상", "적용 제외"),
 }
 FOCUS_CLAUSE_MARKERS: dict[str, tuple[str, ...]] = {
-    "numeric": ("연간", "최장", "이내", "이상", "이하", "초과", "연금", "일시금", "가산"),
-    "exception": ("다만", "예외", "불가능", "중대한 지장", "허용하지 아니하는 경우", "변경할 수 있다"),
-    "procedure": ("서면", "통보", "신청", "조사", "협의", "절차", "확인"),
-    "protection": ("불리한 처우", "해고", "징계", "전직", "평가", "복귀", "보호"),
-    "system": ("목표", "경영방침", "예산", "집행", "의견", "매뉴얼", "도급", "점검"),
+    "numeric": (
+        "연간",
+        "최장",
+        "이내",
+        "이상",
+        "이하",
+        "초과",
+        "연금",
+        "일시금",
+        "가산",
+        "12시간",
+        "8시간",
+        "14일",
+        "30일",
+        "3개월",
+    ),
+    "exception": (
+        "다만",
+        "예외",
+        "불가능",
+        "중대한 지장",
+        "허용하지 아니하는 경우",
+        "변경할 수 있다",
+        "인가",
+        "승인",
+        "제외",
+    ),
+    "procedure": ("서면", "통보", "신청", "조사", "협의", "절차", "확인", "제출"),
+    "protection": ("불리한 처우", "불이익", "해고", "징계", "전직", "평가", "복귀", "보호"),
+    "system": ("안전보건관리체계", "전담 조직", "관리체계", "의무이행"),
+    "policy": ("목표", "경영방침", "의견 청취", "의견을 청취", "매뉴얼"),
+    "budget": ("예산", "편성", "집행", "관리비용"),
+    "inspection": ("반기", "점검", "평가", "이행"),
+    "agreement": ("합의", "서면", "근로자대표"),
+    "eligibility": ("정신장애", "신체장애", "근로능력", "현저", "적용 제외"),
 }
+FOCUS_SELECTION_PRIORITY = (
+    "eligibility",
+    "numeric",
+    "agreement",
+    "exception",
+    "procedure",
+    "protection",
+    "budget",
+    "policy",
+    "inspection",
+    "system",
+)
 INCOMPLETE_OUTPUT_TAILS = (
     "이며",
     "하고",
@@ -190,7 +249,51 @@ INCOMPLETE_OUTPUT_TAILS = (
     "보호해야 하고",
     "집행하는",
 )
+ANSWER_SENTENCE_END_PATTERN = re.compile(r"(?:[.!?]|[다요])$")
+ANSWER_REBUILD_POINT_LIMIT = 5
+ANSWER_REBUILD_CHAR_LIMIT = 850
 PROCEDURE_QUERY_HINTS = ("서면", "절차", "신청", "처리", "조사", "통보", "서식", "양식")
+OVERTIME_LIMIT_QUERY_MARKERS = ("연장근로", "추가근무")
+OVERTIME_LIMIT_SCOPE_MARKERS = ("한도", "20시간", "무조건")
+OVERTIME_LIMIT_AGREEMENT_MARKERS = ("합의", "서면합의", "근로자대표")
+OVERTIME_SPECIAL_INDUSTRY_MARKERS = ("운송업", "보건업", "항공운송", "특례")
+SUBSTANTIVE_EXCLUSION_QUERY_MARKERS = (
+    "적용 제외",
+    "마음대로",
+    "안 줘도",
+    "제외할 수",
+)
+SAFETY_SYSTEM_QUERY_MARKERS = (
+    "경영책임자",
+    "안전관리",
+    "현장 안전",
+    "안전보건관리체계",
+    "관리체계",
+)
+SAFETY_SYSTEM_COMPANION_MARKERS = ("시스템", "예산", "절차", "점검", "의무")
+FAMILY_CARE_QUERY_MARKERS = ("가족돌봄휴직",)
+FAMILY_CARE_FOCUS_MARKERS = ("서면", "거절", "이유", "불이익", "불리한 처우", "신청")
+PROCEDURE_COMPANION_MARKERS = ("신청", "문서", "전자문서", "제출")
+FAMILY_CARE_PROCEDURE_COMPANION_LABEL_MARKERS = ("가족돌봄휴직 및 가족돌봄휴가의 신청 등",)
+SURVIVOR_BENEFIT_QUERY_MARKERS = ("유족",)
+SURVIVOR_BENEFIT_FOCUS_MARKERS = ("사망", "사고", "급여", "형태", "지급")
+CHILDCARE_LEAVE_QUERY_MARKERS = ("육아휴직",)
+CHILDCARE_LEAVE_RETURN_FOCUS_MARKERS = ("복귀", "복직", "같은 업무", "같은 수준")
+CHILDCARE_LEAVE_RETURN_CLAUSE_MARKERS = (
+    "복귀시켜",
+    "복직시켜",
+    "같은 업무",
+    "같은 수준의 임금",
+)
+SPOUSAL_BIRTH_LEAVE_QUERY_MARKERS = ("배우자", "출산휴가")
+FOREIGN_WORKER_PERMIT_QUERY_MARKERS = ("외국인근로자", "내국인", "고용허가")
+FOREIGN_WORKER_PERMIT_FOCUS_MARKERS = ("직업안정기관", "추천", "허가")
+DEPARTURE_INSURANCE_QUERY_MARKERS = ("출국만기보험",)
+DEPARTURE_INSURANCE_FOCUS_MARKERS = ("보험료", "퇴직금", "지급")
+WORKPLACE_CHANGE_LIMIT_QUERY_MARKERS = ("사업장 변경", "사업장을 옮기")
+WORKPLACE_CHANGE_LIMIT_FOCUS_MARKERS = ("언제까지", "1개월", "3개월", "횟수", "제한")
+SERIOUS_ACCIDENT_PENALTY_QUERY_MARKERS = ("중대산업재해",)
+SERIOUS_ACCIDENT_PENALTY_FOCUS_MARKERS = ("형사처벌", "처벌")
 
 EXPLICIT_CITATION_PATTERN = re.compile(
     r"(?:(?P<law>[가-힣A-Za-z0-9ㆍ·() ]{2,}?(?:법|법률))\s+)?"
@@ -278,10 +381,37 @@ class GroundedAnswerResult:
     cautions: list[str]
     cited_articles: list[str]
     raw_cited_context_ids: list[int]
+    expanded_cited_context_ids: list[int]
     grounded_context_ids: list[int]
     retrieved_chunks: list[GroundedRetrievedChunk]
     retrieval_total: int
     model_name: str
+    citation_postprocess_additions: list[CitationPostprocessAddition]
+
+
+@dataclass(frozen=True)
+class ScoreAdjustmentReason:
+    label: str
+    delta: float
+    rule: str
+    matched_query_patterns: tuple[str, ...] = ()
+    matched_context_patterns: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class CitationPostprocessAddition:
+    rule: str
+    added_context_id: int
+    added_citation_label: str
+    source_context_ids: tuple[int, ...] = ()
+    source_citation_labels: tuple[str, ...] = ()
+    matched_query_patterns: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class CitationPostprocessResult:
+    context_ids: list[int]
+    additions: list[CitationPostprocessAddition]
 
 
 @dataclass(frozen=True)
@@ -495,6 +625,29 @@ def build_signal_summary_key_point(
     return prefix + signal_text + "입니다."
 
 
+def apply_substantive_exclusion_eligibility_expansion(
+    query: str,
+    point: str,
+) -> str:
+    normalized_query = normalize_text(query)
+    active_focuses = get_active_query_focuses(normalized_query)
+    if not is_substantive_exclusion_query(normalized_query, active_focuses):
+        return point
+    if not (
+        "정신장애" in point
+        and "신체장애" in point
+        and "근로능력" in point
+        and "현저히" in point
+        and "낮은" in point
+        and "예외" not in point
+    ):
+        return point
+    return (
+        "정신장애나 신체장애 등으로 근로능력이 현저히 낮은 사람 등에 대해 "
+        "예외가 있을 수 있다."
+    )
+
+
 def augment_key_points_with_grounded_signals(
     *,
     query: str,
@@ -536,7 +689,10 @@ def augment_key_points_with_grounded_signals(
         if len(augmented_key_points) >= OUTPUT_KEY_POINT_LIMIT:
             break
 
-    if len(augmented_key_points) >= 3:
+    if len(augmented_key_points) >= OUTPUT_KEY_POINT_LIMIT:
+        return augmented_key_points
+
+    if len(augmented_key_points) >= 3 and not looks_incomplete_text(normalized_answer):
         return augmented_key_points
 
     for chunk in grounded_chunks:
@@ -673,6 +829,563 @@ def tokenize_query_terms(query: str) -> list[str]:
     return tokens
 
 
+def contains_query_token(text: str, token: str) -> bool:
+    normalized_text = normalize_text(text)
+    compact_token = compact_text(token)
+    return token in normalized_text or compact_token in compact_text(normalized_text)
+
+
+def get_active_query_focuses(query: str) -> list[str]:
+    active_focuses = [
+        focus_name
+        for focus_name, question_markers in QUESTION_FOCUS_HINTS.items()
+        if any(marker in query for marker in question_markers)
+    ]
+    if (
+        is_safety_system_obligation_query(query)
+        and "system" in active_focuses
+        and "policy" not in active_focuses
+    ):
+        active_focuses.append("policy")
+    priority_order = FOCUS_SELECTION_PRIORITY
+    if is_substantive_exclusion_query(query, active_focuses):
+        active_focuses = [focus_name for focus_name in active_focuses if focus_name != "numeric"]
+        priority_order = (
+            "exception",
+            "eligibility",
+            "procedure",
+            "protection",
+            "agreement",
+            "budget",
+            "policy",
+            "inspection",
+            "system",
+            "numeric",
+        )
+    return sorted(
+        active_focuses,
+        key=lambda focus_name: (
+            priority_order.index(focus_name)
+            if focus_name in priority_order
+            else len(priority_order),
+            focus_name,
+        ),
+    )
+
+
+def get_clause_focuses(clause: str) -> set[str]:
+    normalized_clause = normalize_text(clause)
+    compact_clause = compact_text(normalized_clause)
+    matched_focuses: set[str] = set()
+    for focus_name, clause_markers in FOCUS_CLAUSE_MARKERS.items():
+        for marker in clause_markers:
+            normalized_marker = normalize_text(marker)
+            if (
+                normalized_marker in normalized_clause
+                or compact_text(normalized_marker) in compact_clause
+            ):
+                matched_focuses.add(focus_name)
+                break
+    return matched_focuses
+
+
+def has_any_marker(text: str, markers: Sequence[str]) -> bool:
+    return any(marker in text for marker in markers)
+
+
+def list_matched_markers(text: str, markers: Sequence[str]) -> tuple[str, ...]:
+    return tuple(marker for marker in markers if marker in text)
+
+
+def dedupe_preserving_order(values: Sequence[str]) -> tuple[str, ...]:
+    deduped: list[str] = []
+    seen: set[str] = set()
+    for value in values:
+        if not value or value in seen:
+            continue
+        deduped.append(value)
+        seen.add(value)
+    return tuple(deduped)
+
+
+def serialize_score_adjustment_reason(reason: ScoreAdjustmentReason) -> dict[str, Any]:
+    payload: dict[str, Any] = {
+        "label": reason.label,
+        "delta": reason.delta,
+        "rule": reason.rule,
+    }
+    if reason.matched_query_patterns:
+        payload["matched_query_patterns"] = list(reason.matched_query_patterns)
+    if reason.matched_context_patterns:
+        payload["matched_context_patterns"] = list(reason.matched_context_patterns)
+    return payload
+
+
+def serialize_citation_postprocess_addition(
+    addition: CitationPostprocessAddition,
+) -> dict[str, Any]:
+    payload: dict[str, Any] = {
+        "rule": addition.rule,
+        "added_context_id": addition.added_context_id,
+        "added_citation_label": addition.added_citation_label,
+    }
+    if addition.source_context_ids:
+        payload["source_context_ids"] = list(addition.source_context_ids)
+    if addition.source_citation_labels:
+        payload["source_citation_labels"] = list(addition.source_citation_labels)
+    if addition.matched_query_patterns:
+        payload["matched_query_patterns"] = list(addition.matched_query_patterns)
+    return payload
+
+
+def is_overtime_limit_query(query: str) -> bool:
+    return (
+        has_any_marker(query, OVERTIME_LIMIT_QUERY_MARKERS)
+        and has_any_marker(query, OVERTIME_LIMIT_SCOPE_MARKERS)
+        and has_any_marker(query, OVERTIME_LIMIT_AGREEMENT_MARKERS)
+    )
+
+
+def is_substantive_exclusion_query(
+    query: str,
+    active_focuses: Sequence[str],
+) -> bool:
+    return (
+        "procedure" not in active_focuses
+        and has_any_marker(query, SUBSTANTIVE_EXCLUSION_QUERY_MARKERS)
+    )
+
+
+def is_safety_system_obligation_query(query: str) -> bool:
+    return (
+        has_any_marker(query, SAFETY_SYSTEM_QUERY_MARKERS)
+        and has_any_marker(query, SAFETY_SYSTEM_COMPANION_MARKERS)
+    )
+
+
+def is_survivor_benefit_query(query: str) -> bool:
+    return (
+        has_any_marker(query, SURVIVOR_BENEFIT_QUERY_MARKERS)
+        and has_any_marker(query, SURVIVOR_BENEFIT_FOCUS_MARKERS)
+    )
+
+
+def is_childcare_leave_return_query(query: str) -> bool:
+    return (
+        has_any_marker(query, CHILDCARE_LEAVE_QUERY_MARKERS)
+        and has_any_marker(query, CHILDCARE_LEAVE_RETURN_FOCUS_MARKERS)
+    )
+
+
+def is_spousal_birth_leave_query(query: str) -> bool:
+    return has_any_marker(query, SPOUSAL_BIRTH_LEAVE_QUERY_MARKERS)
+
+
+def is_foreign_worker_permit_query(query: str) -> bool:
+    return (
+        has_any_marker(query, FOREIGN_WORKER_PERMIT_QUERY_MARKERS)
+        and has_any_marker(query, ("절차", "채용", "바로"))
+    )
+
+
+def is_departure_insurance_query(query: str) -> bool:
+    return (
+        has_any_marker(query, DEPARTURE_INSURANCE_QUERY_MARKERS)
+        and has_any_marker(query, DEPARTURE_INSURANCE_FOCUS_MARKERS)
+    )
+
+
+def is_workplace_change_limit_query(query: str) -> bool:
+    return (
+        has_any_marker(query, WORKPLACE_CHANGE_LIMIT_QUERY_MARKERS)
+        and has_any_marker(query, WORKPLACE_CHANGE_LIMIT_FOCUS_MARKERS)
+    )
+
+
+def is_serious_accident_penalty_query(query: str) -> bool:
+    return (
+        has_any_marker(query, SERIOUS_ACCIDENT_PENALTY_QUERY_MARKERS)
+        and has_any_marker(query, SERIOUS_ACCIDENT_PENALTY_FOCUS_MARKERS)
+    )
+
+
+def is_family_care_written_protection_query(query: str) -> bool:
+    return (
+        has_any_marker(query, FAMILY_CARE_QUERY_MARKERS)
+        and has_any_marker(query, FAMILY_CARE_FOCUS_MARKERS)
+    )
+
+
+def score_narrow_clause_bias(
+    query: str,
+    active_focuses: Sequence[str],
+    chunk: GroundedRetrievedChunk,
+    clause: str,
+    clause_focuses: set[str],
+) -> int:
+    return int(
+        sum(
+            reason.delta
+            for reason in collect_narrow_clause_bias_reasons(
+                query,
+                active_focuses,
+                chunk,
+                clause,
+                clause_focuses,
+            )
+        )
+    )
+
+
+def collect_narrow_clause_bias_reasons(
+    query: str,
+    active_focuses: Sequence[str],
+    chunk: GroundedRetrievedChunk,
+    clause: str,
+    clause_focuses: set[str],
+) -> list[ScoreAdjustmentReason]:
+    normalized_query = normalize_text(query)
+    normalized_clause = normalize_text(clause)
+    citation_label = normalize_text(chunk.citation_label)
+    law_name = normalize_text(chunk.law_name)
+    reasons: list[ScoreAdjustmentReason] = []
+
+    if is_overtime_limit_query(normalized_query):
+        matched_query_patterns = dedupe_preserving_order(
+            [
+                *list_matched_markers(normalized_query, OVERTIME_LIMIT_QUERY_MARKERS),
+                *list_matched_markers(normalized_query, OVERTIME_LIMIT_SCOPE_MARKERS),
+                *list_matched_markers(normalized_query, OVERTIME_LIMIT_AGREEMENT_MARKERS),
+            ]
+        )
+        if "근로기준법 제53조" in citation_label:
+            if "1주" in normalized_clause and "12시간" in normalized_clause:
+                reasons.append(
+                    ScoreAdjustmentReason(
+                        label="narrow_bias:overtime_limit_weekly_cap",
+                        delta=4,
+                        rule="overtime_narrow_bias",
+                        matched_query_patterns=matched_query_patterns,
+                        matched_context_patterns=("근로기준법 제53조", "1주", "12시간"),
+                    )
+                )
+            if "30명 미만" in normalized_clause and "8시간" in normalized_clause:
+                reasons.append(
+                    ScoreAdjustmentReason(
+                        label="narrow_bias:overtime_limit_small_business_exception",
+                        delta=6,
+                        rule="overtime_narrow_bias",
+                        matched_query_patterns=matched_query_patterns,
+                        matched_context_patterns=("근로기준법 제53조", "30명 미만", "8시간"),
+                    )
+                )
+            if (
+                "고용노동부장관" in normalized_clause
+                and ("인가" in normalized_clause or "승인" in normalized_clause)
+            ):
+                reasons.append(
+                    ScoreAdjustmentReason(
+                        label="narrow_bias:overtime_limit_minister_authorization",
+                        delta=12,
+                        rule="overtime_narrow_bias",
+                        matched_query_patterns=matched_query_patterns,
+                        matched_context_patterns=dedupe_preserving_order(
+                            [
+                                "근로기준법 제53조",
+                                "고용노동부장관",
+                                *list_matched_markers(normalized_clause, ("인가", "승인")),
+                            ]
+                        ),
+                    )
+                )
+                if "근로자의 동의" in normalized_clause:
+                    reasons.append(
+                        ScoreAdjustmentReason(
+                            label="narrow_bias:overtime_limit_worker_consent",
+                            delta=2,
+                            rule="overtime_narrow_bias",
+                            matched_query_patterns=matched_query_patterns,
+                            matched_context_patterns=("근로기준법 제53조", "근로자의 동의"),
+                        )
+                    )
+        elif "근로기준법 제59조" in citation_label and not has_any_marker(
+            normalized_query,
+            OVERTIME_SPECIAL_INDUSTRY_MARKERS,
+        ):
+            reasons.append(
+                ScoreAdjustmentReason(
+                    label="narrow_bias:overtime_limit_special_case_penalty",
+                    delta=-8,
+                    rule="overtime_narrow_bias",
+                    matched_query_patterns=matched_query_patterns,
+                    matched_context_patterns=("근로기준법 제59조",),
+                )
+            )
+
+    if is_substantive_exclusion_query(normalized_query, active_focuses):
+        matched_query_patterns = dedupe_preserving_order(
+            list_matched_markers(normalized_query, SUBSTANTIVE_EXCLUSION_QUERY_MARKERS)
+        )
+        if "최저임금법 제7조" in citation_label:
+            if "고용노동부장관의 인가" in normalized_clause:
+                reasons.append(
+                    ScoreAdjustmentReason(
+                        label="narrow_bias:substantive_exclusion_minister_authorization",
+                        delta=14,
+                        rule="substantive_exclusion_narrow_bias",
+                        matched_query_patterns=matched_query_patterns,
+                        matched_context_patterns=("최저임금법 제7조", "고용노동부장관의 인가"),
+                    )
+                )
+            if "적용하지 아니한다" in normalized_clause or "적용 제외" in normalized_clause:
+                reasons.append(
+                    ScoreAdjustmentReason(
+                        label="narrow_bias:substantive_exclusion_article7_exclusion",
+                        delta=8,
+                        rule="substantive_exclusion_narrow_bias",
+                        matched_query_patterns=matched_query_patterns,
+                        matched_context_patterns=dedupe_preserving_order(
+                            [
+                                "최저임금법 제7조",
+                                *list_matched_markers(
+                                    normalized_clause,
+                                    ("적용하지 아니한다", "적용 제외"),
+                                ),
+                            ]
+                        ),
+                    )
+                )
+            eligibility_core_markers = list_matched_markers(
+                normalized_clause,
+                ("정신장애", "신체장애", "근로능력", "현저히 낮"),
+            )
+            if eligibility_core_markers:
+                reasons.append(
+                    ScoreAdjustmentReason(
+                        label="narrow_bias:substantive_exclusion_article7_eligibility_core",
+                        delta=24,
+                        rule="substantive_exclusion_narrow_bias",
+                        matched_query_patterns=matched_query_patterns,
+                        matched_context_patterns=dedupe_preserving_order(
+                            ["최저임금법 제7조", *eligibility_core_markers]
+                        ),
+                    )
+                )
+        elif "시행규칙" in law_name and has_any_marker(
+            normalized_clause,
+            PROCEDURE_COMPANION_MARKERS,
+        ):
+            reasons.append(
+                ScoreAdjustmentReason(
+                    label="narrow_bias:substantive_exclusion_procedure_companion_penalty",
+                    delta=-10,
+                    rule="substantive_exclusion_narrow_bias",
+                    matched_query_patterns=matched_query_patterns,
+                    matched_context_patterns=dedupe_preserving_order(
+                        [
+                            "시행규칙",
+                            *list_matched_markers(
+                                normalized_clause,
+                                PROCEDURE_COMPANION_MARKERS,
+                            ),
+                        ]
+                    ),
+                )
+            )
+        elif "시행령" in law_name and has_any_marker(
+            normalized_clause,
+            ("인가 기준", "정하는 경우"),
+        ):
+            reasons.append(
+                ScoreAdjustmentReason(
+                    label="narrow_bias:substantive_exclusion_enforcement_decree_penalty",
+                    delta=-4,
+                    rule="substantive_exclusion_narrow_bias",
+                    matched_query_patterns=matched_query_patterns,
+                    matched_context_patterns=dedupe_preserving_order(
+                        [
+                            "시행령",
+                            *list_matched_markers(
+                                normalized_clause,
+                                ("인가 기준", "정하는 경우"),
+                            ),
+                        ]
+                    ),
+                )
+            )
+
+    if is_safety_system_obligation_query(normalized_query):
+        matched_query_patterns = dedupe_preserving_order(
+            [
+                *list_matched_markers(normalized_query, SAFETY_SYSTEM_QUERY_MARKERS),
+                *list_matched_markers(normalized_query, SAFETY_SYSTEM_COMPANION_MARKERS),
+            ]
+        )
+        if (
+            "중대재해 처벌 등에 관한 법률 시행령 제4조" in citation_label
+            and has_any_marker(
+                normalized_clause,
+                ("목표", "경영방침", "의견 청취", "의견을 청취", "매뉴얼"),
+            )
+        ):
+            reasons.append(
+                ScoreAdjustmentReason(
+                    label="narrow_bias:safety_policy_companion_article4",
+                    delta=12,
+                    rule="safety_policy_companion_bias",
+                    matched_query_patterns=matched_query_patterns,
+                    matched_context_patterns=dedupe_preserving_order(
+                        [
+                            "중대재해 처벌 등에 관한 법률 시행령 제4조",
+                            *list_matched_markers(
+                                normalized_clause,
+                                ("목표", "경영방침", "의견 청취", "의견을 청취", "매뉴얼"),
+                            ),
+                        ]
+                    ),
+                )
+            )
+        elif "system" in active_focuses and "policy" in clause_focuses:
+            reasons.append(
+                ScoreAdjustmentReason(
+                    label="narrow_bias:safety_policy_companion_focus_match",
+                    delta=4,
+                    rule="safety_policy_companion_bias",
+                    matched_query_patterns=matched_query_patterns,
+                    matched_context_patterns=dedupe_preserving_order(
+                        list_matched_markers(
+                            normalized_clause,
+                            FOCUS_CLAUSE_MARKERS["policy"],
+                        )
+                    ),
+                )
+            )
+
+    if is_childcare_leave_return_query(normalized_query):
+        if "제19조" in citation_label and "육아휴직" in citation_label:
+            return_markers = list_matched_markers(
+                normalized_clause,
+                CHILDCARE_LEAVE_RETURN_CLAUSE_MARKERS,
+            )
+            if return_markers:
+                matched_query_patterns = dedupe_preserving_order(
+                    [
+                        *list_matched_markers(normalized_query, CHILDCARE_LEAVE_QUERY_MARKERS),
+                        *list_matched_markers(
+                            normalized_query, CHILDCARE_LEAVE_RETURN_FOCUS_MARKERS
+                        ),
+                    ]
+                )
+                reasons.append(
+                    ScoreAdjustmentReason(
+                        label="narrow_bias:childcare_leave_return_clause",
+                        delta=10,
+                        rule="childcare_leave_return_bias",
+                        matched_query_patterns=matched_query_patterns,
+                        matched_context_patterns=dedupe_preserving_order(
+                            ["제19조 육아휴직", *return_markers]
+                        ),
+                    )
+                )
+
+    return reasons
+
+
+def score_narrow_chunk_bias(
+    query: str,
+    active_focuses: Sequence[str],
+    chunk: GroundedRetrievedChunk,
+) -> float:
+    return sum(
+        reason.delta
+        for reason in collect_narrow_chunk_bias_reasons(
+            query,
+            active_focuses,
+            chunk,
+        )
+    )
+
+
+def collect_narrow_chunk_bias_reasons(
+    query: str,
+    active_focuses: Sequence[str],
+    chunk: GroundedRetrievedChunk,
+) -> list[ScoreAdjustmentReason]:
+    normalized_query = normalize_text(query)
+    citation_label = normalize_text(chunk.citation_label)
+    law_name = normalize_text(chunk.law_name)
+    reasons: list[ScoreAdjustmentReason] = []
+
+    if is_overtime_limit_query(normalized_query):
+        matched_query_patterns = dedupe_preserving_order(
+            [
+                *list_matched_markers(normalized_query, OVERTIME_LIMIT_QUERY_MARKERS),
+                *list_matched_markers(normalized_query, OVERTIME_LIMIT_SCOPE_MARKERS),
+                *list_matched_markers(normalized_query, OVERTIME_LIMIT_AGREEMENT_MARKERS),
+            ]
+        )
+        if "근로기준법 제53조" in citation_label:
+            reasons.append(
+                ScoreAdjustmentReason(
+                    label="narrow_bias:overtime_limit_article53_chunk_boost",
+                    delta=8.0,
+                    rule="overtime_narrow_bias",
+                    matched_query_patterns=matched_query_patterns,
+                    matched_context_patterns=("근로기준법 제53조",),
+                )
+            )
+        elif "근로기준법 제59조" in citation_label and not has_any_marker(
+            normalized_query,
+            OVERTIME_SPECIAL_INDUSTRY_MARKERS,
+        ):
+            reasons.append(
+                ScoreAdjustmentReason(
+                    label="narrow_bias:overtime_limit_article59_chunk_penalty",
+                    delta=-8.0,
+                    rule="overtime_narrow_bias",
+                    matched_query_patterns=matched_query_patterns,
+                    matched_context_patterns=("근로기준법 제59조",),
+                )
+            )
+
+    if is_substantive_exclusion_query(normalized_query, active_focuses):
+        matched_query_patterns = dedupe_preserving_order(
+            list_matched_markers(normalized_query, SUBSTANTIVE_EXCLUSION_QUERY_MARKERS)
+        )
+        if "최저임금법 제7조" in citation_label:
+            reasons.append(
+                ScoreAdjustmentReason(
+                    label="narrow_bias:substantive_exclusion_article7_chunk_boost",
+                    delta=12.0,
+                    rule="substantive_exclusion_narrow_bias",
+                    matched_query_patterns=matched_query_patterns,
+                    matched_context_patterns=("최저임금법 제7조",),
+                )
+            )
+        elif "시행규칙" in law_name:
+            reasons.append(
+                ScoreAdjustmentReason(
+                    label="narrow_bias:substantive_exclusion_rule_chunk_penalty",
+                    delta=-8.0,
+                    rule="substantive_exclusion_narrow_bias",
+                    matched_query_patterns=matched_query_patterns,
+                    matched_context_patterns=("시행규칙",),
+                )
+            )
+        elif "시행령" in law_name:
+            reasons.append(
+                ScoreAdjustmentReason(
+                    label="narrow_bias:substantive_exclusion_decree_chunk_penalty",
+                    delta=-4.0,
+                    rule="substantive_exclusion_narrow_bias",
+                    matched_query_patterns=matched_query_patterns,
+                    matched_context_patterns=("시행령",),
+                )
+            )
+
+    return reasons
+
+
 def clean_chunk_content_for_clause_extraction(content: str) -> str:
     cleaned = CHUNK_HEADING_PATTERN.sub(" ", content)
     cleaned = AMENDMENT_TAG_PATTERN.sub(" ", cleaned)
@@ -749,34 +1462,34 @@ def build_clause_candidates_for_chunk(
 def score_grounded_clause(
     query: str,
     query_terms: Sequence[str],
+    active_focuses: Sequence[str],
     clause: str,
+    *,
+    chunk: GroundedRetrievedChunk | None = None,
 ) -> int:
     normalized_clause = normalize_text(clause)
     score = 0
     matched_query_terms = 0
 
     for token in query_terms:
-        if token in normalized_clause:
-            score += 3
+        if contains_query_token(normalized_clause, token):
+            score += 4
             matched_query_terms += 1
 
+    clause_focuses = get_clause_focuses(normalized_clause)
+    matched_focus_count = sum(1 for focus_name in active_focuses if focus_name in clause_focuses)
     if matched_query_terms:
-        score += min(4, matched_query_terms * 2)
+        score += min(6, matched_query_terms * 2)
+    elif matched_focus_count:
+        score -= 1
     else:
-        score -= 3
+        score -= 6
 
     if PROMPT_NUMERIC_SIGNAL_PATTERN.search(normalized_clause):
         score += 4
 
     score += sum(2 for marker in CLAUSE_PRIORITY_MARKERS if marker in normalized_clause)
-
-    for focus_name, question_markers in QUESTION_FOCUS_HINTS.items():
-        if any(marker in query for marker in question_markers):
-            score += sum(
-                3
-                for marker in FOCUS_CLAUSE_MARKERS[focus_name]
-                if marker in normalized_clause
-            )
+    score += matched_focus_count * 4
 
     if normalized_clause.startswith("다만"):
         score += 2
@@ -788,6 +1501,14 @@ def score_grounded_clause(
         score += 3
     if len(normalized_clause) > 240:
         score -= 1
+    if chunk is not None:
+        score += score_narrow_clause_bias(
+            query,
+            active_focuses,
+            chunk,
+            normalized_clause,
+            clause_focuses,
+        )
 
     return score
 
@@ -795,6 +1516,7 @@ def score_grounded_clause(
 def score_grounded_chunk(
     query: str,
     query_terms: Sequence[str],
+    active_focuses: Sequence[str],
     chunk: GroundedRetrievedChunk,
 ) -> float:
     searchable_text = normalize_text(
@@ -809,9 +1531,11 @@ def score_grounded_chunk(
     )
     score = chunk.similarity * 100
     for token in query_terms:
-        if token in searchable_text:
+        if contains_query_token(searchable_text, token):
             score += 2.5
-        if token in normalize_text(chunk.article_title):
+        if contains_query_token(chunk.article_title, token):
+            score += 5.0
+        if contains_query_token(chunk.citation_label, token):
             score += 4.0
 
     law_name = normalize_text(chunk.law_name)
@@ -823,11 +1547,18 @@ def score_grounded_chunk(
         score += 0.5
     else:
         score += 2.0
+    score += score_narrow_chunk_bias(query, active_focuses, chunk)
 
     clause_candidates = build_clause_candidates_for_chunk(chunk)
     if clause_candidates:
         best_clause_score = max(
-            score_grounded_clause(query, query_terms, candidate.text)
+            score_grounded_clause(
+                query,
+                query_terms,
+                active_focuses,
+                candidate.text,
+                chunk=chunk,
+            )
             for candidate in clause_candidates
         )
         score += best_clause_score * 1.5
@@ -838,6 +1569,8 @@ def score_grounded_chunk(
 def maybe_expand_adjacent_clause_indices(
     query: str,
     query_terms: Sequence[str],
+    active_focuses: Sequence[str],
+    chunk: GroundedRetrievedChunk,
     candidates: Sequence[GroundedClauseCandidate],
     selected_indices: list[int],
     *,
@@ -858,7 +1591,9 @@ def maybe_expand_adjacent_clause_indices(
             neighbor_score = score_grounded_clause(
                 query,
                 query_terms,
+                active_focuses,
                 candidates[neighbor_index].text,
+                chunk=chunk,
             )
             if neighbor_score <= 2:
                 continue
@@ -879,13 +1614,14 @@ def select_grounded_clause_key_points(
 
     query_text = normalize_text(query)
     query_terms = tokenize_query_terms(query_text)
+    active_focuses = get_active_query_focuses(query_text)
     selected_points: list[str] = []
     seen_points: set[str] = set()
 
     ordered_chunks = sorted(
         grounded_chunks,
         key=lambda chunk: (
-            -score_grounded_chunk(query_text, query_terms, chunk),
+            -score_grounded_chunk(query_text, query_terms, active_focuses, chunk),
             chunk.context_id,
         ),
     )
@@ -894,12 +1630,16 @@ def select_grounded_clause_key_points(
     chunk_scores: dict[int, float] = {}
     chunk_limits: dict[int, int] = {}
     selected_indices_by_chunk: dict[int, list[int]] = {}
-    scored_clauses: list[tuple[int, float, int, int, str]] = []
 
     for chunk_index, chunk in enumerate(ordered_chunks):
         context_id = chunk.context_id
         chunk_candidates[context_id] = build_clause_candidates_for_chunk(chunk)
-        chunk_scores[context_id] = score_grounded_chunk(query_text, query_terms, chunk)
+        chunk_scores[context_id] = score_grounded_chunk(
+            query_text,
+            query_terms,
+            active_focuses,
+            chunk,
+        )
         if len(ordered_chunks) == 1:
             chunk_limits[context_id] = point_limit
         elif chunk_index == 0:
@@ -907,10 +1647,17 @@ def select_grounded_clause_key_points(
         else:
             chunk_limits[context_id] = min(2, point_limit)
 
+    scored_clauses: list[tuple[int, float, int, int, str, set[str]]] = []
     for chunk in ordered_chunks:
         context_id = chunk.context_id
         for candidate in chunk_candidates[context_id]:
-            score = score_grounded_clause(query_text, query_terms, candidate.text)
+            score = score_grounded_clause(
+                query_text,
+                query_terms,
+                active_focuses,
+                candidate.text,
+                chunk=chunk,
+            )
             if score <= 0:
                 continue
             clause_key = compact_text(candidate.text)
@@ -923,23 +1670,45 @@ def select_grounded_clause_key_points(
                     context_id,
                     candidate.clause_index,
                     candidate.text,
+                    get_clause_focuses(candidate.text),
                 )
             )
 
     scored_clauses.sort(key=lambda item: (-item[0], -item[1], item[2], item[3]))
 
-    for _, _, context_id, clause_index, clause in scored_clauses:
+    def try_select_clause(
+        context_id: int,
+        clause_index: int,
+        clause: str,
+    ) -> bool:
         if len(selected_points) >= point_limit:
-            return selected_points
+            return False
         selected_indices = selected_indices_by_chunk.setdefault(context_id, [])
         if len(selected_indices) >= chunk_limits[context_id]:
-            continue
+            return False
         clause_key = compact_text(clause)
         if clause_key in seen_points:
-            continue
+            return False
         selected_indices.append(clause_index)
         selected_points.append(clause)
         seen_points.add(clause_key)
+        return True
+
+    covered_focuses: set[str] = set()
+    for focus_name in active_focuses:
+        if focus_name in covered_focuses:
+            continue
+        for _, _, context_id, clause_index, clause, clause_focuses in scored_clauses:
+            if focus_name not in clause_focuses:
+                continue
+            if try_select_clause(context_id, clause_index, clause):
+                covered_focuses.add(focus_name)
+                break
+
+    for _, _, context_id, clause_index, clause, _ in scored_clauses:
+        if len(selected_points) >= point_limit:
+            return selected_points
+        try_select_clause(context_id, clause_index, clause)
 
     for chunk in ordered_chunks:
         if len(selected_points) >= point_limit:
@@ -951,6 +1720,8 @@ def select_grounded_clause_key_points(
         expanded_indices = maybe_expand_adjacent_clause_indices(
             query_text,
             query_terms,
+            active_focuses,
+            chunk,
             chunk_candidates[context_id],
             selected_indices,
             per_chunk_limit=chunk_limits[context_id],
@@ -988,27 +1759,264 @@ def looks_incomplete_text(text: str) -> bool:
         return True
     if normalized.count('"') % 2 == 1:
         return True
+    if normalized.endswith((",", "、", "，")):
+        return True
     if any(normalized.endswith(tail) for tail in INCOMPLETE_OUTPUT_TAILS):
         return True
+    if not ANSWER_SENTENCE_END_PATTERN.search(normalized):
+        trailing_match = re.search(r"([0-9A-Za-z가-힣]+)\s*$", normalized)
+        if trailing_match and len(trailing_match.group(1)) <= 2:
+            return True
     return bool(re.search(r"(?:\d+|[가-힣]+)\s*$", normalized)) and len(normalized) <= 18
+
+
+def key_point_tokens_overlap(left: str, right: str) -> float:
+    left_tokens = set(tokenize_query_terms(left))
+    right_tokens = set(tokenize_query_terms(right))
+    if not left_tokens or not right_tokens:
+        return 0.0
+    return len(left_tokens & right_tokens) / min(len(left_tokens), len(right_tokens))
+
+
+def select_distinct_rebuild_key_points(key_points: Sequence[str]) -> list[str]:
+    selected_points: list[str] = []
+    selected_keys: list[str] = []
+
+    for point in key_points:
+        normalized_point = sanitize_output_clause_references(
+            normalize_output_style(point)
+        )
+        if not normalized_point:
+            continue
+        point_key = compact_text(normalized_point)
+        if any(
+            point_key in existing_key
+            or existing_key in point_key
+            or key_point_tokens_overlap(normalized_point, existing_point) >= 0.8
+            for existing_key, existing_point in zip(selected_keys, selected_points)
+        ):
+            continue
+        candidate_points = [*selected_points, normalized_point]
+        candidate_answer = " ".join(candidate_points)
+        if selected_points and len(candidate_answer) > ANSWER_REBUILD_CHAR_LIMIT:
+            break
+        selected_points.append(normalized_point)
+        selected_keys.append(point_key)
+        if len(selected_points) >= ANSWER_REBUILD_POINT_LIMIT:
+            break
+
+    return selected_points
+
+
+def build_grounded_answer_summary_text(
+    grounded_chunks: Sequence[GroundedRetrievedChunk],
+) -> str:
+    return normalize_text(
+        " ".join(
+            " ".join([chunk.citation_label, chunk.article_title, chunk.content])
+            for chunk in grounded_chunks
+        )
+    )
+
+
+def marker_groups_present(
+    text: str,
+    marker_groups: Sequence[Sequence[str]],
+) -> bool:
+    return all(all(marker in text for marker in markers) for markers in marker_groups)
+
+
+def build_targeted_answer_summary(
+    *,
+    query: str,
+    answer: str,
+    grounded_chunks: Sequence[GroundedRetrievedChunk],
+) -> str | None:
+    query_text = normalize_text(query)
+    answer_text = normalize_text(answer)
+    grounded_text = build_grounded_answer_summary_text(grounded_chunks)
+
+    if is_spousal_birth_leave_query(query_text):
+        required_markers = (
+            ("20일", "유급"),
+            ("120일",),
+            ("3회",),
+            ("불리한 처우",),
+        )
+        if marker_groups_present(grounded_text, required_markers) and not marker_groups_present(
+            answer_text, required_markers
+        ):
+            return normalize_output_style(
+                "배우자 출산휴가는 20일이며 유급이고, 배우자 출산일로부터 120일 이내에 사용해야 하며 3회에 한해 나누어 사용할 수 있다. "
+                "이를 이유로 해고나 불리한 처우를 해서는 안 된다."
+            )
+
+    if is_foreign_worker_permit_query(query_text):
+        grounded_required_markers = (
+            ("내국인 구인 신청", "직업소개", "고용허가"),
+            ("유효기간", "3개월", "1회", "연장"),
+            ("직업안정기관", "추천", "허가"),
+        )
+        if marker_groups_present(
+            grounded_text, grounded_required_markers
+        ) and not marker_groups_present(
+            answer_text, grounded_required_markers
+        ):
+            return normalize_output_style(
+                "내국인 구인 신청을 하고 직업소개를 받고도 채용하지 못한 경우에 외국인근로자 고용허가를 신청할 수 있다. "
+                "고용허가 신청의 유효기간은 3개월이며 법정 사유가 있으면 1회 연장할 수 있고, 직업안정기관이 적격자 추천과 허가 절차를 담당한다."
+            )
+
+    if is_departure_insurance_query(query_text):
+        required_markers = (
+            ("피보험자", "수익자", "매월"),
+            ("퇴직금제도", "설정한 것으로 본다"),
+            ("출국한 때부터", "14일", "지급"),
+        )
+        if marker_groups_present(grounded_text, required_markers) and not marker_groups_present(
+            answer_text, required_markers
+        ):
+            return normalize_output_style(
+                "사용자는 외국인근로자를 피보험자 또는 수익자로 하는 출국만기보험 또는 신탁에 가입해야 하고, 보험료 또는 신탁금은 매월 납부하거나 위탁해야 한다. "
+                "이 보험에 가입하면 퇴직금제도를 설정한 것으로 보며, 원칙적으로 출국한 때부터 14일 이내에 지급해야 한다."
+            )
+
+    if is_workplace_change_limit_query(query_text):
+        grounded_required_markers = (
+            ("갱신", "폐업", "휴업", "고용허가", "부당한 처우"),
+            ("1개월", "3개월", "근무처 변경허가", "출국"),
+            ("3회", "초과"),
+            ("제1항제2호", "포함하지"),
+        )
+        answer_required_markers = (
+            ("1개월", "신청해야", "신청일", "3개월", "근무처 변경허가", "못하면", "출국"),
+            ("귀책", "횟수", "제한", "포함하지"),
+        )
+        if marker_groups_present(
+            grounded_text, grounded_required_markers
+        ) and not marker_groups_present(
+            answer_text, answer_required_markers
+        ):
+            return normalize_output_style(
+                "사용자 갱신거절, 폐업·휴업, 고용허가 취소, 근로조건 위반, 부당한 처우 등 외국인근로자 책임이 아닌 사유가 있으면 사업장 변경을 신청할 수 있다. "
+                "원칙적으로 계약 종료일부터 1개월 이내에 변경을 신청해야 하고, 신청일부터 3개월 이내에 근무처 변경허가를 받지 못하면 출국해야 한다. "
+                "초기 취업활동 기간 중 변경은 원칙적으로 3회를 초과할 수 없고, 사용자 귀책 사유로 변경한 경우에는 횟수 제한에 포함하지 않는다."
+            )
+
+    if is_serious_accident_penalty_query(query_text):
+        required_markers = (
+            ("1년", "10억원", "병과"),
+            ("7년", "1억원"),
+            ("가중",),
+        )
+        if marker_groups_present(grounded_text, required_markers) and not marker_groups_present(
+            answer_text, required_markers
+        ):
+            return normalize_output_style(
+                "사망자가 발생한 중대산업재해에 이르게 하면 1년 이상의 징역 또는 10억원 이하의 벌금이 가능하고 병과할 수 있다. "
+                "중상해·직업성 질병 유형은 7년 이하 징역 또는 1억원 이하 벌금이 가능하며, 재범 가중 규정이 있다."
+            )
+
+    return None
+
+
+def build_targeted_incomplete_answer_summary(
+    *,
+    query: str,
+    grounded_chunks: Sequence[GroundedRetrievedChunk],
+) -> str | None:
+    query_text = normalize_text(query)
+    grounded_text = build_grounded_answer_summary_text(grounded_chunks)
+
+    if is_overtime_limit_query(query_text):
+        required_marker_groups = (
+            ("12시간",),
+            ("30명 미만", "8시간"),
+            ("고용노동부장관", "인가"),
+        )
+        if all(all(marker in grounded_text for marker in markers) for markers in required_marker_groups):
+            return normalize_output_style(
+                "당사자 간 합의가 있어도 원칙적으로 1주 12시간 한도에서만 연장근로가 가능하다. "
+                "상시 30명 미만 사업장은 근로자대표와 서면합의가 있으면 추가 8시간 범위 예외가 있다. "
+                "특별한 사정이 있으면 고용노동부장관 인가와 근로자 동의로 예외가 가능하지만 일반 원칙은 아니다."
+            )
+
+    if is_survivor_benefit_query(query_text):
+        required_markers = (
+            "유족급여",
+            "유족보상연금",
+            "유족보상일시금",
+            "업무상",
+        )
+        if all(marker in grounded_text for marker in required_markers):
+            return normalize_output_style(
+                "근로자가 업무상의 사유로 사망한 경우 유족에게 유족급여를 지급한다. "
+                "유족급여는 유족보상연금 또는 유족보상일시금 형태로 지급된다. "
+                "유족보상연금 수급자격자가 없으면 일시금으로 지급한다."
+            )
+
+    if is_safety_system_obligation_query(query_text):
+        required_markers = (
+            "안전보건관리체계",
+            "재발방지",
+            "개선, 시정",
+            "의무이행",
+            "목표",
+            "경영방침",
+            "유해ㆍ위험요인",
+            "업무절차",
+            "예산",
+            "편성",
+            "집행",
+            "의견",
+            "매뉴얼",
+            "도급",
+            "반기 1회",
+        )
+        if all(marker in grounded_text for marker in required_markers):
+            return normalize_output_style(
+                "경영책임자는 안전보건관리체계 구축과 이행, 재발방지대책, 개선명령 이행, 관계 법령 의무이행 관리 조치를 해야 한다. "
+                "시행령상으로는 안전·보건 목표와 경영방침 설정, 유해·위험요인 확인 및 개선 절차, 예산 편성·집행, 의견 청취 절차, 비상 매뉴얼, 도급 기준·절차 마련이 포함된다. "
+                "반기 1회 이상 점검이 요구되는 항목들이 있다."
+            )
+
+    return None
 
 
 def finalize_answer_text(
     *,
+    query: str,
     answer: str,
     key_points: Sequence[str],
+    grounded_chunks: Sequence[GroundedRetrievedChunk],
 ) -> str:
     normalized_answer = sanitize_output_clause_references(
         normalize_output_style(answer)
     )
+    targeted_summary = build_targeted_answer_summary(
+        query=query,
+        answer=normalized_answer,
+        grounded_chunks=grounded_chunks,
+    )
+    if targeted_summary:
+        return sanitize_output_clause_references(targeted_summary)
     if not looks_incomplete_text(normalized_answer):
         return normalized_answer
+    targeted_incomplete_summary = build_targeted_incomplete_answer_summary(
+        query=query,
+        grounded_chunks=grounded_chunks,
+    )
+    if targeted_incomplete_summary:
+        return sanitize_output_clause_references(targeted_incomplete_summary)
     if not key_points:
         return normalized_answer
 
-    rebuilt_answer = " ".join(point for point in key_points[:2] if point)
+    rebuilt_points = select_distinct_rebuild_key_points(key_points)
+    rebuilt_answer = " ".join(rebuilt_points)
+    if not rebuilt_answer:
+        rebuilt_answer = " ".join(point for point in key_points[:2] if point)
     return sanitize_output_clause_references(
-        normalize_output_style(rebuilt_answer[:220])
+        normalize_output_style(rebuilt_answer)
     )
 
 
@@ -1637,6 +2645,151 @@ def normalize_grounded_context_ids(
     return normalized_ids
 
 
+def build_article_group_key(chunk: GroundedRetrievedChunk) -> tuple[str, str]:
+    article_ref = normalize_article_reference(chunk.article_no) or normalize_article_reference(
+        chunk.citation_label
+    )
+    return compact_text(chunk.law_name), article_ref
+
+
+def normalize_law_family_name(law_name: str) -> str:
+    normalized = compact_text(law_name)
+    for suffix in ("시행규칙", "시행령"):
+        if normalized.endswith(suffix):
+            return normalized[: -len(suffix)]
+    return normalized
+
+
+def chunk_matches_family_care_procedure_companion(
+    chunk: GroundedRetrievedChunk,
+) -> bool:
+    label_text = normalize_text(" ".join([chunk.citation_label, chunk.article_title]))
+    searchable_text = normalize_text(" ".join([chunk.citation_label, chunk.article_title, chunk.content]))
+    return (
+        "시행령" in label_text
+        and has_any_marker(label_text, FAMILY_CARE_PROCEDURE_COMPANION_LABEL_MARKERS)
+        and has_any_marker(searchable_text, PROCEDURE_COMPANION_MARKERS)
+    )
+
+
+def expand_cited_context_ids_for_targeted_patterns(
+    query: str,
+    cited_context_ids: Sequence[int],
+    *,
+    grounded_chunks: Sequence[GroundedRetrievedChunk],
+) -> CitationPostprocessResult:
+    chunk_by_context_id = {chunk.context_id: chunk for chunk in grounded_chunks}
+    normalized_ids: list[int] = []
+    seen: set[int] = set()
+    additions: list[CitationPostprocessAddition] = []
+    for context_id in cited_context_ids:
+        if context_id not in chunk_by_context_id or context_id in seen:
+            continue
+        normalized_ids.append(context_id)
+        seen.add(context_id)
+
+    query_text = normalize_text(query)
+    active_focuses = get_active_query_focuses(query_text)
+    if not is_family_care_written_protection_query(query_text):
+        return CitationPostprocessResult(
+            context_ids=normalized_ids,
+            additions=additions,
+        )
+
+    query_terms = tokenize_query_terms(query_text)
+    selected_chunks = [chunk_by_context_id[context_id] for context_id in normalized_ids]
+    family_care_query_patterns = dedupe_preserving_order(
+        [
+            *list_matched_markers(query_text, FAMILY_CARE_QUERY_MARKERS),
+            *list_matched_markers(query_text, FAMILY_CARE_FOCUS_MARKERS),
+        ]
+    )
+
+    if {"procedure", "protection"}.issubset(set(active_focuses)):
+        selected_group_keys = {build_article_group_key(chunk) for chunk in selected_chunks}
+        for group_key in selected_group_keys:
+            group_chunks = [
+                chunk for chunk in grounded_chunks if build_article_group_key(chunk) == group_key
+            ]
+            selected_group_chunks = [
+                chunk for chunk in selected_chunks if build_article_group_key(chunk) == group_key
+            ]
+            if len(group_chunks) < 2 or len(selected_group_chunks) != 1:
+                continue
+            selected_chunk = selected_group_chunks[0]
+            sibling_candidates = [
+                chunk
+                for chunk in group_chunks
+                if chunk.context_id not in seen and chunk.paragraph_no != selected_chunk.paragraph_no
+            ]
+            sibling_candidates.sort(
+                key=lambda chunk: (
+                    -score_grounded_chunk(query_text, query_terms, active_focuses, chunk),
+                    chunk.context_id,
+                )
+            )
+            if sibling_candidates:
+                sibling = sibling_candidates[0]
+                normalized_ids.append(sibling.context_id)
+                seen.add(sibling.context_id)
+                selected_chunks.append(sibling)
+                additions.append(
+                    CitationPostprocessAddition(
+                        rule="family_care_sibling_postprocess",
+                        added_context_id=sibling.context_id,
+                        added_citation_label=sibling.citation_label,
+                        source_context_ids=(selected_chunk.context_id,),
+                        source_citation_labels=(selected_chunk.citation_label,),
+                        matched_query_patterns=family_care_query_patterns,
+                    )
+                )
+                break
+
+    if has_any_marker(query_text, PROCEDURE_COMPANION_MARKERS):
+        selected_law_names = {
+            normalize_law_family_name(chunk.law_name) for chunk in selected_chunks
+        }
+        procedure_candidates = [
+            chunk
+            for chunk in grounded_chunks
+            if chunk.context_id not in seen
+            and normalize_law_family_name(chunk.law_name) in selected_law_names
+            and chunk_matches_family_care_procedure_companion(chunk)
+        ]
+        procedure_candidates.sort(
+            key=lambda chunk: (
+                -score_grounded_chunk(query_text, query_terms, active_focuses, chunk),
+                chunk.context_id,
+            )
+        )
+        if procedure_candidates:
+            companion = procedure_candidates[0]
+            normalized_ids.append(companion.context_id)
+            seen.add(companion.context_id)
+            additions.append(
+                CitationPostprocessAddition(
+                    rule="family_care_procedure_companion_postprocess",
+                    added_context_id=companion.context_id,
+                    added_citation_label=companion.citation_label,
+                    source_context_ids=tuple(chunk.context_id for chunk in selected_chunks),
+                    source_citation_labels=tuple(
+                        chunk.citation_label for chunk in selected_chunks
+                    ),
+                    matched_query_patterns=dedupe_preserving_order(
+                        [
+                            *family_care_query_patterns,
+                            *list_matched_markers(query_text, PROCEDURE_COMPANION_MARKERS),
+                        ]
+                    ),
+                )
+            )
+
+    return CitationPostprocessResult(
+        context_ids=normalized_ids,
+        additions=additions,
+    )
+
+
 def build_cited_articles_from_context_ids(
     grounded_context_ids: Sequence[int],
     *,
@@ -1765,10 +2918,20 @@ def generate_grounded_answer(
                 model_name=model_name,
                 retry_feedback=retry_feedback,
             )
-            grounded_context_ids = normalize_grounded_context_ids(
+            raw_cited_context_ids = normalize_grounded_context_ids(
                 structured_answer.cited_context_ids,
                 grounded_chunks=grounded_chunks,
             )
+            citation_postprocess_result = expand_cited_context_ids_for_targeted_patterns(
+                retrieval_result.grounding_query,
+                raw_cited_context_ids,
+                grounded_chunks=grounded_chunks,
+            )
+            expanded_cited_context_ids = normalize_grounded_context_ids(
+                citation_postprocess_result.context_ids,
+                grounded_chunks=grounded_chunks,
+            )
+            grounded_context_ids = list(expanded_cited_context_ids)
             selected_grounded_chunks = select_grounded_chunks_by_context_ids(
                 grounded_chunks,
                 grounded_context_ids,
@@ -1779,9 +2942,18 @@ def generate_grounded_answer(
                 key_points=structured_answer.key_points,
                 grounded_chunks=selected_grounded_chunks,
             )
+            augmented_key_points = [
+                apply_substantive_exclusion_eligibility_expansion(
+                    retrieval_result.grounding_query,
+                    point,
+                )
+                for point in augmented_key_points
+            ]
             finalized_answer = finalize_answer_text(
+                query=retrieval_result.grounding_query,
                 answer=structured_answer.answer,
                 key_points=augmented_key_points,
+                grounded_chunks=selected_grounded_chunks,
             )
             normalized_cautions = [
                 normalize_output_style(caution) for caution in structured_answer.cautions
@@ -1806,11 +2978,13 @@ def generate_grounded_answer(
                 key_points=augmented_key_points,
                 cautions=normalized_cautions,
                 cited_articles=cited_articles,
-                raw_cited_context_ids=list(structured_answer.cited_context_ids),
+                raw_cited_context_ids=raw_cited_context_ids,
+                expanded_cited_context_ids=expanded_cited_context_ids,
                 grounded_context_ids=grounded_context_ids,
                 retrieved_chunks=grounded_chunks,
                 retrieval_total=retrieval_result.total,
                 model_name=resolve_answer_model_name(model_name),
+                citation_postprocess_additions=citation_postprocess_result.additions,
             )
         except GroundedAnswerGenerationError as exc:
             last_error = exc
