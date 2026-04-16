@@ -1,12 +1,12 @@
 # K-Labor Shield 아이디어·아키텍처 보고서
 
-작성일: `2026-04-15`
+작성일: `2026-04-16`
 
 기준선:
 
 - 서비스 corpus 기준일: `selected_as_of = 2026-04-11`
-- RAG 및 시나리오 상태 기준일: `2026-04-15`
-- 문서 작성일: `2026-04-15`
+- RAG 및 시나리오 상태 기준일: `2026-04-16`
+- 문서 작성일: `2026-04-16`
 
 ## 1. 프로젝트 개요
 
@@ -76,7 +76,7 @@
 | Answer | `POST /api/v1/answer` 구현 완료, `citation_grounding_clean = 60/60` |
 | 응답 구조 | 검색 결과에 없는 조문 인용 금지, `cited_articles` 포함 응답 고정 |
 | 평가 | baseline answer eval `137/153`, partial/failure `16` |
-| 시나리오 검증 | `SCN-004`, `SCN-005` 안정적, `SCN-001` After/Full 연결 검증 진행 |
+| 시나리오 검증 | `SCN-001`, `SCN-004`, `SCN-005` After 핵심 데모 안정화 |
 
 현재 저장소 기준으로는 `After` 단계의 핵심 backend 로직과 검증 자산이 먼저 구현된 상태입니다.
 
@@ -98,7 +98,7 @@
 
 | 시나리오 | 유형 | 현재 상태 | 발표 활용도 |
 |---|---|---|---|
-| `SCN-001` 외국인 계약서·기숙사·차별·사업장 변경 | `Full` | 커버됨, 단일 복합 질의 랭킹 리스크 존재 | 대표 시연 후보 |
+| `SCN-001` 외국인 계약서·기숙사·차별·사업장 변경 | `Full` | 커버됨, `top_k=10` 데모 경로에서 안정화 | 대표 시연 후보 |
 | `SCN-004` 카톡 해고 및 임금·퇴직금 체불 | `After` | 커버됨 | 안정적인 보조 시연 후보 |
 | `SCN-005` 육아휴직 및 가족돌봄휴가 거절 | `After` | 커버됨 | 사회적 공감도가 높은 보조 시연 후보 |
 | `SCN-003` 장애인 편의제공 및 지원 제도 안내 | `Before` | 최소 데이터 보강 후 커버됨 | 확장성 설명용 후보 |
@@ -106,7 +106,7 @@
 
 메인 시나리오는 `SCN-001`입니다. 이 시나리오는 정보 취약 사용자 문제를 설명하면서 `Before -> Bridge -> After` 전체 흐름을 한 번에 보여줄 수 있어 프로젝트 메시지를 가장 잘 전달합니다.
 
-다만 `SCN-001`은 단일 복합 질의에서 retrieval ranking 리스크가 있으므로, 실제 시연에서는 `SCN-004`와 `SCN-005`를 백업 시나리오로 준비하는 것이 안전합니다. `SCN-003`은 확장성 설명용으로 적합하며, `SCN-002`는 자동 숫자 판정이 현재 범위를 벗어나므로 설명형 데모로 제한하는 것이 맞습니다.
+`SCN-001 Full`은 `top_k=10`, `ef_search=100` 데모 경로에서 안정화되어 메인 시연 후보로 사용할 수 있습니다. 다만 발표 운영상 `SCN-004`와 `SCN-005`를 백업 시나리오로 함께 준비하는 것이 안전합니다. `SCN-003`은 확장성 설명용으로 적합하며, `SCN-002`는 자동 숫자 판정이 현재 범위를 벗어나므로 설명형 데모로 제한하는 것이 맞습니다.
 
 ## 6. 제출 전 실행 계획
 
@@ -134,7 +134,7 @@
 - Step 1: `SCN-005` 중심의 좁은 phrasing normalization 보강
 - Step 2: 긴 조문 / 하위 항목 / 숫자·기간·예외·절차·범위 surface를 위한 answer-side deterministic hardening 진행
 - Step 3: Step 0이 재현된 경우에만 conservative citation-diversity / coverage-aware context assembly 검토
-- Step 4: `SCN-001 Full` 같은 composition-heavy 질문에 한해서만 selective decomposition 검토
+- Step 4: `SCN-001 Full` 같은 composition-heavy 질문에 한해서만 selective decomposition 적용 (`top_k=10` demo path)
 - `After` 질문 문안별 smoke test 재확인
 - 필요 시 초기 MVP 앱도 로직을 먼저 완성한 `After` 흐름 기준으로 선행 구성
 
@@ -168,8 +168,8 @@
 
 ### 6-6. 리스크와 대응
 
-1. `SCN-001` Full 단일 질의 랭킹 불안정
-   - 기본 경로를 바로 바꾸기보다 phrasing normalization과 answer-side hardening을 먼저 적용하고, 필요할 때만 selective decomposition 검토
+1. `SCN-001` Full 단일 질의 운영 조건
+   - 일반 API default `top_k=5`가 아니라 demo payload `top_k=10`, `ef_search=100`으로 호출해야 selective decomposition이 발동한다.
 2. snapshot 혼합 위험
    - raw source HEAD가 더 최신이어도 발표와 검증은 frozen corpus(`2026-04-11`) 기준으로만 정리
 3. 범위 확장 욕심

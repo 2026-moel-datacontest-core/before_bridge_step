@@ -16,6 +16,50 @@ MAX_TOP_K = 10
 MIN_EF_SEARCH = 10
 MAX_EF_SEARCH = 500
 SEGMENT_SPLIT_PATTERN = re.compile(r"(?:\n+|(?<=[.!?])\s+)")
+SELECTIVE_DECOMPOSITION_MIN_TOP_K = 8
+SELECTIVE_DECOMPOSITION_MIN_QUERY_CHARS = 80
+SELECTIVE_DECOMPOSITION_BRANCH_SEARCH_TOP_K = 5
+FOREIGN_WORKER_FULL_QUERY_MARKERS = ("외국인", "외국인근로자")
+FOREIGN_WORKER_CONTRACT_STAGE_MARKERS = (
+    "계약서",
+    "표준근로계약서",
+    "근로계약",
+    "서면",
+    "말로만",
+    "구두로만",
+    "명시",
+    "임금",
+    "근무시간",
+    "휴일",
+)
+FOREIGN_WORKER_DORMITORY_MARKERS = (
+    "기숙사",
+    "숙소",
+    "숙소비",
+    "비닐하우스",
+    "주거",
+)
+FOREIGN_WORKER_DISCRIMINATION_MARKERS = (
+    "차별",
+    "폭언",
+    "욕설",
+    "모욕",
+    "부당한 처우",
+    "외국인이라고",
+    "다르게 대우",
+)
+FOREIGN_WORKER_WORKPLACE_CHANGE_MARKERS = (
+    "사업장 변경",
+    "사업장을 변경",
+    "사업장을 옮기",
+    "사업장을 옮길",
+    "사업장 옮길",
+    "사업장을 바꾸",
+    "사업장을 바꿀",
+    "사업장 바꿀",
+    "옮길 수",
+    "근무처 변경",
+)
 INSTRUCTIONAL_SEGMENT_MARKERS = (
     "이전 지시",
     "지시를 무시",
@@ -58,6 +102,13 @@ class RetrievalResult:
     total: int
     chunks: list[RetrievedChunk]
     cited_articles: list[str]
+
+
+@dataclass(frozen=True)
+class SelectiveQueryBranch:
+    name: str
+    query: str
+    result_limit: int
 
 
 def validate_search_params(top_k: int, ef_search: int) -> None:
@@ -115,6 +166,99 @@ def normalize_grounding_query(query: str) -> str:
     if clause_stripped:
         return normalize_whitespace(re.sub(r"^[,.;:!?]+", "", clause_stripped).strip())
     return query_text
+
+
+def has_any_marker(query: str, markers: Sequence[str]) -> bool:
+    return any(marker in query for marker in markers)
+
+
+def should_apply_selective_decomposition(query: str, *, top_k: int) -> bool:
+    if top_k < SELECTIVE_DECOMPOSITION_MIN_TOP_K:
+        return False
+
+    query_text = normalize_whitespace(query)
+    if len(query_text) < SELECTIVE_DECOMPOSITION_MIN_QUERY_CHARS:
+        return False
+
+    return (
+        has_any_marker(query_text, FOREIGN_WORKER_FULL_QUERY_MARKERS)
+        and has_any_marker(query_text, FOREIGN_WORKER_CONTRACT_STAGE_MARKERS)
+        and has_any_marker(query_text, FOREIGN_WORKER_DORMITORY_MARKERS)
+        and has_any_marker(query_text, FOREIGN_WORKER_DISCRIMINATION_MARKERS)
+        and has_any_marker(query_text, FOREIGN_WORKER_WORKPLACE_CHANGE_MARKERS)
+    )
+
+
+def build_selective_query_branches(query: str) -> tuple[SelectiveQueryBranch, ...]:
+    return (
+        SelectiveQueryBranch(
+            name="original",
+            query=query,
+            result_limit=4,
+        ),
+        SelectiveQueryBranch(
+            name="contract_stage",
+            query="근로계약 서면 명시 임금 근무시간 휴일 표준근로계약서 외국인",
+            result_limit=3,
+        ),
+        SelectiveQueryBranch(
+            name="discrimination",
+            query="외국인 차별 금지 폭언 부당한 처우 기숙사 제공 숙소비 공제",
+            result_limit=2,
+        ),
+        SelectiveQueryBranch(
+            name="workplace_change",
+            query="외국인 회사 잘못 사업장 변경 신청 기숙사 열악 차별 숙소비 공제",
+            result_limit=2,
+        ),
+    )
+
+
+def search_law_chunks_for_query(
+    query: str,
+    *,
+    top_k: int,
+    ef_search: int,
+) -> list[RetrievedChunk]:
+    query_vector = embed_query(query)
+    return search_law_chunks(
+        query_vector=query_vector,
+        top_k=top_k,
+        ef_search=ef_search,
+    )
+
+
+def retrieve_law_chunks_with_selective_decomposition(
+    query: str,
+    *,
+    top_k: int,
+    ef_search: int,
+) -> list[RetrievedChunk]:
+    selected_chunks: list[RetrievedChunk] = []
+    seen_chunk_ids: set[str] = set()
+
+    for branch in build_selective_query_branches(query):
+        branch_chunks = search_law_chunks_for_query(
+            branch.query,
+            top_k=min(
+                MAX_TOP_K,
+                max(SELECTIVE_DECOMPOSITION_BRANCH_SEARCH_TOP_K, branch.result_limit + 2),
+            ),
+            ef_search=ef_search,
+        )
+        branch_selected = 0
+        for chunk in branch_chunks:
+            if chunk.chunk_id in seen_chunk_ids:
+                continue
+            selected_chunks.append(chunk)
+            seen_chunk_ids.add(chunk.chunk_id)
+            branch_selected += 1
+            if branch_selected >= branch.result_limit or len(selected_chunks) >= top_k:
+                break
+        if len(selected_chunks) >= top_k:
+            break
+
+    return selected_chunks[:top_k]
 
 
 def search_law_chunks(
@@ -186,12 +330,18 @@ def retrieve_law_chunks(
         raise ValueError("query must not be blank.")
 
     grounding_query = normalize_grounding_query(query_text)
-    query_vector = embed_query(grounding_query)
-    chunks = search_law_chunks(
-        query_vector=query_vector,
-        top_k=top_k,
-        ef_search=ef_search,
-    )
+    if should_apply_selective_decomposition(grounding_query, top_k=top_k):
+        chunks = retrieve_law_chunks_with_selective_decomposition(
+            grounding_query,
+            top_k=top_k,
+            ef_search=ef_search,
+        )
+    else:
+        chunks = search_law_chunks_for_query(
+            grounding_query,
+            top_k=top_k,
+            ef_search=ef_search,
+        )
     return RetrievalResult(
         query=query_text,
         grounding_query=grounding_query,

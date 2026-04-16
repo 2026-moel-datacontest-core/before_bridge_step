@@ -1,10 +1,10 @@
 # Execution Plan For Instructor Review
 
-작성일: `2026-04-15`
+작성일: `2026-04-16`
 
 기준선:
 
-- RAG 및 시나리오 상태 기준일: `2026-04-15`
+- RAG 및 시나리오 상태 기준일: `2026-04-16`
 - corpus 기준일: `selected_as_of = 2026-04-11`
 
 ## 문서 목적
@@ -46,7 +46,7 @@
 - Step 1: `SCN-005` 중심의 좁은 phrasing normalization 보강
 - Step 2: 긴 조문 / 하위 항목 / 숫자·기간·예외·절차·범위 surface를 위한 answer-side deterministic hardening 진행
 - Step 3: Step 0이 재현된 경우에만 conservative citation-diversity / coverage-aware context assembly 검토
-- Step 4: `SCN-001 Full` 같은 composition-heavy 질문에 한해서만 selective decomposition 검토
+- Step 4: `SCN-001 Full` 같은 composition-heavy 질문에 한해서만 selective decomposition 적용 (`top_k=10` demo path)
 - `After` 질문 문안별 smoke test 재확인
 - 필요 시 초기 MVP 앱도 로직을 먼저 완성한 `After` 흐름 기준으로 선행 구성
 
@@ -105,10 +105,10 @@
 
 ## 5. 현재 리스크와 대응
 
-### 리스크 1. `SCN-001` Full 단일 질의 랭킹 불안정
+### 리스크 1. `SCN-001` Full 단일 질의 운영 조건
 
-- 문제: 복합 질문 한 번에 넣으면 필요한 조문 일부가 밀릴 수 있음
-- 대응: 기본 경로를 바로 바꾸기보다 phrasing normalization과 answer-side hardening을 먼저 적용하고, 필요할 때만 selective decomposition 검토
+- 문제: 일반 API default `top_k=5`로 호출하면 SCN-001 selective decomposition이 발동하지 않을 수 있음
+- 대응: 데모 UI / scenario runner / 직접 API smoke에서 `top_k=10`, `ef_search=100`을 명시
 
 ### 리스크 2. snapshot 혼합 위험
 

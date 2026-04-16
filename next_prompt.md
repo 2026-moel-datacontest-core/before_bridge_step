@@ -24,7 +24,16 @@
 - Step 1 phrasing normalization 적용 완료
 - Step 2 answer-side deterministic hardening 적용 완료
 - Step 3 rerank 미적용
-- Step 4 decomposition 미적용
+- Step 4는 일반 경로에는 미적용
+- `SCN-001 Full` demo path에는 `top_k >= 8` 조건부 selective decomposition 적용
+
+## top_k 운영 기준
+
+- 일반 `/api/v1/answer` 기본값은 `top_k = 5`, `ef_search = 100`으로 유지한다.
+- SCN demo / scenario smoke는 `recommended_top_k = 10`을 따라야 한다.
+- 특히 `SCN-001 Full` 개선 경로는 `top_k >= 8`에서만 발동한다.
+- 따라서 데모 UI / scenario runner / 직접 API smoke에서는 payload에 `top_k: 10`, `ef_search: 100`을 명시해야 한다.
+- `top_k`를 생략하면 API default `5`가 적용되어 `SCN-001 Full` selective decomposition이 발동하지 않을 수 있다.
 
 현재 해석:
 

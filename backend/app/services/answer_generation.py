@@ -288,6 +288,73 @@ CHILDCARE_LEAVE_RETURN_CLAUSE_MARKERS = (
 SPOUSAL_BIRTH_LEAVE_QUERY_MARKERS = ("배우자", "출산휴가")
 FOREIGN_WORKER_PERMIT_QUERY_MARKERS = ("외국인근로자", "내국인", "고용허가")
 FOREIGN_WORKER_PERMIT_FOCUS_MARKERS = ("직업안정기관", "추천", "허가")
+FOREIGN_WORKER_FULL_BRIDGE_QUERY_MARKERS = ("외국인", "외국인근로자")
+FOREIGN_WORKER_FULL_BRIDGE_CONTRACT_MARKERS = (
+    "계약서",
+    "표준근로계약서",
+    "근로계약",
+    "서면",
+    "말로만",
+    "구두로만",
+    "명시",
+    "임금",
+    "근무시간",
+    "휴일",
+)
+FOREIGN_WORKER_FULL_BRIDGE_DORMITORY_MARKERS = (
+    "기숙사",
+    "숙소",
+    "숙소비",
+    "비닐하우스",
+    "주거",
+)
+FOREIGN_WORKER_FULL_BRIDGE_DISCRIMINATION_MARKERS = (
+    "차별",
+    "폭언",
+    "욕설",
+    "모욕",
+    "부당한 처우",
+    "외국인이라고",
+    "다르게 대우",
+)
+FOREIGN_WORKER_FULL_BRIDGE_CHANGE_MARKERS = (
+    "사업장 변경",
+    "사업장을 변경",
+    "사업장을 옮기",
+    "사업장을 옮길",
+    "사업장 옮길",
+    "사업장을 바꾸",
+    "사업장을 바꿀",
+    "사업장 바꿀",
+    "옮길 수",
+    "근무처 변경",
+)
+FOREIGN_WORKER_FULL_BRIDGE_CONTRACT_POINT_MARKERS = (
+    "표준근로계약서",
+    "서면",
+    "임금",
+    "근로시간",
+)
+FOREIGN_WORKER_FULL_BRIDGE_DORMITORY_POINT_MARKERS = (
+    "기숙사",
+    "설치 장소",
+    "주거 환경",
+    "면적",
+)
+FOREIGN_WORKER_FULL_BRIDGE_CHANGE_POINT_MARKERS = (
+    "사업 또는 사업장",
+    "근로조건 위반",
+    "부당한 처우",
+)
+FOREIGN_WORKER_FULL_BRIDGE_CHANGE_DEADLINE_MARKERS = (
+    "1개월",
+    "3개월",
+    "근무처 변경허가",
+)
+FOREIGN_WORKER_FULL_BRIDGE_CHANGE_LIMIT_MARKERS = (
+    "3회를 초과",
+    "포함하지 아니한다",
+)
 DEPARTURE_INSURANCE_QUERY_MARKERS = ("출국만기보험",)
 DEPARTURE_INSURANCE_FOCUS_MARKERS = ("보험료", "퇴직금", "지급")
 WORKPLACE_CHANGE_LIMIT_QUERY_MARKERS = ("사업장 변경", "사업장을 옮기")
@@ -648,6 +715,87 @@ def apply_substantive_exclusion_eligibility_expansion(
     )
 
 
+def build_foreign_worker_full_bridge_key_points(
+    query: str,
+    grounded_chunks: Sequence[GroundedRetrievedChunk],
+) -> list[str]:
+    query_text = normalize_text(query)
+    if not is_foreign_worker_full_bridge_query(query_text):
+        return []
+
+    grounded_text = build_grounded_answer_summary_text(grounded_chunks)
+    targeted_points: list[str] = []
+
+    if all(marker in grounded_text for marker in FOREIGN_WORKER_FULL_BRIDGE_CONTRACT_POINT_MARKERS):
+        targeted_points.append(
+            "계약 단계에서는 표준근로계약서를 사용하고 임금·근무시간·휴일 등 근로조건을 서면으로 명시해 교부해야 한다."
+        )
+    if all(marker in grounded_text for marker in FOREIGN_WORKER_FULL_BRIDGE_DORMITORY_POINT_MARKERS):
+        targeted_points.append(
+            "기숙사 구조·설비·설치 장소·주거 환경·면적과 숙소비 공제 관련 정보는 사전에 제공되어야 한다."
+        )
+    if "차별" in grounded_text:
+        targeted_points.append(
+            "외국인근로자라는 이유로 부당하게 차별하여 처우해서는 안 된다."
+        )
+    if all(marker in grounded_text for marker in FOREIGN_WORKER_FULL_BRIDGE_CHANGE_POINT_MARKERS):
+        targeted_points.append(
+            "근로조건 위반, 위법한 기숙사 제공, 부당한 처우 등 근로자 책임이 아닌 사유가 있으면 사업장 변경을 신청할 수 있다."
+        )
+    if all(marker in grounded_text for marker in FOREIGN_WORKER_FULL_BRIDGE_CHANGE_DEADLINE_MARKERS):
+        targeted_points.append(
+            "원칙적으로 근로계약 종료일부터 1개월 이내에 변경을 신청하고, 신청일부터 3개월 이내에 근무처 변경허가를 받지 못하면 출국 대상이 될 수 있다."
+        )
+    elif "15일 이내" in grounded_text and "신청서를 접수한 날" in grounded_text:
+        targeted_points.append(
+            "사업장 변경 신청서를 접수한 직업안정기관은 원칙적으로 15일 이내에 신청을 처리해야 한다."
+        )
+    if all(marker in grounded_text for marker in FOREIGN_WORKER_FULL_BRIDGE_CHANGE_LIMIT_MARKERS):
+        targeted_points.append(
+            "초기 취업활동 기간의 사업장 변경은 원칙적으로 횟수 제한이 있지만, 사용자 책임 사유로 변경한 경우에는 그 제한에 포함되지 않는다."
+        )
+
+    return targeted_points[:OUTPUT_KEY_POINT_LIMIT]
+
+
+def build_foreign_worker_workplace_change_key_points(
+    query: str,
+    grounded_chunks: Sequence[GroundedRetrievedChunk],
+) -> list[str]:
+    query_text = normalize_text(query)
+    if (
+        is_foreign_worker_full_bridge_query(query_text)
+        or not is_foreign_worker_workplace_change_abuse_query(query_text)
+    ):
+        return []
+
+    grounded_text = build_grounded_answer_summary_text(grounded_chunks)
+    targeted_points: list[str] = []
+
+    if all(marker in grounded_text for marker in FOREIGN_WORKER_FULL_BRIDGE_DORMITORY_POINT_MARKERS):
+        targeted_points.append(
+            "기숙사 구조·설비·설치 장소·주거 환경·면적과 숙소비 공제 관련 정보는 사전에 제공되어야 한다."
+        )
+    if "차별" in grounded_text:
+        targeted_points.append(
+            "외국인근로자라는 이유로 부당하게 차별하여 처우해서는 안 된다."
+        )
+    if all(marker in grounded_text for marker in FOREIGN_WORKER_FULL_BRIDGE_CHANGE_POINT_MARKERS):
+        targeted_points.append(
+            "근로조건 위반, 위법한 기숙사 제공, 부당한 처우 등 근로자 책임이 아닌 사유가 있으면 사업장 변경을 신청할 수 있다."
+        )
+    if all(marker in grounded_text for marker in FOREIGN_WORKER_FULL_BRIDGE_CHANGE_DEADLINE_MARKERS):
+        targeted_points.append(
+            "원칙적으로 근로계약 종료일부터 1개월 이내에 변경을 신청하고, 신청일부터 3개월 이내에 근무처 변경허가를 받지 못하면 출국 대상이 될 수 있다."
+        )
+    if "15일 이내" in grounded_text and "신청서를 접수한 날" in grounded_text:
+        targeted_points.append(
+            "사업장 변경 신청서를 접수한 직업안정기관은 원칙적으로 15일 이내에 신청을 처리해야 한다."
+        )
+
+    return targeted_points[:OUTPUT_KEY_POINT_LIMIT]
+
+
 def augment_key_points_with_grounded_signals(
     *,
     query: str,
@@ -670,6 +818,20 @@ def augment_key_points_with_grounded_signals(
     seen_points: set[str] = set()
     ordered_point_sources = (grounded_clause_points, cleaned_model_points)
     augmented_key_points: list[str] = []
+
+    foreign_worker_targeted_points = build_foreign_worker_full_bridge_key_points(
+        query,
+        grounded_chunks,
+    )
+    if foreign_worker_targeted_points:
+        return foreign_worker_targeted_points
+
+    foreign_worker_change_points = build_foreign_worker_workplace_change_key_points(
+        query,
+        grounded_chunks,
+    )
+    if foreign_worker_change_points:
+        return foreign_worker_change_points
 
     for point_source in ordered_point_sources:
         for point in point_source:
@@ -985,6 +1147,25 @@ def is_foreign_worker_permit_query(query: str) -> bool:
     return (
         has_any_marker(query, FOREIGN_WORKER_PERMIT_QUERY_MARKERS)
         and has_any_marker(query, ("절차", "채용", "바로"))
+    )
+
+
+def is_foreign_worker_full_bridge_query(query: str) -> bool:
+    return (
+        has_any_marker(query, FOREIGN_WORKER_FULL_BRIDGE_QUERY_MARKERS)
+        and has_any_marker(query, FOREIGN_WORKER_FULL_BRIDGE_CONTRACT_MARKERS)
+        and has_any_marker(query, FOREIGN_WORKER_FULL_BRIDGE_DORMITORY_MARKERS)
+        and has_any_marker(query, FOREIGN_WORKER_FULL_BRIDGE_DISCRIMINATION_MARKERS)
+        and has_any_marker(query, FOREIGN_WORKER_FULL_BRIDGE_CHANGE_MARKERS)
+    )
+
+
+def is_foreign_worker_workplace_change_abuse_query(query: str) -> bool:
+    return (
+        has_any_marker(query, FOREIGN_WORKER_FULL_BRIDGE_QUERY_MARKERS)
+        and has_any_marker(query, FOREIGN_WORKER_FULL_BRIDGE_DORMITORY_MARKERS)
+        and has_any_marker(query, FOREIGN_WORKER_FULL_BRIDGE_DISCRIMINATION_MARKERS)
+        and has_any_marker(query, FOREIGN_WORKER_FULL_BRIDGE_CHANGE_MARKERS)
     )
 
 
@@ -1867,6 +2048,85 @@ def build_targeted_answer_summary(
                 "고용허가 신청의 유효기간은 3개월이며 법정 사유가 있으면 1회 연장할 수 있고, 직업안정기관이 적격자 추천과 허가 절차를 담당한다."
             )
 
+    if is_foreign_worker_full_bridge_query(query_text):
+        contract_ready = all(
+            marker in grounded_text for marker in FOREIGN_WORKER_FULL_BRIDGE_CONTRACT_POINT_MARKERS
+        )
+        dormitory_ready = all(
+            marker in grounded_text for marker in FOREIGN_WORKER_FULL_BRIDGE_DORMITORY_POINT_MARKERS
+        )
+        discrimination_ready = "차별" in grounded_text
+        change_ready = all(
+            marker in grounded_text for marker in FOREIGN_WORKER_FULL_BRIDGE_CHANGE_POINT_MARKERS
+        )
+        deadline_ready = all(
+            marker in grounded_text for marker in FOREIGN_WORKER_FULL_BRIDGE_CHANGE_DEADLINE_MARKERS
+        )
+
+        if contract_ready and change_ready and (
+            "표준근로계약서" not in answer_text
+            or "서면" not in answer_text
+            or "차별" not in answer_text
+            or "사업장 변경" not in answer_text
+        ):
+            first_sentence = (
+                "계약 단계에서는 표준근로계약서를 사용하고 임금·근무시간·휴일 등 근로조건과 기숙사 관련 사항을 서면으로 확인했어야 한다."
+                if dormitory_ready
+                else "계약 단계에서는 표준근로계약서를 사용하고 임금·근무시간·휴일 등 근로조건을 서면으로 확인했어야 한다."
+            )
+            second_parts = [
+                "실제로 위법한 기숙사 제공이나 과도한 숙소비 공제가 있었다면"
+                if dormitory_ready
+                else "실제로 근로조건 위반이 있었다면",
+            ]
+            if discrimination_ready:
+                second_parts.append("외국인 차별 같은 부당한 처우까지 함께 있을 때에는")
+            else:
+                second_parts.append("근로자 책임이 아닌 사유로 근로를 계속하기 어렵다면")
+            second_parts.append("사업장 변경을 신청할 수 있다")
+            second_sentence = " ".join(second_parts) + "."
+            if deadline_ready:
+                second_sentence += (
+                    " 원칙적으로 종료일부터 1개월 이내 신청과 신청일부터 3개월 이내 "
+                    "근무처 변경허가 기준도 함께 확인해야 한다."
+                )
+            return normalize_output_style(f"{first_sentence} {second_sentence}")
+
+    if is_foreign_worker_workplace_change_abuse_query(
+        query_text
+    ) and not is_foreign_worker_full_bridge_query(query_text):
+        dormitory_ready = all(
+            marker in grounded_text for marker in FOREIGN_WORKER_FULL_BRIDGE_DORMITORY_POINT_MARKERS
+        )
+        discrimination_ready = "차별" in grounded_text
+        change_ready = all(
+            marker in grounded_text for marker in FOREIGN_WORKER_FULL_BRIDGE_CHANGE_POINT_MARKERS
+        )
+        deadline_ready = all(
+            marker in grounded_text for marker in FOREIGN_WORKER_FULL_BRIDGE_CHANGE_DEADLINE_MARKERS
+        )
+        if change_ready and (
+            "기숙사" not in answer_text
+            or "차별" not in answer_text
+            or "사업장 변경" not in answer_text
+            or looks_incomplete_text(answer_text)
+        ):
+            first_parts = [
+                "근로조건 위반이나 부당한 처우 등 외국인근로자 책임이 아닌 사유로 근로를 계속하기 어렵다면"
+            ]
+            if dormitory_ready:
+                first_parts.append("위법한 기숙사 제공 또는 숙소비 공제 문제를 함께 들어")
+            if discrimination_ready:
+                first_parts.append("외국인 차별 정황도 함께 고려해")
+            first_parts.append("사업장 변경을 신청할 수 있다")
+            summary = " ".join(first_parts) + "."
+            if deadline_ready:
+                summary += (
+                    " 원칙적으로 종료일부터 1개월 이내 신청과 신청일부터 3개월 이내 "
+                    "근무처 변경허가 기준을 함께 확인해야 한다."
+                )
+            return normalize_output_style(summary)
+
     if is_departure_insurance_query(query_text):
         required_markers = (
             ("피보험자", "수익자", "매월"),
@@ -2660,6 +2920,34 @@ def normalize_law_family_name(law_name: str) -> str:
     return normalized
 
 
+def chunk_citation_contains(chunk: GroundedRetrievedChunk, marker: str) -> bool:
+    return marker in normalize_text(chunk.citation_label)
+
+
+def select_best_citation_postprocess_candidate(
+    *,
+    query_text: str,
+    query_terms: Sequence[str],
+    active_focuses: Sequence[str],
+    grounded_chunks: Sequence[GroundedRetrievedChunk],
+    seen_context_ids: set[int],
+    citation_marker: str,
+) -> GroundedRetrievedChunk | None:
+    candidates = [
+        chunk
+        for chunk in grounded_chunks
+        if chunk.context_id not in seen_context_ids
+        and chunk_citation_contains(chunk, citation_marker)
+    ]
+    candidates.sort(
+        key=lambda chunk: (
+            -score_grounded_chunk(query_text, query_terms, active_focuses, chunk),
+            chunk.context_id,
+        )
+    )
+    return candidates[0] if candidates else None
+
+
 def chunk_matches_family_care_procedure_companion(
     chunk: GroundedRetrievedChunk,
 ) -> bool:
@@ -2690,97 +2978,158 @@ def expand_cited_context_ids_for_targeted_patterns(
 
     query_text = normalize_text(query)
     active_focuses = get_active_query_focuses(query_text)
-    if not is_family_care_written_protection_query(query_text):
-        return CitationPostprocessResult(
-            context_ids=normalized_ids,
-            additions=additions,
-        )
-
     query_terms = tokenize_query_terms(query_text)
     selected_chunks = [chunk_by_context_id[context_id] for context_id in normalized_ids]
-    family_care_query_patterns = dedupe_preserving_order(
-        [
-            *list_matched_markers(query_text, FAMILY_CARE_QUERY_MARKERS),
-            *list_matched_markers(query_text, FAMILY_CARE_FOCUS_MARKERS),
-        ]
-    )
 
-    if {"procedure", "protection"}.issubset(set(active_focuses)):
-        selected_group_keys = {build_article_group_key(chunk) for chunk in selected_chunks}
-        for group_key in selected_group_keys:
-            group_chunks = [
-                chunk for chunk in grounded_chunks if build_article_group_key(chunk) == group_key
+    if is_family_care_written_protection_query(query_text):
+        family_care_query_patterns = dedupe_preserving_order(
+            [
+                *list_matched_markers(query_text, FAMILY_CARE_QUERY_MARKERS),
+                *list_matched_markers(query_text, FAMILY_CARE_FOCUS_MARKERS),
             ]
-            selected_group_chunks = [
-                chunk for chunk in selected_chunks if build_article_group_key(chunk) == group_key
-            ]
-            if len(group_chunks) < 2 or len(selected_group_chunks) != 1:
-                continue
-            selected_chunk = selected_group_chunks[0]
-            sibling_candidates = [
+        )
+
+        if {"procedure", "protection"}.issubset(set(active_focuses)):
+            selected_group_keys = {build_article_group_key(chunk) for chunk in selected_chunks}
+            for group_key in selected_group_keys:
+                group_chunks = [
+                    chunk for chunk in grounded_chunks if build_article_group_key(chunk) == group_key
+                ]
+                selected_group_chunks = [
+                    chunk for chunk in selected_chunks if build_article_group_key(chunk) == group_key
+                ]
+                if len(group_chunks) < 2 or len(selected_group_chunks) != 1:
+                    continue
+                selected_chunk = selected_group_chunks[0]
+                sibling_candidates = [
+                    chunk
+                    for chunk in group_chunks
+                    if chunk.context_id not in seen and chunk.paragraph_no != selected_chunk.paragraph_no
+                ]
+                sibling_candidates.sort(
+                    key=lambda chunk: (
+                        -score_grounded_chunk(query_text, query_terms, active_focuses, chunk),
+                        chunk.context_id,
+                    )
+                )
+                if sibling_candidates:
+                    sibling = sibling_candidates[0]
+                    normalized_ids.append(sibling.context_id)
+                    seen.add(sibling.context_id)
+                    selected_chunks.append(sibling)
+                    additions.append(
+                        CitationPostprocessAddition(
+                            rule="family_care_sibling_postprocess",
+                            added_context_id=sibling.context_id,
+                            added_citation_label=sibling.citation_label,
+                            source_context_ids=(selected_chunk.context_id,),
+                            source_citation_labels=(selected_chunk.citation_label,),
+                            matched_query_patterns=family_care_query_patterns,
+                        )
+                    )
+                    break
+
+        if has_any_marker(query_text, PROCEDURE_COMPANION_MARKERS):
+            selected_law_names = {
+                normalize_law_family_name(chunk.law_name) for chunk in selected_chunks
+            }
+            procedure_candidates = [
                 chunk
-                for chunk in group_chunks
-                if chunk.context_id not in seen and chunk.paragraph_no != selected_chunk.paragraph_no
+                for chunk in grounded_chunks
+                if chunk.context_id not in seen
+                and normalize_law_family_name(chunk.law_name) in selected_law_names
+                and chunk_matches_family_care_procedure_companion(chunk)
             ]
-            sibling_candidates.sort(
+            procedure_candidates.sort(
                 key=lambda chunk: (
                     -score_grounded_chunk(query_text, query_terms, active_focuses, chunk),
                     chunk.context_id,
                 )
             )
-            if sibling_candidates:
-                sibling = sibling_candidates[0]
-                normalized_ids.append(sibling.context_id)
-                seen.add(sibling.context_id)
-                selected_chunks.append(sibling)
+            if procedure_candidates:
+                companion = procedure_candidates[0]
+                normalized_ids.append(companion.context_id)
+                seen.add(companion.context_id)
                 additions.append(
                     CitationPostprocessAddition(
-                        rule="family_care_sibling_postprocess",
-                        added_context_id=sibling.context_id,
-                        added_citation_label=sibling.citation_label,
-                        source_context_ids=(selected_chunk.context_id,),
-                        source_citation_labels=(selected_chunk.citation_label,),
-                        matched_query_patterns=family_care_query_patterns,
+                        rule="family_care_procedure_companion_postprocess",
+                        added_context_id=companion.context_id,
+                        added_citation_label=companion.citation_label,
+                        source_context_ids=tuple(chunk.context_id for chunk in selected_chunks),
+                        source_citation_labels=tuple(
+                            chunk.citation_label for chunk in selected_chunks
+                        ),
+                        matched_query_patterns=dedupe_preserving_order(
+                            [
+                                *family_care_query_patterns,
+                                *list_matched_markers(query_text, PROCEDURE_COMPANION_MARKERS),
+                            ]
+                        ),
                     )
                 )
-                break
 
-    if has_any_marker(query_text, PROCEDURE_COMPANION_MARKERS):
-        selected_law_names = {
-            normalize_law_family_name(chunk.law_name) for chunk in selected_chunks
-        }
-        procedure_candidates = [
-            chunk
-            for chunk in grounded_chunks
-            if chunk.context_id not in seen
-            and normalize_law_family_name(chunk.law_name) in selected_law_names
-            and chunk_matches_family_care_procedure_companion(chunk)
-        ]
-        procedure_candidates.sort(
-            key=lambda chunk: (
-                -score_grounded_chunk(query_text, query_terms, active_focuses, chunk),
-                chunk.context_id,
-            )
+    if is_foreign_worker_workplace_change_abuse_query(query_text):
+        bridge_query_patterns = dedupe_preserving_order(
+            [
+                *list_matched_markers(
+                    query_text,
+                    FOREIGN_WORKER_FULL_BRIDGE_CONTRACT_MARKERS,
+                ),
+                *list_matched_markers(
+                    query_text,
+                    FOREIGN_WORKER_FULL_BRIDGE_DORMITORY_MARKERS,
+                ),
+                *list_matched_markers(
+                    query_text,
+                    FOREIGN_WORKER_FULL_BRIDGE_DISCRIMINATION_MARKERS,
+                ),
+                *list_matched_markers(
+                    query_text,
+                    FOREIGN_WORKER_FULL_BRIDGE_CHANGE_MARKERS,
+                ),
+            ]
         )
-        if procedure_candidates:
-            companion = procedure_candidates[0]
+        citation_markers = [
+            "외국인근로자의 고용 등에 관한 법률 제22조 (기숙사의 제공 등)",
+            "외국인근로자의 고용 등에 관한 법률 제22조 (차별 금지)",
+            "외국인근로자의 고용 등에 관한 법률 제25조",
+            "외국인근로자의 고용 등에 관한 법률 시행규칙 제16조",
+        ]
+        if is_foreign_worker_full_bridge_query(query_text):
+            citation_markers = [
+                "근로기준법 제17조",
+                "외국인근로자의 고용 등에 관한 법률 제9조",
+                *citation_markers,
+            ]
+        for citation_marker in citation_markers:
+            if any(
+                chunk_citation_contains(chunk_by_context_id[context_id], citation_marker)
+                for context_id in normalized_ids
+            ):
+                continue
+            companion = select_best_citation_postprocess_candidate(
+                query_text=query_text,
+                query_terms=query_terms,
+                active_focuses=active_focuses,
+                grounded_chunks=grounded_chunks,
+                seen_context_ids=seen,
+                citation_marker=citation_marker,
+            )
+            if companion is None:
+                continue
+            source_context_ids = tuple(chunk.context_id for chunk in selected_chunks)
+            source_citation_labels = tuple(chunk.citation_label for chunk in selected_chunks)
             normalized_ids.append(companion.context_id)
             seen.add(companion.context_id)
+            selected_chunks.append(companion)
             additions.append(
                 CitationPostprocessAddition(
-                    rule="family_care_procedure_companion_postprocess",
+                    rule="foreign_worker_workplace_change_companion_postprocess",
                     added_context_id=companion.context_id,
                     added_citation_label=companion.citation_label,
-                    source_context_ids=tuple(chunk.context_id for chunk in selected_chunks),
-                    source_citation_labels=tuple(
-                        chunk.citation_label for chunk in selected_chunks
-                    ),
-                    matched_query_patterns=dedupe_preserving_order(
-                        [
-                            *family_care_query_patterns,
-                            *list_matched_markers(query_text, PROCEDURE_COMPANION_MARKERS),
-                        ]
-                    ),
+                    source_context_ids=source_context_ids,
+                    source_citation_labels=source_citation_labels,
+                    matched_query_patterns=bridge_query_patterns,
                 )
             )
 

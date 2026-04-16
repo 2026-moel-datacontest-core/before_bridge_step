@@ -88,7 +88,7 @@ answer-side에서 다음 개선을 반영했다.
 - `SCN-001`: `Current Corpus Covered`
   - 데이터 추가 불필요
   - Before/After 분리 데모는 안정적
-  - Full 단일 질의는 retrieval ranking 리스크 존재
+  - Full 단일 질의는 `top_k=10`, `ef_search=100` demo path에서 안정화
 - `SCN-002`: `Partial`
   - 법률 설명형 Before 데모는 가능
   - 자동 숫자 비교와 직종 자동 판정은 현재 범위 밖으로 둠
@@ -254,6 +254,13 @@ landing verification:
 - sandbox 안에서는 localhost DB probe가 false negative를 낼 수 있어 unrestricted 실행이 필요할 수 있음
 - eval runner는 partial coverage가 남으면 exit code `1`로 종료할 수 있음
 - timeout / rate-limit / provider failure는 현재 bounded execution 안에서 제어되지만, 고부하 상황에서의 DSQ 리스크가 완전히 사라진 것은 아님
+- 일반 `/api/v1/answer` 기본값은 `top_k = 5`, `ef_search = 100`으로 유지
+  - 일반 단일 쟁점 질의에서는 낮은 latency와 낮은 context noise를 우선한다.
+  - backend schema default를 demo 때문에 `10`으로 올리지 않는다.
+- SCN demo / scenario smoke는 `recommended_top_k = 10`을 명시해야 함
+  - 특히 `SCN-001 Full` selective decomposition은 `top_k >= 8`에서만 발동한다.
+  - 데모 UI, scenario runner, 직접 API smoke는 payload에 `top_k: 10`, `ef_search: 100`을 넣어야 한다.
+  - `top_k`를 생략하면 API default `5`가 적용되어 `SCN-001 Full` 개선 경로가 발동하지 않을 수 있다.
 - `data/legalize-kr` working tree HEAD와 frozen corpus commit을 혼용하면 snapshot이 섞일 수 있음
   - 현재 서비스 기준은 `selected_as_of = 2026-04-11`
   - scenario-driven data addition도 이 기준에 맞춰 반영해야 함
@@ -268,7 +275,7 @@ landing verification:
 
 1. 남은 `16` partial에 대한 answer-side surface / completeness 보강
 2. low-signal key point noise 정리
-3. `SCN-001 Full` demo 필요성이 커질 때만 selective decomposition 별도 검토
+3. `SCN-001 Full` demo는 `top_k: 10`, `ef_search: 100` 명시 경로로 운영
 4. citation survival 이슈가 다시 재현될 때만 Step 3 rerank 재검토
 5. `SCN-002`는 설명형 Before 데모 범위로 유지
 

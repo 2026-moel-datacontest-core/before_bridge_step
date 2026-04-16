@@ -114,7 +114,7 @@
   - `expected_point_strict_coverage = 137/153`
   - `failures_or_partial_coverage = 16`
 - scenario expansion / demo coverage 기준:
-  - `SCN-001`: covered, retrieval ranking issue
+  - `SCN-001`: covered, `top_k=10` demo path stable
   - `SCN-002`: partial, extra source / structured data 필요
   - `SCN-003`: covered after minimal data addition (`+9 chunks`)
   - `SCN-004`: covered, demo ready
@@ -126,7 +126,7 @@
 
 - 현재 landing 완료 상태이며 immediate mandatory work는 없음
 - 후속이 필요하면 남은 partial에 대한 answer-side surface / completeness cleanup 우선
-- `SCN-001` decomposition은 demo 필요성이 다시 생길 때만 별도 검토
+- `SCN-001 Full` demo는 `top_k=10`, `ef_search=100` 명시 경로로 운영
 - `SCN-002` 자동 판정형 데모에 필요한 추가 source 또는 structured data 설계는 계속 범위 밖
 - agent / frontend 연결은 이 기준선 위에서 후속 진행
 - hybrid / reranker는 현재 baseline을 유지한 채 필요성 측정 후 결정
