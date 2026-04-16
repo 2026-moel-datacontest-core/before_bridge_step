@@ -41,7 +41,7 @@ Response:
     "document_type": DocumentType,
     "title": string,
     "recipient": string,
-    "language": string,
+    "language": "ko" | "en",
     "parties": {
       "worker": string,
       "employer": string,
@@ -103,6 +103,7 @@ ef_search는 항상 100. top_k만 분기.
 - 서버 저장 / PDF 다운로드
 - 실제 제출 기능
 - Recovery 화면
+- 연락처 / 계좌번호 / 실주소 / 파일 본문 입력 UI
 
 ---
 
@@ -177,12 +178,12 @@ Step 4: /after/draft
 - cautions 섹션 (Yellow 10 background)
 - cited_articles 섹션 (pill 스타일, 24px radius)
 - document_type 선택 섹션 (2개 radio tile)
-- "사건 정보 입력하기" CTA (문서 타입 선택 전: `aria-disabled="true"`)
+- "사건 정보 입력하기" CTA (문서 타입 선택 전: native disabled 또는 `aria-disabled="true"` + click/key guard)
 
 **상태**:
 - `result_loaded`: 정상
 - `no_answer_state`: answer 없음 (fallback 메시지)
-- `document_type_unselected`: CTA aria-disabled
+- `document_type_unselected`: CTA disabled/guarded
 - `document_type_selected`: CTA 활성
 - `navigating_to_intake`: 전환 중
 
@@ -196,12 +197,14 @@ Step 4: /after/draft
 
 ### /after/intake — 사건 정보 입력
 
-**목적**: 선택된 문서 타입에 맞는 사건 정보를 수집한다.
+**목적**: 선택된 문서 타입에 맞는 최소 사건 정보를 입력받는다. 개인정보 수집 기능이 아니라 초안 placeholder를 줄이기 위한 선택 입력이다.
 
 **주요 컴포넌트**:
 - masthead (sticky)
 - 문서 타입 badge band
 - 섹션 A: 당사자 정보 (기본 접힘, "비워두면 [확인 필요]로 표시됩니다")
+  - label은 "근로자 이름 또는 표시명", "회사명 또는 표시명"처럼 placeholder 입력을 허용한다.
+  - 연락처, 계좌번호, 주민등록번호, 외국인등록번호, 상세 실거주지 주소, 파일 본문 입력 필드는 만들지 않는다.
 - 섹션 B: 근무 기간 및 해고 정보
 - 섹션 C: 미지급 금품 (wage_complaint 타입만)
 - 섹션 D: 증거 목록
@@ -223,7 +226,7 @@ Step 4: /after/draft
 - notice_method === "written" → written_notice_received 체크박스 노출
 - employee_count_over_5 === false → inline caution 노출
 
-**빈 필드 정책**: 블로킹 없음. 모든 필드 optional. 빈 채로 제출 가능.
+**빈 필드 정책**: 사용자가 입력하는 사건 세부 필드는 블로킹 없음. 다만 API payload는 `buildCaseIntake()`가 항상 `scenario_id`, `document_type`, `language`, 기본 object/list를 채워 보낸다. 빈 timeline/evidence row는 submit 직전에 제거한다.
 
 **상태**:
 - `intake_loaded`: 정상
@@ -236,7 +239,7 @@ Step 4: /after/draft
 **a11y**:
 - 섹션별 `fieldset` + `legend`
 - 조건부 필드: `aria-expanded` on toggle
-- 로딩 중: `aria-busy="true"`, form `aria-disabled`
+- 로딩 중: `aria-busy="true"`, submit CTA native disabled, form container pointer-events none
 
 ---
 
@@ -248,8 +251,8 @@ Step 4: /after/draft
 - masthead (sticky)
 - draft header band: 제목, document_type badge, recipient, disclaimer
 - disclaimer band: "이 문서는 제출 전 검토용 초안입니다." (Yellow 10 bg)
-- document preview: rendered_text를 `<article>` 안에 IBM Plex Mono로 표시 (white surface)
-- "복사" 버튼 (article 우상단)
+- document preview: rendered_text를 `<article>` 안에 IBM Plex Sans로 표시 (white surface)
+- "복사" 버튼 (article 우상단, Phase 3 전에는 노출하지 않거나 disabled + guard 처리)
 - missing_fields panel (Yellow Amber bg, 빈 필드 목록)
 - cautions panel (static note, list semantics)
 - evidence_checklist panel (체크박스, 로컬 상태만, 저장 안 됨)
@@ -315,7 +318,7 @@ Step 4: /after/draft
 ### API Flow
 
 **POST /api/v1/answer**:
-1. FlowContext에 user_statement, is_scn_demo_preset 저장
+1. FlowContext에 user_statement, is_scn_demo_preset 저장 (React memory only, Web Storage 저장 아님)
 2. top_k 결정: `is_scn_demo_preset ? 10 : 5`
 3. payload: `{ query: user_statement, top_k, ef_search: 100 }`
 4. 성공: `answer_response`를 FlowContext에 저장한다. 개인정보 최소 수집 원칙상 Phase 1에서는 sessionStorage에 원문 진술이나 응답을 저장하지 않는다.
@@ -330,11 +333,41 @@ answer_response.key_points  → legal_basis.key_points
 answer_response.cautions    → legal_basis.cautions
 answer_response.cited_articles → legal_basis.cited_articles
 answer_response.grounded_context_ids → legal_basis.source_context_ids
-answer_response.retrieved_chunks → legal_basis.retrieved_chunks
+answer_response.retrieved_chunks.filter(chunk =>
+  answer_response.grounded_context_ids.includes(chunk.context_id)
+) → legal_basis.retrieved_chunks
+```
+
+Grounding guard:
+- `cited_articles.length === 0` 또는 `grounded_context_ids.length === 0`이면 draft 생성 flow로 진행하지 않는다.
+- `/after/result`에서 "인용된 법 조문이 확인되지 않았습니다. 문서 초안을 만들 수 없습니다."를 표시하고 document type CTA를 guard 처리한다.
+
+**CaseIntake payload 구성**:
+```
+buildCaseIntake({
+  selected_document_type,
+  form_values,
+  evidence_items,
+  incident_timeline,
+}): CaseIntake
+
+required defaults:
+  scenario_id: 'SCN-004'
+  document_type: selected_document_type
+  language: 'ko'
+  worker_info: {}
+  employer_info: {}
+  employment_info: {}
+  dismissal_info: {}
+  unpaid_wage_info: {}
+  incident_timeline: only rows with event.trim().length > 0
+  evidence_items: only rows with type and description.trim().length > 0
+  claims: derived fixed enum values only
+  requested_actions: derived fixed strings only
 ```
 
 **POST /api/v1/documents/draft**:
-1. payload: `{ case_intake: CaseIntake, legal_basis: LegalBasisInput }`
+1. payload: `{ case_intake: buildCaseIntake(...), legal_basis: buildLegalBasis(...) }`
 2. 성공: `draft_response`를 FlowContext에 저장 (sessionStorage 저장 안 함)
 3. 실패 422: "입력 값에 오류가 있습니다" + 필드 확인 안내
 4. 실패 500: "초안 생성에 실패했습니다. 다시 시도해주세요" + retry
@@ -493,7 +526,8 @@ answer_response.retrieved_chunks → legal_basis.retrieved_chunks
 - radius: 0px
 - hover: var(--kl-primary-hover)
 - loading: inline spinner (16px) + 텍스트 "처리 중..." + pointer-events none
-- disabled 시 `aria-disabled="true"` 사용 (실제 form disabled보다 선호)
+- action을 완전히 막아야 하는 경우 native `<button disabled>` 사용
+- focus 가능한 안내가 필요한 pseudo-disabled CTA는 `aria-disabled="true"` + `onClick`/`onKeyDown` guard 필수
 
 **Button — Ghost**
 - bg: transparent, color: var(--kl-primary)
@@ -596,6 +630,8 @@ answer_response.retrieved_chunks → legal_basis.retrieved_chunks
 | Font | Google Fonts 또는 직접 import (IBM Plex Sans, IBM Plex Mono) |
 | API | native fetch (AbortController 포함) |
 | 테스트 | 없음 (demo 안정성 중심, 복잡한 test setup 금지) |
+
+**Token prefix 결정**: Phase 1 구현의 canonical CSS variable prefix는 `--kl-*`다. `DESIGN.md`에 남아 있는 `--cds-*` 표기는 Carbon reference로만 읽고, 구현 CSS에는 섞지 않는다. 꼭 필요한 경우에만 `--cds-*` alias를 `--kl-*`에 매핑한다.
 
 **CSS Modules 선택 이유**: Next.js에 기본 내장, scoped className, CSS Variables와 완벽 호환, Tailwind 없이 Carbon 토큰 직접 사용 가능, 번들 사이즈 최소.
 
@@ -765,11 +801,11 @@ export interface DismissalInfo {
 }
 
 export interface UnpaidWageInfo {
-  final_wage_paid?: boolean;
+  final_wage_paid?: boolean | null;
   unpaid_wage_amount?: number | null;
-  severance_paid?: boolean;
+  severance_paid?: boolean | null;
   unpaid_severance_amount?: number | null;
-  days_since_separation_over_14?: boolean;
+  days_since_separation_over_14?: boolean | null;
   unpaid_period_start?: string | null;
   unpaid_period_end?: string | null;
 }
@@ -811,8 +847,10 @@ export type Claim =
   | 'unpaid_severance_pay'
   | 'delay_interest_possible';
 
+export type ScenarioId = 'SCN-004';
+
 export interface CaseIntake {
-  scenario_id: 'SCN-001' | 'SCN-004' | 'SCN-005';
+  scenario_id: ScenarioId;
   document_type: DocumentType;
   language: 'ko' | 'en';
   worker_info: WorkerInfo;
@@ -842,7 +880,7 @@ export interface DocumentDraftResponse {
   document_type: DocumentType;
   title: string;
   recipient: string;
-  language: string;
+  language: 'ko' | 'en';
   parties: {
     worker: string;
     employer: string;
@@ -921,10 +959,23 @@ export type FlowAction =
 // - 422 → ApiError { status: 422, message: "...", retryable: true }
 // - 500 → ApiError { status: 500, message: "...", retryable: true }
 
-// buildLegalBasis(response: AnswerResponse, query: string): LegalBasisInput
+// buildLegalBasis(response: AnswerResponse): LegalBasisInput
 // - AnswerResponse → LegalBasisInput 변환 pure function
-// - answer_query = query
+// - answer_query = response.query
 // - source_context_ids = grounded_context_ids
+// - retrieved_chunks = response.retrieved_chunks.filter(chunk =>
+//     response.grounded_context_ids.includes(chunk.context_id)
+//   )
+// - if cited_articles or grounded_context_ids is empty, do not call fetchDraft
+
+// buildCaseIntake(input): CaseIntake
+// - Always set scenario_id: 'SCN-004', language: 'ko', document_type
+// - Always include worker_info/employer_info/employment_info objects
+// - Always include dismissal_info/unpaid_wage_info objects, even if empty
+// - Convert blank string fields to null or omit according to backend schema
+// - Filter out incident_timeline rows with empty event
+// - Filter out evidence_items rows missing type or description
+// - Do not send Partial<CaseIntake> directly to fetchDraft
 ```
 
 ### lib/session.ts
@@ -946,30 +997,38 @@ export type FlowAction =
 
 ## 11. Implementation Phases
 
-### Phase 1: Scaffold + 4 Screen 구현 (필수)
+### Phase 1: API-connected happy path (필수)
 
-**목표**: SCN-004 전체 flow가 실제 API와 연동되어 동작하는 상태
+**목표**: SCN-004 전체 flow가 실제 API와 연동되어 1회 smoke test를 통과하는 상태. 최소 route guard와 guard CTA는 Phase 1에 포함한다.
 
-**순서**:
+**Phase 1A — foundation**:
 1. Next.js 14 프로젝트 scaffold (npx create-next-app, TypeScript, App Router, CSS Modules)
 2. `globals.css`에 CSS Variables 전체 추가, IBM Plex Sans/Mono 폰트 로드
 3. `types/api.ts`, `types/flow.ts` 작성
 4. `context/FlowContext.tsx` — FlowContext + useReducer + Provider
-5. `lib/api.ts` — fetchAnswer, fetchDraft, buildLegalBasis
+5. `lib/api.ts` — fetchAnswer, fetchDraft, buildLegalBasis, buildCaseIntake
 6. `lib/session.ts` — Phase 1에서는 생략 가능. 추가한다면 privacy-safe no-op 또는 selected_document_type 같은 비민감 hint만 다룬다.
-7. `components/layout/Masthead.tsx` + `StickyActionBar.tsx`
-8. `components/ui/` — Button, CitationPill, DisclaimerBanner, Notification, Spinner
-9. `/after` page — textarea + preset + CTA + answer_loading state
-10. `/after/result` page — answer 표시 + document type 선택
-11. `/after/intake` page — WageComplaintForm + UnfairDismissalForm + EvidenceSection
-12. `/after/draft` page — DocumentPreview + MissingFieldsPanel + CautionsPanel + EvidenceChecklist + LegalBasisPanel
+
+**Phase 1B — answer flow**:
+1. `components/layout/Masthead.tsx`
+2. `components/ui/` — Button, CitationPill, DisclaimerBanner, Notification, Spinner
+3. `/after` page — textarea + preset + CTA + answer_loading state
+4. `/after/result` page — answer 표시 + cited_articles/grounded_context_ids guard + document type 선택
+5. `/after/result` direct URL guard — `answer_response` 없으면 `/after`
+
+**Phase 1C — draft flow**:
+1. `/after/intake` page — WageComplaintForm + UnfairDismissalForm + EvidenceSection + buildCaseIntake submit
+2. `/after/intake` direct URL guard — `answer_response` 없으면 `/after`, `selected_document_type` 없으면 `/after/result`
+3. `/after/draft` page — DocumentPreview + MissingFieldsPanel + CautionsPanel + EvidenceChecklist + LegalBasisPanel
+4. `/after/draft` direct URL guard — `draft_response` 없으면 `/after`
+5. Copy/print buttons are not exposed until Phase 3 behavior is implemented.
 
 ### Phase 2: Error / Loading / a11y (필수)
 
 **목표**: demo 시연 중 에러 상황에서도 안정적으로 동작
 
 1. 모든 API error 상태 UI 연결
-2. route guard 구현 (answer_response 없으면 /after로)
+2. route guard UX 개선 (focus, fallback copy, redirect timing)
 3. 로딩 중 masthead progress bar
 4. focus management (route 전환 후 h1 focus)
 5. aria-live, aria-busy, aria-disabled 전체 점검
@@ -1026,8 +1085,12 @@ uvicorn backend.main:app --reload
 - 로그인 / 회원가입 / 사용자 계정 기능 추가 금지
 - OCR / 파일 업로드 기능 추가 금지
 - user_statement, answer_response, case_intake, draft_response를 sessionStorage / localStorage에 저장 금지
+- 연락처, 계좌번호, 주민등록번호, 외국인등록번호, 실거주지 주소 입력 필드 추가 금지
+- `Partial<CaseIntake>`를 `fetchDraft`에 직접 전달 금지 (`buildCaseIntake()` 사용)
+- ungrounded retrieved chunks를 `legal_basis.retrieved_chunks`에 전달 금지
 - `@carbon/react` 또는 다른 외부 UI 라이브러리 설치 금지
 - Tailwind CSS 설치 금지
+- `--kl-*`와 `--cds-*` token prefix 혼용 금지 (`--kl-*` canonical)
 - SCN-001, SCN-005 문서 타입 구현 금지 (Phase 1 범위 아님)
 - `/before`, `/bridge` 화면 구현 금지 (Phase 1 범위 아님)
 - 법률 판단 확정 문구 하드코딩 금지 ("위법 확정", "반드시 승소" 등)
@@ -1040,14 +1103,23 @@ uvicorn backend.main:app --reload
 ## 14. Final Codex Prompt
 
 ```
-docs/planning/14_frontend_implementation_handoff.md를 읽고 Phase 1 frontend 구현을 시작해줘.
+구현을 시작하기 전에 아래 파일을 순서대로 읽어줘.
+
+필수 읽기:
+- AGENTS.md
+- CLAUDE.md
+- frontend/CLAUDE.md
+- DESIGN.md
+- docs/planning/14_frontend_implementation_handoff.md
+- backend/app/schemas/answer.py
+- backend/app/schemas/retrieval.py
+- backend/app/schemas/document_draft.py
+
+그 다음 docs/planning/14_frontend_implementation_handoff.md 기준으로 Phase 1A부터 frontend 구현을 시작해줘.
 ```
 
-이 문서 한 장이 모든 context다. 추가 파일을 읽어야 한다면:
-- `DESIGN.md` — 시각 스타일 상세
+추가로 필요하면:
 - `docs/planning/13_document_draft_plan.md` — CaseIntake schema 상세
-- `backend/app/schemas/document_draft.py` — Pydantic schema 확인
-- `frontend/CLAUDE.md` — frontend 규칙 확인
 
 **구현 시작점**: `frontend/` 디렉토리에서 `npm run dev`가 동작하는 Next.js scaffold를 먼저 만들고, 위 Section 8의 파일 구조대로 진행한다.
 

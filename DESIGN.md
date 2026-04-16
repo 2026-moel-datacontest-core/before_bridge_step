@@ -1,6 +1,8 @@
 # K-Labor Shield Design Direction
 Based on IBM Carbon-inspired structure, adapted for legal aid, migrant worker support, and document drafting flows.
 
+Implementation note: this document uses Carbon `--cds-*` names as design-system references. SCN-004 frontend implementation must use the canonical `--kl-*` variables defined in `docs/planning/14_frontend_implementation_handoff.md`; do not mix both prefixes in component CSS.
+
 ## 1. Visual Theme & Atmosphere
 
 IBM's website is the digital embodiment of enterprise authority built on the Carbon Design System — a design language so methodically structured it reads like an engineering specification rendered as a webpage. The page operates on a stark duality: a bright white (`#ffffff`) canvas with near-black (`#161616`) text, punctuated by a single, unwavering accent — IBM Blue 60 (`#0f62fe`). This isn't playful tech-startup minimalism; it's corporate precision distilled into pixels. Every element exists within Carbon's rigid 2x grid, every color maps to a semantic token, every spacing value snaps to the 8px base unit.
@@ -250,7 +252,7 @@ What defines IBM's visual identity beyond monochrome-plus-blue is the reliance o
 - Use IBM Plex Sans at weight 300 for display sizes (42px+) — the lightness is intentional
 - Apply 0.16px letter-spacing on 14px body text and 0.32px on 12px captions
 - Use 0px border-radius on buttons, inputs, cards, and tiles — rectangles are the system
-- Reference `--cds-*` token names when implementing (e.g., `--cds-button-primary`, `--cds-text-primary`)
+- Reference Carbon `--cds-*` token names only as semantic inspiration; implement with the SCN-004 canonical `--kl-*` variables
 - Use background-color layering (white → gray 10 → gray 20) for depth instead of shadows
 - Use bottom-border (not box) for input field indicators
 - Maintain the 48px default button height and asymmetric padding for icon accommodation
@@ -329,5 +331,5 @@ What defines IBM's visual identity beyond monochrome-plus-blue is the reliance o
 4. Blue 60 is the only accent color — do not introduce secondary accent hues
 5. Depth comes from background-color layering (white → #f4f4f4 → #e0e0e0), not shadows
 6. Inputs have bottom-border only, never fully boxed
-7. Use `--cds-` prefix for token naming to stay Carbon-compatible
+7. Use the SCN-004 canonical `--kl-` prefix for implementation tokens; treat `--cds-` names as Carbon references only
 8. 48px is the universal interactive element height
