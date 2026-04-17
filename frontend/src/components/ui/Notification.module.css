@@ -33,6 +33,13 @@
   margin: 0;
 }
 
+.actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kl-space-2);
+  flex: 0 0 auto;
+}
+
 .action {
   min-height: 32px;
   padding: 0 var(--kl-space-3);
@@ -48,6 +55,26 @@
 
 .action:hover {
   color: var(--kl-primary-hover);
+  background: var(--kl-bg);
+}
+
+.close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: var(--kl-radius-control);
+  color: var(--kl-text-secondary);
+  background: transparent;
+  font-size: var(--kl-text-h3);
+  line-height: 1;
+}
+
+.close:hover {
+  color: var(--kl-text-primary);
   background: var(--kl-bg);
 }
 

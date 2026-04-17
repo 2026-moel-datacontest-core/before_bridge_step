@@ -36,9 +36,15 @@ const DOCUMENT_TYPE_LABELS: Record<DocumentType, string> = {
   labor_commission_unfair_dismissal_brief: '노동위원회 부당해고 구제신청 이유서 초안',
 };
 
+interface DraftErrorState {
+  message: string;
+  retryable: boolean;
+}
+
 export default function AfterIntakePage() {
   const router = useRouter();
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const draftSubmittingRef = useRef(false);
   const { state, dispatch } = useFlow();
   const answer = state.answer_response;
   const selectedDocumentType = state.selected_document_type;
@@ -58,7 +64,7 @@ export default function AfterIntakePage() {
     ),
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorState, setErrorState] = useState<DraftErrorState | null>(null);
 
   useEffect(() => {
     if (!answer) {
@@ -84,19 +90,22 @@ export default function AfterIntakePage() {
   const documentTypeLabel = DOCUMENT_TYPE_LABELS[selectedDocumentType];
 
   async function submitDraft() {
-    if (!answer || !selectedDocumentType || isSubmitting) {
+    if (!answer || !selectedDocumentType || draftSubmittingRef.current) {
       return;
     }
 
     if (!hasDraftGrounding(answer)) {
-      setErrorMessage(
-        '인용된 법 조문 또는 근거 컨텍스트가 확인되지 않아 문서 초안을 만들 수 없습니다.',
-      );
+      setErrorState({
+        message:
+          '인용된 법 조문 또는 근거 컨텍스트가 확인되지 않아 문서 초안을 만들 수 없습니다.',
+        retryable: false,
+      });
       return;
     }
 
+    draftSubmittingRef.current = true;
     setIsSubmitting(true);
-    setErrorMessage(null);
+    setErrorState(null);
 
     const legalBasis = buildLegalBasis(answer);
     const caseIntake = buildCaseIntake({
@@ -123,10 +132,12 @@ export default function AfterIntakePage() {
         error instanceof ApiError
           ? error.message
           : '연결을 확인하고 다시 시도해주세요.';
+      const retryable = error instanceof ApiError ? error.retryable : true;
 
-      setErrorMessage(message);
+      setErrorState({ message, retryable });
     } finally {
       setIsSubmitting(false);
+      draftSubmittingRef.current = false;
     }
   }
 
@@ -135,12 +146,19 @@ export default function AfterIntakePage() {
     void submitDraft();
   }
 
+  function handleFormValuesChange(values: CaseIntakeFormValues) {
+    setFormValues(values);
+    setErrorState(null);
+  }
+
   function handleEvidenceItemsChange(items: EvidenceItemRow[]) {
     setEvidenceItems(ensureEvidenceRowIds(items));
+    setErrorState(null);
   }
 
   function handleIncidentTimelineChange(items: TimelineRow[]) {
     setIncidentTimeline(ensureTimelineRowIds(items));
+    setErrorState(null);
   }
 
   function resetFlow() {
@@ -174,13 +192,13 @@ export default function AfterIntakePage() {
               <WageComplaintForm
                 values={formValues}
                 disabled={isSubmitting}
-                onChange={setFormValues}
+                onChange={handleFormValuesChange}
               />
             ) : (
               <UnfairDismissalForm
                 values={formValues}
                 disabled={isSubmitting}
-                onChange={setFormValues}
+                onChange={handleFormValuesChange}
               />
             )}
 
@@ -203,14 +221,15 @@ export default function AfterIntakePage() {
           <div className={styles.stickyBar}>
             <div className={styles.stickyInner}>
               <div className={styles.stickyMessage}>
-                {errorMessage ? (
+                {errorState ? (
                   <Notification
                     variant="error"
                     title="문서 초안 생성 실패"
-                    actionLabel="다시 시도"
-                    onAction={() => void submitDraft()}
+                    actionLabel={errorState.retryable ? '다시 시도하기' : undefined}
+                    onAction={errorState.retryable ? () => void submitDraft() : undefined}
+                    onClose={() => setErrorState(null)}
                   >
-                    <p>{errorMessage}</p>
+                    <p>{errorState.message}</p>
                   </Notification>
                 ) : null}
               </div>

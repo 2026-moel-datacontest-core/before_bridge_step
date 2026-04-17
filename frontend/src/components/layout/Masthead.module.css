@@ -97,6 +97,13 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .progress {
+    animation: none;
+    transform: none;
+  }
+}
+
 @media (min-width: 672px) {
   .inner {
     padding-right: var(--kl-margin-desktop);

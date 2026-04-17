@@ -10,6 +10,8 @@ interface NotificationProps {
   children: ReactNode;
   actionLabel?: string;
   onAction?: () => void;
+  onClose?: () => void;
+  closeLabel?: string;
 }
 
 const variantLabels = {
@@ -25,20 +27,56 @@ export function Notification({
   children,
   actionLabel,
   onAction,
+  onClose,
+  closeLabel = '알림 닫기',
 }: NotificationProps) {
-  const role = variant === 'error' || variant === 'warning' ? 'alert' : 'status';
-
-  return (
-    <section className={`${styles.notification} ${styles[variant]}`} role={role}>
+  const isAlert = variant === 'error' || variant === 'warning';
+  const content = (
+    <>
       <div className={styles.content}>
         <p className={styles.title}>{title ?? variantLabels[variant]}</p>
         <div className={styles.message}>{children}</div>
       </div>
       {actionLabel && onAction ? (
-        <button className={styles.action} type="button" onClick={onAction}>
-          {actionLabel}
+        <div className={styles.actions}>
+          <button className={styles.action} type="button" onClick={onAction}>
+            {actionLabel}
+          </button>
+          {onClose ? (
+            <button
+              className={styles.close}
+              type="button"
+              aria-label={closeLabel}
+              onClick={onClose}
+            >
+              ×
+            </button>
+          ) : null}
+        </div>
+      ) : onClose ? (
+        <button
+          className={styles.close}
+          type="button"
+          aria-label={closeLabel}
+          onClick={onClose}
+        >
+          ×
         </button>
       ) : null}
+    </>
+  );
+
+  if (isAlert) {
+    return (
+      <section className={`${styles.notification} ${styles[variant]}`} role="alert">
+        {content}
+      </section>
+    );
+  }
+
+  return (
+    <section className={`${styles.notification} ${styles[variant]}`} role="status">
+      {content}
     </section>
   );
 }

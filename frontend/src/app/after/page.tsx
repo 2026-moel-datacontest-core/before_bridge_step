@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useMemo, useState } from 'react';
+import { FormEvent, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { Masthead } from '@/components/layout/Masthead';
@@ -9,19 +9,27 @@ import { DisclaimerBanner } from '@/components/ui/DisclaimerBanner';
 import { Notification } from '@/components/ui/Notification';
 import { useFlow } from '@/context/FlowContext';
 import { ApiError, fetchAnswer } from '@/lib/api';
+import type { AnswerRequest } from '@/types/api';
 
 import styles from './page.module.css';
 
 const SCN_004_PRESET =
   '해고를 당했는데 서면통지는 없고 30일 전에 예고도 못 받았습니다. 퇴사 후 마지막 임금과 퇴직금도 14일 넘게 지급받지 못했습니다.';
 
+interface AnswerErrorState {
+  message: string;
+  retryable: boolean;
+  payload: AnswerRequest;
+}
+
 export default function AfterPage() {
   const router = useRouter();
   const { state, dispatch } = useFlow();
+  const answerSubmittingRef = useRef(false);
   const [statement, setStatement] = useState(state.user_statement);
   const [isPreset, setIsPreset] = useState(state.is_scn_demo_preset);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorState, setErrorState] = useState<AnswerErrorState | null>(null);
 
   const trimmedStatement = statement.trim();
   const characterCount = trimmedStatement.length;
@@ -43,24 +51,33 @@ export default function AfterPage() {
     return '해고, 임금, 퇴직금, 통지 방식처럼 핵심 사실을 함께 적어주세요.';
   }, [isPreset, isPresetTextUnchanged, isShort]);
 
-  async function submitStatement() {
-    if (trimmedStatement.length < 10 || isLoading) {
+  function buildAnswerPayload(): AnswerRequest | null {
+    if (trimmedStatement.length < 10) {
+      return null;
+    }
+
+    return {
+      query: trimmedStatement,
+      top_k: isPreset ? 10 : 5,
+      ef_search: 100,
+    };
+  }
+
+  async function submitStatement(payload = buildAnswerPayload()) {
+    if (!payload || answerSubmittingRef.current) {
       return;
     }
 
+    answerSubmittingRef.current = true;
     setIsLoading(true);
-    setErrorMessage(null);
+    setErrorState(null);
     dispatch({
       type: 'SET_STATEMENT',
-      payload: { statement: trimmedStatement, is_preset: isPreset },
+      payload: { statement: payload.query, is_preset: payload.top_k === 10 },
     });
 
     try {
-      const answer = await fetchAnswer({
-        query: trimmedStatement,
-        top_k: isPreset ? 10 : 5,
-        ef_search: 100,
-      });
+      const answer = await fetchAnswer(payload);
 
       dispatch({ type: 'SET_ANSWER', payload: answer });
       router.push('/after/result');
@@ -69,10 +86,12 @@ export default function AfterPage() {
         error instanceof ApiError
           ? error.message
           : '연결을 확인하고 다시 시도해주세요.';
+      const retryable = error instanceof ApiError ? error.retryable : true;
 
-      setErrorMessage(message);
+      setErrorState({ message, retryable, payload });
     } finally {
       setIsLoading(false);
+      answerSubmittingRef.current = false;
     }
   }
 
@@ -86,13 +105,13 @@ export default function AfterPage() {
     setIsPreset((currentIsPreset) =>
       currentIsPreset && value.trim().length > 0,
     );
-    setErrorMessage(null);
+    setErrorState(null);
   }
 
   function handlePresetClick() {
     setStatement(SCN_004_PRESET);
     setIsPreset(true);
-    setErrorMessage(null);
+    setErrorState(null);
     dispatch({
       type: 'SET_STATEMENT',
       payload: { statement: SCN_004_PRESET, is_preset: true },
@@ -159,14 +178,19 @@ export default function AfterPage() {
                 </Button>
               </div>
 
-              {errorMessage ? (
+              {errorState ? (
                 <Notification
                   variant="error"
                   title="법 조문 검색 실패"
-                  actionLabel="다시 시도"
-                  onAction={() => void submitStatement()}
+                  actionLabel={errorState.retryable ? '다시 시도하기' : undefined}
+                  onAction={
+                    errorState.retryable
+                      ? () => void submitStatement(errorState.payload)
+                      : undefined
+                  }
+                  onClose={() => setErrorState(null)}
                 >
-                  <p>{errorMessage}</p>
+                  <p>{errorState.message}</p>
                 </Notification>
               ) : null}
 
