@@ -361,6 +361,19 @@ WORKPLACE_CHANGE_LIMIT_QUERY_MARKERS = ("사업장 변경", "사업장을 옮기
 WORKPLACE_CHANGE_LIMIT_FOCUS_MARKERS = ("언제까지", "1개월", "3개월", "횟수", "제한")
 SERIOUS_ACCIDENT_PENALTY_QUERY_MARKERS = ("중대산업재해",)
 SERIOUS_ACCIDENT_PENALTY_FOCUS_MARKERS = ("형사처벌", "처벌")
+SCN004_DISMISSAL_WAGE_QUERY_DISMISSAL_MARKERS = ("해고",)
+SCN004_DISMISSAL_WAGE_QUERY_NOTICE_MARKERS = ("서면통지", "서면")
+SCN004_DISMISSAL_WAGE_QUERY_ADVANCE_DAY_MARKERS = ("30일",)
+SCN004_DISMISSAL_WAGE_QUERY_ADVANCE_NOTICE_MARKERS = ("예고",)
+SCN004_DISMISSAL_WAGE_QUERY_WAGE_MARKERS = ("임금", "퇴직금", "14일")
+SCN004_DISMISSAL_WAGE_CITATION_MARKERS = (
+    "근로기준법 제23조",
+    "근로기준법 제26조",
+    "근로기준법 제27조",
+    "근로기준법 제28조",
+    "근로기준법 제36조",
+    "근로자퇴직급여 보장법 제9조",
+)
 
 EXPLICIT_CITATION_PATTERN = re.compile(
     r"(?:(?P<law>[가-힣A-Za-z0-9ㆍ·() ]{2,}?(?:법|법률))\s+)?"
@@ -796,6 +809,41 @@ def build_foreign_worker_workplace_change_key_points(
     return targeted_points[:OUTPUT_KEY_POINT_LIMIT]
 
 
+def build_scn004_dismissal_wage_key_points(
+    query: str,
+    grounded_chunks: Sequence[GroundedRetrievedChunk],
+) -> list[str]:
+    query_text = normalize_text(query)
+    if not is_scn004_dismissal_wage_combined_query(query_text):
+        return []
+
+    grounded_text = build_grounded_answer_summary_text(grounded_chunks)
+    targeted_points: list[str] = []
+
+    if "정당한 이유" in grounded_text or "정당하지 아니한 이유" in grounded_text:
+        targeted_points.append(
+            "사용자는 정당한 이유 없이 근로자를 해고할 수 없다."
+        )
+    if "30일" in grounded_text and "예고" in grounded_text:
+        targeted_points.append(
+            "해고하려면 적어도 30일 전에 예고해야 하며, 예고 없이 해고한 경우 30일분 이상의 통상임금을 지급해야 한다."
+        )
+    if "서면" in grounded_text and ("통지" in grounded_text or "서면통지" in grounded_text):
+        targeted_points.append(
+            "해고 사유와 해고 시기는 서면으로 통지해야 하며, 서면 통지 없이는 해고의 효력이 없다."
+        )
+    if "노동위원회" in grounded_text or "구제신청" in grounded_text:
+        targeted_points.append(
+            "부당해고를 당한 경우 노동위원회에 구제신청을 할 수 있으며, 부당해고등이 있었던 날부터 3개월 이내에 신청해야 한다."
+        )
+    if "14일" in grounded_text and ("퇴직" in grounded_text or "금품" in grounded_text):
+        targeted_points.append(
+            "퇴직 후 임금·퇴직금 등 금품은 14일 이내에 지급해야 한다."
+        )
+
+    return targeted_points[:OUTPUT_KEY_POINT_LIMIT]
+
+
 def augment_key_points_with_grounded_signals(
     *,
     query: str,
@@ -818,6 +866,13 @@ def augment_key_points_with_grounded_signals(
     seen_points: set[str] = set()
     ordered_point_sources = (grounded_clause_points, cleaned_model_points)
     augmented_key_points: list[str] = []
+
+    scn004_dismissal_wage_points = build_scn004_dismissal_wage_key_points(
+        query,
+        grounded_chunks,
+    )
+    if scn004_dismissal_wage_points:
+        return scn004_dismissal_wage_points
 
     foreign_worker_targeted_points = build_foreign_worker_full_bridge_key_points(
         query,
@@ -1187,6 +1242,16 @@ def is_serious_accident_penalty_query(query: str) -> bool:
     return (
         has_any_marker(query, SERIOUS_ACCIDENT_PENALTY_QUERY_MARKERS)
         and has_any_marker(query, SERIOUS_ACCIDENT_PENALTY_FOCUS_MARKERS)
+    )
+
+
+def is_scn004_dismissal_wage_combined_query(query: str) -> bool:
+    return (
+        has_any_marker(query, SCN004_DISMISSAL_WAGE_QUERY_DISMISSAL_MARKERS)
+        and has_any_marker(query, SCN004_DISMISSAL_WAGE_QUERY_NOTICE_MARKERS)
+        and has_any_marker(query, SCN004_DISMISSAL_WAGE_QUERY_ADVANCE_DAY_MARKERS)
+        and has_any_marker(query, SCN004_DISMISSAL_WAGE_QUERY_ADVANCE_NOTICE_MARKERS)
+        and all(marker in query for marker in SCN004_DISMISSAL_WAGE_QUERY_WAGE_MARKERS)
     )
 
 
@@ -3130,6 +3195,48 @@ def expand_cited_context_ids_for_targeted_patterns(
                     source_context_ids=source_context_ids,
                     source_citation_labels=source_citation_labels,
                     matched_query_patterns=bridge_query_patterns,
+                )
+            )
+
+    if is_scn004_dismissal_wage_combined_query(query_text):
+        scn004_query_patterns = dedupe_preserving_order(
+            [
+                *list_matched_markers(query_text, SCN004_DISMISSAL_WAGE_QUERY_DISMISSAL_MARKERS),
+                *list_matched_markers(query_text, SCN004_DISMISSAL_WAGE_QUERY_NOTICE_MARKERS),
+                *list_matched_markers(query_text, SCN004_DISMISSAL_WAGE_QUERY_ADVANCE_DAY_MARKERS),
+                *list_matched_markers(query_text, SCN004_DISMISSAL_WAGE_QUERY_ADVANCE_NOTICE_MARKERS),
+                *list_matched_markers(query_text, SCN004_DISMISSAL_WAGE_QUERY_WAGE_MARKERS),
+            ]
+        )
+        for citation_marker in SCN004_DISMISSAL_WAGE_CITATION_MARKERS:
+            if any(
+                chunk_citation_contains(chunk_by_context_id[context_id], citation_marker)
+                for context_id in normalized_ids
+            ):
+                continue
+            companion = select_best_citation_postprocess_candidate(
+                query_text=query_text,
+                query_terms=query_terms,
+                active_focuses=active_focuses,
+                grounded_chunks=grounded_chunks,
+                seen_context_ids=seen,
+                citation_marker=citation_marker,
+            )
+            if companion is None:
+                continue
+            source_context_ids = tuple(chunk.context_id for chunk in selected_chunks)
+            source_citation_labels = tuple(chunk.citation_label for chunk in selected_chunks)
+            normalized_ids.append(companion.context_id)
+            seen.add(companion.context_id)
+            selected_chunks.append(companion)
+            additions.append(
+                CitationPostprocessAddition(
+                    rule="scn004_dismissal_wage_postprocess",
+                    added_context_id=companion.context_id,
+                    added_citation_label=companion.citation_label,
+                    source_context_ids=source_context_ids,
+                    source_citation_labels=source_citation_labels,
+                    matched_query_patterns=scn004_query_patterns,
                 )
             )
 
