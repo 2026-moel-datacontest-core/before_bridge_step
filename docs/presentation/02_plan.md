@@ -22,11 +22,12 @@
 - RAG refinement landing 완료
 - SCN-004 document draft API 완료
 - SCN-004 frontend demo flow 완료
+- SCN-004 QA 정합성, content output, manual browser rehearsal 통과
 - scenario audit 완료: 주요 데모 시나리오 5개 검토
-- 남은 핵심 이슈: SCN-004 QA 정합성과 demo freeze 확인
+- 남은 핵심 이슈: SCN-004 demo freeze 유지와 제출 전 재현성 확인
 
-즉, 다음 단계의 핵심은 SCN-004 path가 backend/frontend schema, route guard, copy/print, live demo rehearsal에서 안정적으로 재현되는지 확인하는 것입니다.
-SCN-005 After 확장은 이 확인 뒤 작은 범위로 붙일지 결정합니다.
+즉, 다음 단계의 핵심은 SCN-004 path가 backend/frontend schema, route guard, copy/print, live demo rehearsal에서 안정적으로 재현되는 상태를 유지하는 것입니다.
+SCN-005 After 확장은 이 freeze 기준을 유지한 별도 범위로 붙일지 결정합니다.
 SCN-001 frontend 확장은 팀원 Before / Bridge 코드와 contract 확인 후 진행합니다.
 
 ## 2. 제출 전 실행 계획
@@ -100,7 +101,7 @@ SCN-001 frontend 확장은 팀원 Before / Bridge 코드와 contract 확인 후 
 - sessionStorage backup/restore
 - Before / Bridge / Recovery frontend 본 구현
 
-SCN-005 After 문서 타입 확장은 SCN-004 QA/freeze 확인 후 다음 구현 후보로 진행 가능하다.
+SCN-005 After 문서 타입 확장은 SCN-004 freeze 기준을 유지한 다음 구현 후보로 진행 가능하다.
 
 이 구분이 중요한 이유는, 발표에서 확장 가능성을 말하더라도 실제 구현 범위와 혼동되면 프로젝트 평가가 오히려 불안정해질 수 있기 때문입니다.
 

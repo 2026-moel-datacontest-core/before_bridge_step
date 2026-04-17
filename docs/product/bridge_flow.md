@@ -10,7 +10,7 @@ Bridge는 제품 구조상 `Before -> After`를 연결하는 단계다. 현재 S
 
 - `/bridge` route 없음
 - Before 결과 저장/복구 없음
-- SCN-004 QA 전에는 Bridge 확장 금지
+- SCN-004 demo freeze 유지 중에는 Bridge 확장 금지
 - 발표에서는 제품 확장 구조로 설명 가능
 
 ## 제품상 목표
@@ -42,4 +42,4 @@ MVP에서는 개인정보 최소 수집 원칙을 우선한다.
 
 ## 후속 조건
 
-Bridge는 Before frontend와 결과 schema가 안정화된 뒤 별도 단계로 구현한다. 현재 다음 단계는 Bridge 구현이 아니라 SCN-004 QA 정합성 검증이다.
+Bridge는 Before frontend와 결과 schema가 안정화된 뒤 별도 단계로 구현한다. 현재 다음 단계는 Bridge 구현이 아니라 SCN-004 demo freeze 유지다.

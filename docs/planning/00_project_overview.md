@@ -137,12 +137,17 @@
   - 실제 `/api/v1/answer`, `/api/v1/documents/draft` 연동
   - loading/error/a11y/route guard 및 copy/print 구현
   - Phase 3C 이후 확장 작업은 보류
+- SCN-004 QA/content/frontend rehearsal 완료:
+  - preset answer `cited_articles=6`, `grounded_context_ids=[1, 2, 3, 5, 10, 4]`
+  - answer key points에 노동위원회와 3개월 이내 구제신청 표시
+  - answer-derived document draft 2종 모두 `missing_legal_basis=[]`
+  - manual browser rehearsal에서 `/after -> /after/result -> /after/intake -> /after/draft`, copy, print, direct URL guard 확인
 
 ---
 
 ## Next Step
 
-현재 RAG refinement와 SCN-004 문서 초안 backend, SCN-004 After frontend 구현은 완료 상태로 본다. 다음 단계의 중심은 기능 확장이 아니라 **QA 정합성 검증**이다.
+현재 RAG refinement, SCN-004 문서 초안 backend, SCN-004 After frontend 구현, SCN-004 QA/content/frontend rehearsal은 완료 상태로 본다. 다음 단계의 중심은 기능 확장이 아니라 **demo freeze 유지와 제출 전 재현성 확인**이다.
 
 ### Step 0. Baseline freeze / 운영 기준 고정
 
@@ -154,20 +159,20 @@
 - `SCN-004` After document draft flow를 제출 전 핵심 demo path로 관리한다.
 - 이후 RAG 수정은 QA에서 regression이 확인되거나 필수 근거 누락이 재현될 때만 좁게 진행한다.
 
-### Step 1. Backend contract QA
+### Step 1. Backend contract 재확인
 
-- `/api/v1/answer` 응답 schema와 frontend `AnswerResponse` 타입 정합성 확인
-- `/api/v1/documents/draft` 응답 schema와 frontend `DocumentDraftResponse` 타입 정합성 확인
-- `buildLegalBasis()`가 `grounded_context_ids`에 해당하는 `retrieved_chunks`만 전달하는지 확인
-- `buildCaseIntake()`가 빈 문자열 row를 제거하고 기본 object/list를 채우는지 확인
+- `/api/v1/answer` 응답 schema와 frontend `AnswerResponse` 타입 정합성을 유지한다.
+- `/api/v1/documents/draft` 응답 schema와 frontend `DocumentDraftResponse` 타입 정합성을 유지한다.
+- `buildLegalBasis()`가 `grounded_context_ids`에 해당하는 `retrieved_chunks`만 전달하는지 유지 확인한다.
+- `buildCaseIntake()`가 빈 문자열 row를 제거하고 기본 object/list를 채우는지 유지 확인한다.
 - `check_document_draft.py`로 manual fixture와 answer-derived fixture smoke를 유지한다.
 
-### Step 2. Frontend flow QA
+### Step 2. Frontend flow 재확인
 
-- `/after` preset / 자유 입력의 `top_k` 분기 확인
-- `/after/result` citation 없음 / grounded context 없음 guard 확인
-- `/after/intake` 빈 필드 허용과 draft submit payload 확인
-- `/after/draft` rendered_text, missing_fields, cautions, evidence_checklist, cited_articles 표시 확인
+- `/after` preset / 자유 입력의 `top_k` 분기를 유지한다.
+- `/after/result` citation 없음 / grounded context 없음 guard를 유지한다.
+- `/after/intake` 빈 필드 허용과 draft submit payload를 유지한다.
+- `/after/draft` rendered_text, missing_fields, cautions, evidence_checklist, cited_articles 표시를 유지한다.
 - direct URL guard:
   - `/after/result`에 state 없음 -> `/after`
   - `/after/intake`에 answer 없음 -> `/after`

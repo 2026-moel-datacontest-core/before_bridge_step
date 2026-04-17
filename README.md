@@ -2,8 +2,8 @@
 
 외국인 근로자를 포함한 취약 노동자를 위한 노동권 보호 통합 AI MVP입니다.  
 현재 저장소 기준으로는 `retrieval + grounded answer generation + RAG refinement + SCN-004 문서 초안 backend + SCN-004 After frontend demo flow`까지 구현된 상태입니다.
-즉시 다음 단계는 `SCN-004` QA 정합성 검증과 demo rehearsal입니다.
-SCN-004 QA/freeze 확인 후 다음 확장 후보는 `SCN-005` After frontend / 문서 타입입니다.
+`SCN-004` QA 정합성 검증, content output 확인, manual browser rehearsal까지 통과한 상태입니다.
+다음 확장 후보는 `SCN-005` After frontend / 문서 타입이지만, 현재 SCN-004 demo freeze 기준과 별도 패치로만 진행합니다.
 `SCN-001` frontend 확장은 팀원 Before / Bridge 코드와 contract 확인 후 진행합니다.
 
 ## 현재 상태
@@ -21,7 +21,7 @@ SCN-004 QA/freeze 확인 후 다음 확장 후보는 `SCN-005` After frontend / 
 - answer model: `gemini-2.5-flash`
 - embedding model: `gemini-embedding-001`
 - frontend: Next.js `16.2.4`, React `19.2.5`
-- current phase: SCN-004 QA 정합성 검증 / demo rehearsal
+- current phase: SCN-004 QA/content/frontend rehearsal pass, demo freeze 유지
 
 핵심 상태:
 
@@ -34,6 +34,7 @@ SCN-004 QA/freeze 확인 후 다음 확장 후보는 `SCN-005` After frontend / 
 - `POST /api/v1/documents/draft` SCN-004 deterministic draft MVP 완료
 - frontend `/after -> /after/result -> /after/intake -> /after/draft` API-connected flow 구현 완료
 - frontend Phase 3 A/B(copy/print)까지 반영. Phase 3C 이후 확장성 작업은 데모 리스크 때문에 보류
+- SCN-004 preset answer와 2종 document draft output 정합성 확인 완료
 
 ## 지금까지 완료된 것
 
@@ -117,7 +118,7 @@ SCN-004 QA/freeze 확인 후 다음 확장 후보는 `SCN-005` After frontend / 
   - 카톡 해고/임금·퇴직금 체불 After frontend demo 구현 완료
 - `SCN-005`: covered
   - 육아휴직/가족돌봄휴가 부당 거절 answer smoke 가능
-  - After frontend / 문서 타입 확장은 SCN-004 QA/freeze 확인 후 진행 가능
+  - After frontend / 문서 타입 확장은 SCN-004 freeze 기준을 유지한 별도 패치에서 진행 가능
 
 ## 현재 데모 자산
 
@@ -153,13 +154,13 @@ SCN-004 QA/freeze 확인 후 다음 확장 후보는 `SCN-005` After frontend / 
 
 현재 우선순위는 아래 순서입니다.
 
-### 1. QA 정합성 검증
+### 1. SCN-004 demo freeze 유지
 
-- backend response schema와 frontend type/interface 정합성 확인
-- `/api/v1/answer -> /api/v1/documents/draft` legal basis 전달 경로 확인
-- SCN-004 preset과 document draft fixture의 cited_articles / grounded_context_ids 보존 확인
-- 직접 URL 접근, API 실패, 빈 필드, citation 없음 상태 확인
-- desktop/mobile 기본 레이아웃 smoke 확인
+- backend response schema와 frontend type/interface 정합성은 통과 상태로 유지
+- `/api/v1/answer -> /api/v1/documents/draft` legal basis 전달 경로는 통과 상태로 유지
+- SCN-004 preset answer는 `cited_articles=6`, `grounded_context_ids=[1, 2, 3, 5, 10, 4]` 기준으로 유지
+- document draft 2종은 `missing_legal_basis=[]` 기준으로 유지
+- 제출 전 직접 URL 접근, API 실패, 빈 필드, citation 없음 상태, desktop/mobile 기본 레이아웃만 재확인
 
 ### 2. 데모 운영 고정
 
@@ -173,7 +174,7 @@ SCN-004 QA/freeze 확인 후 다음 확장 후보는 `SCN-005` After frontend / 
 - 남은 `16` partial에 대한 answer-side surface / completeness 보강
 - `SCN-001 Full`은 `top_k=10`, `ef_search=100` demo path로만 운영
 - `SCN-002`는 설명형 Before 데모 범위 유지
-- `SCN-005` After frontend / 문서 타입 확장은 SCN-004 QA/freeze 확인 후 진행 가능
+- `SCN-005` After frontend / 문서 타입 확장은 SCN-004 freeze 기준을 유지한 별도 패치에서 진행 가능
 - `SCN-001` 문서 타입과 `Before -> Bridge -> After` frontend 확장은 팀원 Before / Bridge 코드와 contract 확인 후 검토
 
 ## 저장소 구조
@@ -255,9 +256,11 @@ full 60 retrieval / answer eval은 `backend/app/services/retrieval.py`, `backend
   - frontend: `http://127.0.0.1:3000`
   - `/health`, `/`, `/after`, `/after/result`, `/after/intake`, `/after/draft` HTTP 200
 - live API smoke 통과
-  - SCN-004 preset `/api/v1/answer`: `top_k=10`, `ef_search=100`, `cited_articles=5`, `grounded_context_ids=[1, 2, 3, 5, 10]`, `retrieved_chunks=10`
+  - SCN-004 preset `/api/v1/answer`: `top_k=10`, `ef_search=100`, `cited_articles=6`, `grounded_context_ids=[1, 2, 3, 5, 10, 4]`, `retrieved_chunks=10`
+  - `key_points`에 정당한 이유, 30일 전 예고/통상임금, 서면통지, 노동위원회, 3개월 이내, 14일 금품청산 내용 표시
   - `labor_office_wage_complaint` draft: HTTP 200, `rendered_text` 974자, `missing_fields=12`, `cautions=6`, `evidence_checklist=5`, `cited_articles=2`
-  - `labor_commission_unfair_dismissal_brief` draft: HTTP 200, `rendered_text` 1061자, `missing_fields=12`, `cautions=5`, `evidence_checklist=5`, `cited_articles=3`
+  - `labor_commission_unfair_dismissal_brief` draft: HTTP 200, `rendered_text` 1123자, `missing_fields=12`, `cautions=5`, `evidence_checklist=5`, `cited_articles=4`
+  - 두 draft 모두 `missing_legal_basis=[]`
 - schema / guard / copy / print code path 확인
   - answer / draft backend schema와 frontend type 일치
   - `cited_articles`, `grounded_context_ids` guard 확인
@@ -313,6 +316,6 @@ python eval/run_answer_eval.py --top-k 5 --ef-search 100 --limit 60 --show-failu
 - raw source HEAD가 더 최신이어도, snapshot 재선정 없이 섞어 반영하면 안 됩니다.
 - planning 문서의 오래된 숫자나 초안 조문은 항상 실제 `all_chunks.json`과 DB 상태로 재검증하는 것이 원칙입니다.
 - frontend는 개인정보 저장을 피하기 위해 raw `user_statement`, `answer_response`, `case_intake`, `draft_response`를 Web Storage에 저장하지 않습니다.
-- `SCN-004` QA 정합성 검증과 manual browser rehearsal은 통과 상태입니다.
+- `SCN-004` QA 정합성 검증, content output 확인, manual browser rehearsal은 통과 상태입니다.
 - 이후 기능 확장 후보는 `SCN-005` After frontend / 문서 타입입니다.
 - `SCN-001` frontend 확장은 팀원 Before / Bridge 코드와 contract 확인 후 진행합니다.

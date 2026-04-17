@@ -8,7 +8,7 @@
 
 ## 0. Current Implementation Status
 
-이 문서는 원래 2026-04-16 기준 frontend 구현 handoff였고, 2026-04-17 현재 구현은 완료 단계까지 진행됐다. 이후에는 이 문서를 새 feature 지시서가 아니라 **QA 정합성 기준서**로 사용한다.
+이 문서는 원래 2026-04-16 기준 frontend 구현 handoff였고, 2026-04-17 현재 구현과 SCN-004 QA/content/frontend rehearsal은 완료 단계까지 진행됐다. 이후에는 이 문서를 새 feature 지시서가 아니라 **demo freeze 기준서**로 사용한다.
 
 현재 코드 위치:
 
@@ -41,9 +41,9 @@
 
 다음 단계:
 
-- backend schema와 frontend type 정합성 QA
-- SCN-004 happy path / error path / guard path smoke
-- desktop/mobile demo layout 확인
+- backend schema와 frontend type 정합성 유지
+- SCN-004 happy path / error path / guard path 제출 전 재확인
+- desktop/mobile demo layout 제출 전 재확인
 
 ---
 
@@ -1135,9 +1135,9 @@ uvicorn backend.main:app --reload
 - `@carbon/react` 또는 다른 외부 UI 라이브러리 설치 금지
 - Tailwind CSS 설치 금지
 - `--kl-*`와 `--cds-*` token prefix 혼용 금지 (`--kl-*` canonical)
-- SCN-005 문서 타입은 SCN-004 QA/freeze 확인 후 별도 작업으로 진행 가능
+- SCN-005 문서 타입은 SCN-004 freeze 기준을 유지한 별도 작업으로 진행 가능
 - SCN-001 문서 타입 구현 금지 (팀원 Before / Bridge contract 확인 전 범위 아님)
-- `/before`, `/bridge` 화면 구현 금지 (현재 QA 전 범위 아님)
+- `/before`, `/bridge` 화면 구현 금지 (현재 freeze 범위 아님)
 - 법률 판단 확정 문구 하드코딩 금지 ("위법 확정", "반드시 승소" 등)
 - cited_articles 없는 법률 답변을 결과 화면에 표시 금지
 - 검색되지 않은 조문 인용 금지
@@ -1166,8 +1166,8 @@ uvicorn backend.main:app --reload
 추가로 필요하면:
 - `docs/planning/13_document_draft_plan.md` — CaseIntake schema 상세
 
-**현재 시작점**: `frontend/` 디렉토리에서 `npm run build`로 타입/빌드 정합성을 확인하고, backend 실행 후 `npm run dev`로 SCN-004 flow smoke를 진행한다.
+**현재 시작점**: SCN-004 QA/content/frontend rehearsal은 통과 상태다. 제출 전에는 `frontend/` 디렉토리에서 `npm run build`로 타입/빌드 정합성을 재확인하고, backend 실행 후 `npm run dev`로 SCN-004 flow smoke를 재확인한다.
 
 ---
 
-*이 문서는 2026-04-17 기준 K-Labor Shield SCN-004 frontend demo의 구현 완료 상태와 QA handoff를 함께 기록한다. backend 코드 및 API contract는 QA에서 확인하되 임의 변경하지 않는다.*
+*이 문서는 2026-04-17 기준 K-Labor Shield SCN-004 frontend demo의 구현 완료 상태와 QA/freeze handoff를 함께 기록한다. backend 코드 및 API contract는 regression 확인 없이 임의 변경하지 않는다.*

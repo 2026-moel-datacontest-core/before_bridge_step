@@ -18,7 +18,7 @@
 
 - 원래 Task 4 baseline은 `1713 / 1713` 완료 상태였다.
 - 이후 `SCN-003` 대응으로 장애인 관련 조문 9개를 최소 범위로 추가했고, 신규 9건만 추가 임베딩하여 현재 live 상태는 `1722 / 1722`다.
-- 2026-04-17 기준 RAG refinement, SCN-004 document draft API, frontend demo flow까지 완료됐으며 embedding 재실행은 현재 QA 범위가 아니다.
+- 2026-04-17 기준 RAG refinement, SCN-004 document draft API, frontend demo flow, SCN-004 QA/content rehearsal까지 완료됐으며 embedding 재실행은 현재 freeze 범위가 아니다.
 
 ---
 
@@ -212,7 +212,7 @@ Current live note:
 ## 다음 액션
 
 1. embedding baseline은 현재 유지
-2. 현재 다음 단계는 embedding 교체가 아니라 QA 정합성 검증
+2. 현재 다음 단계는 embedding 교체가 아니라 SCN-004 demo freeze 유지
 3. scenario data expansion이 필요한 경우에도 frozen snapshot 정합성을 우선 유지
 4. retrieval / grounding / answer regression이 재현될 때만 embedding 재평가 여부 결정
 5. latest end-to-end status는 `docs/ops/task6_answer_generation_status.md`, frontend QA status는 `docs/planning/14_frontend_implementation_handoff.md` 기준

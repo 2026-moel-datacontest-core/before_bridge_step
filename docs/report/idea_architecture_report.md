@@ -113,7 +113,7 @@
 
 ## 6. 제출 전 실행 계획
 
-현재 프로젝트는 아이디어 검토 단계가 아니라 이미 동작하는 RAG MVP와 SCN-004 frontend demo를 확보한 상태입니다. 따라서 제출 전 계획의 핵심은 신규 기능을 크게 넓히는 것이 아니라, 현재 시스템의 QA 정합성과 시연 안정성을 높이는 것입니다.
+현재 프로젝트는 아이디어 검토 단계가 아니라 이미 동작하는 RAG MVP와 SCN-004 frontend demo를 확보했고 QA/content/frontend rehearsal도 통과한 상태입니다. 따라서 제출 전 계획의 핵심은 신규 기능을 크게 넓히는 것이 아니라, 현재 시스템의 QA 정합성과 시연 안정성을 유지하는 것입니다.
 
 ### 6-1. 현재 기준선
 
@@ -123,7 +123,7 @@
 - SCN-004 document draft API 완료
 - SCN-004 frontend flow 완료
 - scenario audit 완료: 주요 데모 시나리오 5개 검토
-- 남은 핵심 이슈: 기능 확장보다 backend/frontend contract QA와 demo path 안정화
+- 남은 핵심 이슈: 기능 확장보다 backend/frontend contract QA 통과 상태와 demo path 안정성 유지
 
 ### 6-2. 공통 계획
 
@@ -170,7 +170,7 @@
 | 이번 제출 범위 안 | 법령 retrieval, grounded answer, cited articles 표시, SCN-004 문서 초안 API, SCN-004 frontend demo, `Before` / `After` / `Bridge` 흐름 설명 |
 | 이번 제출 범위 밖 | Recovery 본격 구현, 연도별 최저임금 자동 비교, 단순노무 직종 자동 판정, 대규모 hybrid retrieval 전환, Local LLM 운영 전환, SCN-001 문서 타입 확장, sessionStorage backup/restore |
 
-SCN-005 After 문서 타입 확장은 SCN-004 QA/freeze 확인 후 다음 구현 후보로 진행 가능하다.
+SCN-005 After 문서 타입 확장은 SCN-004 freeze 기준을 유지한 다음 구현 후보로 진행 가능하다.
 SCN-001 문서 타입과 Before-Bridge-After frontend 확장은 팀원 Before / Bridge 코드와 contract 확인 후 검토한다.
 
 ### 6-6. 리스크와 대응

@@ -222,7 +222,8 @@ blocker 처리 규칙:
 - answer generation 자체는 완료됨
 - RAG refinement도 `2026-04-16` clean pass 기준 landing 완료됨
 - SCN-004 document draft API와 frontend After flow도 구현 완료됨
-- 다음 실질 과제는 신규 backend feature가 아니라 QA 정합성 검증
+- SCN-004 QA 정합성 검증과 content rehearsal도 통과됨
+- 다음 실질 과제는 신규 backend feature가 아니라 demo freeze 유지
 - QA에서 answer / draft / frontend contract mismatch 또는 citation survival regression이 재현될 때만 좁게 수정
 
 ## Historical Success Criteria

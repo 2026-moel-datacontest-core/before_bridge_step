@@ -14,11 +14,12 @@
 - RAG refinement
 - SCN-004 document draft API
 - SCN-004 After frontend demo flow
+- SCN-004 QA/content/frontend rehearsal
 
 다음 단계:
 
-- QA 정합성 검증
-- demo path 안정화
+- demo freeze 유지
+- 제출 전 재현성 확인
 
 ## 발표에서 강조할 점
 

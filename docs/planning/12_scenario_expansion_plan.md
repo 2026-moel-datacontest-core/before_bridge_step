@@ -610,11 +610,12 @@
 ### 현재 단계 권장 결론
 
 - 이 시나리오는 현재 corpus로 retrieval / answer / document draft / frontend demo까지 구현 완료
+- SCN-004 QA/content/frontend rehearsal 통과
 - 데이터 추가나 재임베딩은 당장 필요하지 않음
-- 다음 확인 포인트는 신규 RAG 수정이 아니라 QA 정합성이다.
-  - answer legal basis가 draft payload로 정확히 전달되는지
-  - frontend가 citation 없음 상태를 guard하는지
-  - document draft가 검색된 근거 밖 조문을 만들지 않는지
+- 현재 확인 포인트는 신규 RAG 수정이 아니라 freeze 유지다.
+  - answer legal basis가 draft payload로 정확히 전달되는지 유지
+  - frontend가 citation 없음 상태를 guard하는지 유지
+  - document draft가 검색된 근거 밖 조문을 만들지 않는지 유지
 
 ### 2026-04-14 실제 검증 결과
 
@@ -672,7 +673,20 @@
 - ingestion / embedding 재실행도 불필요
 - 현재 판정은 `Current Corpus Covered` 유지가 맞다
 
-### 다음 QA 권장 실행 순서
+#### 2026-04-17 content QA 갱신
+
+- SCN-004 preset answer smoke:
+  - `top_k=10`, `ef_search=100`
+  - `cited_articles=6`
+  - `grounded_context_ids=[1, 2, 3, 5, 10, 4]`
+  - `retrieved_chunks=10`
+- answer `key_points`는 정당한 이유, 30일 전 예고/통상임금, 서면통지, 노동위원회, 3개월 이내, 14일 금품청산을 표시한다.
+- answer-derived draft smoke:
+  - 임금체불 진정서: `cited_articles=2`, `source_context_ids=[5, 10]`, `missing_legal_basis=[]`
+  - 부당해고 이유서: `cited_articles=4`, `source_context_ids=[1, 2, 3, 4]`, `missing_legal_basis=[]`
+- 따라서 이전 메모의 결합 질의 제23조 answer-side 누락 경향은 현재 targeted answer postprocess로 보강된 상태다.
+
+### 제출 전 재확인 순서
 
 1. `backend/verify/check_document_draft.py` 실행
 2. `/after` preset happy path 실행
@@ -681,15 +695,15 @@
 5. `/after/draft`에서 missing_fields, cautions, evidence_checklist, cited_articles 표시 확인
 6. copy / print 확인
 7. direct URL guard 확인
-8. 필요한 경우에만 query normalization 또는 clause ranking을 좁게 보강
+8. regression이 재현되는 경우에만 query normalization 또는 clause ranking을 좁게 보강
 
 ### 리스크 / 메모
 
 - `카톡 해고는 명백한 불법`, `무효` 같은 강한 문구는 실제 답변에서는 지나치게 단정적으로 보일 수 있다.
 - 현재 서비스 원칙상 답변은 `위반 가능성`, `무효로 다툴 여지`, `청구 가능성`, `확인 필요` 같은 표현을 유지하는 편이 안전하다.
-- 결합 질의에서는 retrieval에 `근로기준법 제23조`가 잡혀도 answer cited_articles에서는 `근로기준법 제27조`, `제26조`, `제28조`, `제36조`, `근로자퇴직급여 보장법 제9조` 쪽이 우선 선택되는 경향이 있었다.
+- historical note: 결합 질의에서는 retrieval에 `근로기준법 제23조`가 잡혀도 answer cited_articles에서 누락되는 경향이 있었다. 현재 SCN-004 targeted answer postprocess 이후에는 제23조가 `grounded_context_ids`와 부당해고 이유서 draft에 보존된다.
 - `노동청 제출용 진정서 AI 작성하기`는 현재 구현 완료됐지만 SCN-004 deterministic draft 범위로 제한한다.
-- SCN-005 문서 타입은 SCN-004 QA/freeze 확인 후 별도 After 확장 작업으로 진행 가능하다.
+- SCN-005 문서 타입은 SCN-004 freeze 기준을 유지한 별도 After 확장 작업으로 진행 가능하다.
 - SCN-001 문서 타입은 팀원 Before / Bridge code / contract 확인 전 확장하지 않는다.
 
 ### 데모 스크립트 메모
@@ -828,7 +842,7 @@
    - 불이익 금지
    - 서면 재신청 및 증거 확보
    를 빠뜨리지 않고 grounding하는지 확인
-4. 재신청서/내용증명 초안 생성은 SCN-004 QA/freeze 확인 후 다음 확장 포인트로 분리 관리
+4. 재신청서/내용증명 초안 생성은 SCN-004 freeze 기준을 유지한 다음 확장 포인트로 분리 관리
 
 ### 리스크 / 메모
 

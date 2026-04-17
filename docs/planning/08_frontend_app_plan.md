@@ -45,8 +45,9 @@
   - sessionStorage backup/restore
   - transition animation
   - `/before`, `/bridge`, Recovery 본 구현
-- 다음 단계는 SCN-004 QA 정합성 검증과 demo rehearsal이다.
-- SCN-005 After frontend / 문서 타입 확장은 SCN-004 QA/freeze 확인 후 진행한다.
+- SCN-004 QA 정합성 검증, content display 확인, manual browser rehearsal은 통과 상태다.
+- 다음 단계는 SCN-004 demo freeze 유지와 제출 전 재현성 확인이다.
+- SCN-005 After frontend / 문서 타입 확장은 SCN-004 freeze 기준을 유지한 별도 패치에서 진행한다.
 
 ---
 
@@ -60,7 +61,7 @@
 ### Before
 
 - 현재 frontend 구현 범위 밖이다.
-- 제품 구조상 남겨두되 SCN-004 demo QA 전에는 확장하지 않는다.
+- 제품 구조상 남겨두되 SCN-004 demo freeze 유지 중에는 확장하지 않는다.
 
 ### After
 
@@ -197,7 +198,7 @@ MVP 최소 필요 API:
 
 우선순위 기준:
 
-- 현재는 `SCN-004 After > QA > demo readiness`
+- 현재는 `SCN-004 After > QA pass > demo freeze`
 
 ---
 
@@ -234,4 +235,4 @@ MVP 최소 필요 API:
 - 프론트엔드 구현은 demo stability first
 - 세부 UI copy와 시각 스타일은 별도 문서로 분리 가능
 - 현재 구현 상세 기준은 `docs/planning/14_frontend_implementation_handoff.md`
-- 다음 작업 상세 기준은 QA 정합성 검증
+- 다음 작업 상세 기준은 demo freeze 유지와 제출 전 재현성 확인

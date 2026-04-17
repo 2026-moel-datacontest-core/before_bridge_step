@@ -10,7 +10,7 @@ Before는 제품 구조상 핵심 단계이지만, 현재 이 저장소의 front
 
 - 제품 문서상 역할은 유지
 - `/before`, `/before/result` frontend route는 구현하지 않음
-- SCN-004 QA 전에는 Before 기능을 새로 확장하지 않음
+- SCN-004 demo freeze 유지 중에는 Before 기능을 새로 확장하지 않음
 - 팀 내 Before 담당 작업과 통합될 때 별도 문서/contract로 연결
 
 ## 제품상 목표

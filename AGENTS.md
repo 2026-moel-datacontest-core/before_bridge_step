@@ -13,8 +13,9 @@
 - SCN-004 document draft backend 완료
 - SCN-004 After frontend 4-route flow 완료
 - Phase 3A/B 완료: rendered_text copy, browser print, print disclaimer
-- 현재 작업 중심은 **SCN-004 QA 정합성 검증과 demo rehearsal**
-- SCN-004 QA/freeze 확인 후 다음 확장 후보는 **SCN-005 After frontend / 문서 타입**
+- SCN-004 QA 정합성 검증, content output 확인, manual browser rehearsal 통과
+- 현재 작업 중심은 **SCN-004 demo freeze 유지와 제출 전 재현성 확인**
+- 다음 확장 후보는 **SCN-005 After frontend / 문서 타입**이나, 별도 패치로만 진행
 - SCN-001 frontend 확장은 팀원 Before / Bridge 코드와 contract 확인 후 진행
 - 현재 source of truth는 `backend/data/law_chunks/all_chunks.json`
 - current live corpus: `1722` chunks, `selected_as_of = 2026-04-11`
@@ -176,7 +177,7 @@ Implemented integration:
 * `/api/v1/documents/draft`는 request의 `legal_basis` 안에 있는 근거만 사용
 * draft service는 retrieval / answer_generation service를 직접 호출하지 않음
 * 사용자가 입력하지 않은 사실은 단정하지 않고 placeholder 또는 `missing_fields`로 남김
-* SCN-005 After 문서 타입 확장은 SCN-004 QA/freeze 확인 후 진행 가능
+* SCN-005 After 문서 타입 확장은 SCN-004 freeze 기준을 유지한 별도 패치에서 진행 가능
 * SCN-001 문서 타입 / Before-Bridge-After 확장은 팀원 Before / Bridge 코드와 contract 확인 후 검토
 
 ## Frontend Rules
@@ -185,9 +186,9 @@ Implemented integration:
 * demo stability first
 * backend schema 확인 없이 응답 필드 가정 금지
 * 현재 구현 범위는 SCN-004 After 4-route flow
-* `/before`, `/bridge`, Recovery 본 구현은 QA 전 단계에서 진행하지 않음
-* 현재 SCN-004 QA/demo freeze 작업과 SCN-005 문서 타입 frontend 확장을 한 패치에 섞지 않음
-* SCN-005 After frontend / 문서 타입 확장은 SCN-004 QA/freeze 확인 후 진행 가능
+* `/before`, `/bridge`, Recovery 본 구현은 현재 freeze 범위에서 진행하지 않음
+* 현재 SCN-004 demo freeze 유지 작업과 SCN-005 문서 타입 frontend 확장을 한 패치에 섞지 않음
+* SCN-005 After frontend / 문서 타입 확장은 SCN-004 freeze 기준을 유지한 별도 패치에서 진행 가능
 * SCN-001 `Before -> Bridge -> After` frontend 확장은 팀원 Before / Bridge 코드와 contract 확인 후 별도 단계에서 검토
 * raw `user_statement`, `answer_response`, `case_intake`, `draft_response`는 Web Storage에 저장하지 않음
 * SCN-004 preset은 `top_k=10`, 자유 입력은 `top_k=5`, 항상 `ef_search=100`

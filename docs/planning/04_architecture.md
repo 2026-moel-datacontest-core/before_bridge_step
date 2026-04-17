@@ -27,7 +27,8 @@
   - RAG refinement landing 완료
   - SCN-004 document draft backend 완료
   - SCN-004 After frontend flow 완료
-  - QA 정합성 검증 및 demo stability
+  - SCN-004 QA/content/frontend rehearsal 통과
+  - demo freeze 유지 및 제출 전 재현성 확인
 
 ---
 
@@ -54,4 +55,4 @@
 - later consider GCP + Ollama Local LLM
 - reranker / critic are post-MVP items
 - query decomposition is already limited to `SCN-001 Full` demo path under `top_k >= 8`
-- next practical step is QA consistency, not model swap or broad feature expansion
+- next practical step is demo freeze 유지, not model swap or broad feature expansion

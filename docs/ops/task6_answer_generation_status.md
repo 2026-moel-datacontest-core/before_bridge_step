@@ -273,7 +273,7 @@ landing verification:
 
 현재 RAG landing은 완료 상태다. 즉시 필요한 answer/retrieval 구조 수정 세션은 없다.
 
-다음 실질 작업은 SCN-004 frontend/backend QA 정합성 검증과 demo rehearsal이다. 이 freeze 확인 뒤 제품 확장 후보는 SCN-005 After frontend / 문서 타입이다. RAG 후속 작업이 필요할 때만 아래 순서로 다시 보는 것이 합리적이다.
+SCN-004 frontend/backend QA 정합성 검증과 demo rehearsal은 통과 상태다. 현재 실질 작업은 SCN-004 demo freeze 유지이며, 제품 확장 후보는 SCN-005 After frontend / 문서 타입이다. RAG 후속 작업이 필요할 때만 아래 순서로 다시 보는 것이 합리적이다.
 
 1. 남은 `16` partial에 대한 answer-side surface / completeness 보강
 2. low-signal key point noise 정리

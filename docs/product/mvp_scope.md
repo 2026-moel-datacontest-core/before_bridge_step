@@ -136,7 +136,7 @@
 - 팀원 Before / Bridge code / schema / API contract 확인 없는 SCN-001 frontend 확장
 - SCN-005 API / schema 검토 없는 독단적 문서 타입 확장
 - SCN-001 문서 타입의 독단적 확장
-- 현재 SCN-004 QA/demo freeze 완료 전에 `/before`, `/bridge` frontend 본 구현
+- 현재 SCN-004 demo freeze 유지 중 `/before`, `/bridge` frontend 본 구현
 
 ---
 
@@ -150,6 +150,8 @@
 - copy / print 동작 확인
 - direct URL guard 확인
 - QA에서 backend/frontend schema mismatch 없음
+- SCN-004 preset answer가 기대 조문 6개와 `grounded_context_ids=[1, 2, 3, 5, 10, 4]`를 유지
+- answer-derived document draft 2종이 `missing_legal_basis=[]` 유지
 - 데모 중단 없이 SCN-004 시연 가능
 
 ### 최종 demo 확장 성공 기준
@@ -194,8 +196,8 @@
 3. grounded answer 품질 개선
 4. SCN-004 document draft MVP
 5. SCN-004 frontend demo
-6. QA 정합성 검증
-7. 데모 안정화
+6. QA 정합성 검증 완료 상태 유지
+7. 데모 freeze 유지
 8. SCN-005 After demo / 문서 타입 확장
 9. 팀원 Before / Bridge 코드와 contract 확인
 10. SCN-001 `Before -> Bridge -> After` frontend 확장
