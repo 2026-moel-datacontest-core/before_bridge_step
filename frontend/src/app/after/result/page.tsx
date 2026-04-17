@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { CitationPill } from '@/components/ui/CitationPill';
 import { DisclaimerBanner } from '@/components/ui/DisclaimerBanner';
 import { Notification } from '@/components/ui/Notification';
+import { SkipLink } from '@/components/ui/SkipLink';
 import { useFlow } from '@/context/FlowContext';
 import { hasDraftGrounding } from '@/lib/api';
 import type { DocumentType } from '@/types/api';
@@ -52,12 +53,24 @@ export default function AfterResultPage() {
 
   useEffect(() => {
     if (answer) {
-      headingRef.current?.focus();
+      const frameId = window.requestAnimationFrame(() => {
+        headingRef.current?.focus();
+      });
+
+      return () => window.cancelAnimationFrame(frameId);
     }
   }, [answer]);
 
   if (!answer) {
-    return null;
+    return (
+      <>
+        <SkipLink />
+        <Masthead />
+        <main id="main-content" tabIndex={-1} className={styles.main}>
+          <p className={styles.redirectMessage}>처음 단계로 이동합니다.</p>
+        </main>
+      </>
+    );
   }
 
   const hasCitedArticles = answer.cited_articles.length > 0;
@@ -96,8 +109,9 @@ export default function AfterResultPage() {
 
   return (
     <>
+      <SkipLink />
       <Masthead />
-      <main className={styles.main}>
+      <main id="main-content" tabIndex={-1} className={styles.main}>
         <section className={styles.summaryBand} aria-labelledby="result-title">
           <div className={styles.shell}>
             <p className={styles.eyebrow}>Step 2 · 검색 결과</p>

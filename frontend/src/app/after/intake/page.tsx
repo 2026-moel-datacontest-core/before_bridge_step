@@ -16,6 +16,7 @@ import { WageComplaintForm } from '@/components/intake/WageComplaintForm';
 import { Button } from '@/components/ui/Button';
 import { DisclaimerBanner } from '@/components/ui/DisclaimerBanner';
 import { Notification } from '@/components/ui/Notification';
+import { SkipLink } from '@/components/ui/SkipLink';
 import { useFlow } from '@/context/FlowContext';
 import {
   ApiError,
@@ -24,10 +25,7 @@ import {
   fetchDraft,
   hasDraftGrounding,
 } from '@/lib/api';
-import type {
-  CaseIntakeFormValues,
-  DocumentType,
-} from '@/types/api';
+import type { CaseIntakeFormValues, DocumentType } from '@/types/api';
 
 import styles from './page.module.css';
 
@@ -79,12 +77,24 @@ export default function AfterIntakePage() {
 
   useEffect(() => {
     if (answer && selectedDocumentType) {
-      headingRef.current?.focus();
+      const frameId = window.requestAnimationFrame(() => {
+        headingRef.current?.focus();
+      });
+
+      return () => window.cancelAnimationFrame(frameId);
     }
   }, [answer, selectedDocumentType]);
 
   if (!answer || !selectedDocumentType) {
-    return null;
+    return (
+      <>
+        <SkipLink />
+        <Masthead />
+        <main id="main-content" tabIndex={-1} className={styles.main}>
+          <p className={styles.redirectMessage}>이전 단계로 이동합니다.</p>
+        </main>
+      </>
+    );
   }
 
   const documentTypeLabel = DOCUMENT_TYPE_LABELS[selectedDocumentType];
@@ -168,8 +178,9 @@ export default function AfterIntakePage() {
 
   return (
     <>
+      <SkipLink />
       <Masthead isLoading={isSubmitting} />
-      <main className={styles.main}>
+      <main id="main-content" tabIndex={-1} className={styles.main}>
         <section className={styles.headerBand} aria-labelledby="intake-title">
           <div className={styles.shell}>
             <p className={styles.eyebrow}>Step 3 · 사건 정보 입력</p>
@@ -186,7 +197,11 @@ export default function AfterIntakePage() {
           </div>
         </section>
 
-        <form className={styles.form} onSubmit={handleSubmit} aria-busy={isSubmitting}>
+        <form
+          className={styles.form}
+          onSubmit={handleSubmit}
+          aria-busy={isSubmitting || undefined}
+        >
           <div className={isSubmitting ? styles.formContentDisabled : styles.formContent}>
             {selectedDocumentType === 'labor_office_wage_complaint' ? (
               <WageComplaintForm

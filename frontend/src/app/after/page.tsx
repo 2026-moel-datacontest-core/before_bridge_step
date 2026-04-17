@@ -1,12 +1,13 @@
 'use client';
 
-import { FormEvent, useMemo, useRef, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { Masthead } from '@/components/layout/Masthead';
 import { Button } from '@/components/ui/Button';
 import { DisclaimerBanner } from '@/components/ui/DisclaimerBanner';
 import { Notification } from '@/components/ui/Notification';
+import { SkipLink } from '@/components/ui/SkipLink';
 import { useFlow } from '@/context/FlowContext';
 import { ApiError, fetchAnswer } from '@/lib/api';
 import type { AnswerRequest } from '@/types/api';
@@ -25,6 +26,8 @@ interface AnswerErrorState {
 export default function AfterPage() {
   const router = useRouter();
   const { state, dispatch } = useFlow();
+  const mainRef = useRef<HTMLElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const answerSubmittingRef = useRef(false);
   const [statement, setStatement] = useState(state.user_statement);
   const [isPreset, setIsPreset] = useState(state.is_scn_demo_preset);
@@ -36,6 +39,15 @@ export default function AfterPage() {
   const isShort = characterCount > 0 && characterCount < 10;
   const canSubmit = characterCount >= 10 && !isLoading;
   const isPresetTextUnchanged = statement === SCN_004_PRESET;
+
+  useEffect(() => {
+    const frameId = window.requestAnimationFrame(() => {
+      const focusTarget = textareaRef.current ?? mainRef.current;
+      focusTarget?.focus();
+    });
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, []);
 
   const helperText = useMemo(() => {
     if (isShort) {
@@ -120,8 +132,9 @@ export default function AfterPage() {
 
   return (
     <>
+      <SkipLink />
       <Masthead isLoading={isLoading} />
-      <main className={styles.main}>
+      <main id="main-content" ref={mainRef} tabIndex={-1} className={styles.main}>
         <section className={styles.intro} aria-labelledby="after-title">
           <div className={styles.introInner}>
             <p className={styles.eyebrow}>After flow · SCN-004</p>
@@ -136,7 +149,11 @@ export default function AfterPage() {
 
         <section className={styles.formBand} aria-labelledby="statement-title">
           <div className={styles.formShell}>
-            <form className={styles.form} onSubmit={handleSubmit} aria-busy={isLoading}>
+            <form
+              className={styles.form}
+              onSubmit={handleSubmit}
+              aria-busy={isLoading || undefined}
+            >
               <div className={styles.formHeader}>
                 <div>
                   <p className={styles.eyebrow}>Step 1</p>
@@ -152,6 +169,7 @@ export default function AfterPage() {
               </label>
               <textarea
                 id="statement"
+                ref={textareaRef}
                 className={styles.textarea}
                 value={statement}
                 onChange={(event) => handleStatementChange(event.target.value)}

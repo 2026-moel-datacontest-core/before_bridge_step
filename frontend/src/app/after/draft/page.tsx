@@ -11,6 +11,7 @@ import { LegalBasisPanel } from '@/components/draft/LegalBasisPanel';
 import { MissingFieldsPanel } from '@/components/draft/MissingFieldsPanel';
 import { Button } from '@/components/ui/Button';
 import { DisclaimerBanner } from '@/components/ui/DisclaimerBanner';
+import { SkipLink } from '@/components/ui/SkipLink';
 import { useFlow } from '@/context/FlowContext';
 import type { DocumentType } from '@/types/api';
 
@@ -35,12 +36,24 @@ export default function AfterDraftPage() {
 
   useEffect(() => {
     if (draft) {
-      headingRef.current?.focus();
+      const frameId = window.requestAnimationFrame(() => {
+        headingRef.current?.focus();
+      });
+
+      return () => window.cancelAnimationFrame(frameId);
     }
   }, [draft]);
 
   if (!draft) {
-    return null;
+    return (
+      <>
+        <SkipLink />
+        <Masthead />
+        <main id="main-content" tabIndex={-1} className={styles.main}>
+          <p className={styles.redirectMessage}>처음 단계로 이동합니다.</p>
+        </main>
+      </>
+    );
   }
 
   function resetFlow() {
@@ -66,8 +79,14 @@ export default function AfterDraftPage() {
 
   return (
     <>
+      <SkipLink
+        links={[
+          { href: '#main-content', label: '본문으로 건너뛰기' },
+          { href: '#document-draft', label: '문서 초안으로 건너뛰기' },
+        ]}
+      />
       <Masthead />
-      <main className={styles.main}>
+      <main id="main-content" tabIndex={-1} className={styles.main}>
         <section className={styles.headerBand} aria-labelledby="draft-title">
           <div className={styles.shell}>
             <p className={styles.eyebrow}>Step 4 · 문서 초안</p>
@@ -88,7 +107,11 @@ export default function AfterDraftPage() {
             <DisclaimerBanner>
               <p>이 문서는 제출 전 검토용 초안입니다. 사실관계와 제출 기관 안내를 확인하세요.</p>
             </DisclaimerBanner>
-            <DocumentPreview title={draft.title} renderedText={draft.rendered_text} />
+            <DocumentPreview
+              id="document-draft"
+              title={draft.title}
+              renderedText={draft.rendered_text}
+            />
           </section>
 
           <aside className={styles.sideColumn} aria-label="초안 확인 항목">
