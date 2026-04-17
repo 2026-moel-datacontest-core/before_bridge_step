@@ -36,9 +36,11 @@
 - Phase 3C 이후 확장 작업은 보류:
   - sessionStorage backup/restore
   - page transition animation
-  - 현재 SCN-004 QA/demo freeze 완료 전 `/before`, `/bridge`, SCN-005/SCN-001 문서 타입 확장
-- SCN-001 `Before -> Bridge -> After` 및 SCN-005 frontend 확장은 팀원 Before / Bridge 코드와 contract 확인 후 별도 단계에서 검토
-- 다음 단계는 QA 정합성 검증
+  - 현재 SCN-004 QA/demo freeze 작업과 SCN-005 문서 타입 확장을 한 패치에 혼합
+  - 팀원 Before / Bridge contract 확인 없는 SCN-001 문서 타입 확장
+- SCN-005 After frontend / 문서 타입 확장은 SCN-004 QA/freeze 확인 후 진행 가능
+- SCN-001 `Before -> Bridge -> After` frontend 확장은 팀원 Before / Bridge 코드와 contract 확인 후 별도 단계에서 검토
+- 다음 단계는 SCN-004 QA 정합성 검증과 demo rehearsal
 
 ## 핵심 원칙
 
@@ -85,7 +87,8 @@
 - Before / Bridge / Recovery 본 구현
 - sessionStorage backup/restore
 - PDF 다운로드 / 실제 제출 기능
-- 현재 SCN-004 QA/demo freeze 완료 전 SCN-005 / SCN-001 문서 타입 확장
+- 현재 SCN-004 QA/demo freeze 작업과 SCN-005 문서 타입 확장을 한 패치에 혼합
+- SCN-005 API / schema 검토 없는 독단적 문서 타입 확장
 - 팀원 Before / Bridge code / schema / API contract 확인 없는 SCN-001 frontend 확장
 
 ## Do Not
@@ -93,5 +96,5 @@
 - backend contract 임의 변경 전제 UI 작성
 - 근거 없는 법률 문구 하드코딩
 - 개인정보 수집 기능 추가
-- 현재 SCN-004 QA/demo freeze 중 신규 대형 기능 추가
+- SCN-004 freeze 기준을 깨는 신규 대형 기능 추가
 - 문서 범위를 넘는 독단적 화면 확장

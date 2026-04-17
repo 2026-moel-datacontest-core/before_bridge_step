@@ -168,7 +168,10 @@
 | 구분 | 항목 |
 |---|---|
 | 이번 제출 범위 안 | 법령 retrieval, grounded answer, cited articles 표시, SCN-004 문서 초안 API, SCN-004 frontend demo, `Before` / `After` / `Bridge` 흐름 설명 |
-| 이번 제출 범위 밖 | Recovery 본격 구현, 연도별 최저임금 자동 비교, 단순노무 직종 자동 판정, 대규모 hybrid retrieval 전환, Local LLM 운영 전환, SCN-005/SCN-001 문서 타입 확장, sessionStorage backup/restore |
+| 이번 제출 범위 밖 | Recovery 본격 구현, 연도별 최저임금 자동 비교, 단순노무 직종 자동 판정, 대규모 hybrid retrieval 전환, Local LLM 운영 전환, SCN-001 문서 타입 확장, sessionStorage backup/restore |
+
+SCN-005 After 문서 타입 확장은 SCN-004 QA/freeze 확인 후 다음 구현 후보로 진행 가능하다.
+SCN-001 문서 타입과 Before-Bridge-After frontend 확장은 팀원 Before / Bridge 코드와 contract 확인 후 검토한다.
 
 ### 6-6. 리스크와 대응
 

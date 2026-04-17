@@ -51,7 +51,8 @@ FastAPI 애플리케이션, RAG 엔진, PostgreSQL/pgvector DB 연결, 임베딩
 - draft service는 retrieval / answer_generation service를 직접 호출하지 않음
 - request로 받은 `legal_basis.cited_articles`, `source_context_ids`, `retrieved_chunks` 안에서만 근거 사용
 - 사용자가 입력하지 않은 사실은 단정하지 않고 placeholder 또는 `missing_fields`로 남김
-- `SCN-004` 외 문서 타입 확장은 현재 QA 전 단계에서 추가하지 않음
+- `SCN-005` 문서 타입 확장은 SCN-004 QA/freeze 확인 후 진행 가능
+- `SCN-001` 문서 타입 확장은 팀원 Before / Bridge code / contract 확인 전 추가하지 않음
 
 ## 환경변수
 

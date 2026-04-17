@@ -45,7 +45,8 @@
   - sessionStorage backup/restore
   - transition animation
   - `/before`, `/bridge`, Recovery 본 구현
-- 다음 단계는 QA 정합성 검증이다.
+- 다음 단계는 SCN-004 QA 정합성 검증과 demo rehearsal이다.
+- SCN-005 After frontend / 문서 타입 확장은 SCN-004 QA/freeze 확인 후 진행한다.
 
 ---
 
@@ -210,7 +211,8 @@ MVP 최소 필요 API:
 - 복잡한 멀티스텝 폼 엔진
 - 채팅형 agent loop UI 고도화
 - sessionStorage / localStorage backup-restore
-- SCN-005 / SCN-001 문서 타입 frontend 확장
+- 현재 SCN-004 freeze 작업 중 SCN-005 문서 타입 frontend 확장
+- 팀원 Before / Bridge contract 확인 없는 SCN-001 frontend 확장
 
 ---
 

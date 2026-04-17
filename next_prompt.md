@@ -1,6 +1,9 @@
 # Next Prompt
 
-현재 RAG refinement, SCN-004 document draft backend, SCN-004 After frontend implementation은 완료 상태다. 다음 세션의 목표는 신규 기능 확장이 아니라 **QA 정합성 검증과 demo freeze**다.
+현재 RAG refinement, SCN-004 document draft backend, SCN-004 After frontend implementation은 완료 상태다.
+다음 세션의 즉시 목표는 **SCN-004 QA 정합성 검증과 demo rehearsal**이다.
+SCN-004 QA/freeze 확인 후 다음 목표 후보는 **SCN-005 After frontend / 문서 타입 확장**이다.
+SCN-001 frontend 확장은 팀원 Before / Bridge 코드와 contract 확인 후 진행한다.
 
 ## 현재 상태 요약
 
@@ -24,7 +27,9 @@
   - sessionStorage backup/restore
   - transition animation
   - Before / Bridge / Recovery 확장
-  - SCN-005 / SCN-001 문서 타입 확장
+  - 현재 SCN-004 freeze 작업 중 문서 타입 확장
+- SCN-005 After 문서 타입 확장은 SCN-004 QA/freeze 확인 후 진행 가능
+- SCN-001 문서 타입 확장은 팀원 Before / Bridge 코드와 contract 확인 후 진행
 
 ## 다음 세션 프롬프트
 
@@ -84,7 +89,8 @@ QA 목표:
 - data/legalize-kr/를 수정하지 말 것
 - sessionStorage backup/restore를 추가하지 말 것
 - /before, /bridge, Recovery를 구현하지 말 것
-- SCN-005 / SCN-001 문서 타입을 확장하지 말 것
+- 현재 SCN-004 QA 작업과 SCN-005 문서 타입 확장을 한 패치에 섞지 말 것
+- 팀원 Before / Bridge contract 확인 전 SCN-001 문서 타입을 확장하지 말 것
 
 마지막에는 확인한 항목, 통과/실패, 수정한 파일, 남은 리스크를 짧게 정리해주세요.
 ```

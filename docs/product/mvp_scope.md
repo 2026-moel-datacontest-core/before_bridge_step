@@ -94,8 +94,8 @@
 - deterministic document draft service
 - Next.js SCN-004 demo frontend
 - 후속 frontend 확장 대상:
-  - SCN-001 `Before -> Bridge -> After` demo
   - SCN-005 After demo
+  - SCN-001 `Before -> Bridge -> After` demo
   - 팀원 Before / Bridge 코드 확인 후 연결되는 route와 payload adapter
 
 ### 조건부 포함
@@ -103,7 +103,8 @@
 - JSON 응답 구조 고정
 - cited_articles 검증
 - frontend QA에서 필요한 최소 polish
-- Before / Bridge contract 확인 후 SCN-001 / SCN-005 frontend route 확장
+- SCN-005 After frontend / 문서 타입 route 확장
+- Before / Bridge contract 확인 후 SCN-001 frontend route 확장
 
 ### 후순위
 
@@ -133,7 +134,8 @@
 - PDF / HWP 다운로드
 - 실제 제출 기능
 - 팀원 Before / Bridge code / schema / API contract 확인 없는 SCN-001 frontend 확장
-- SCN-005 / SCN-001 문서 타입의 독단적 확장
+- SCN-005 API / schema 검토 없는 독단적 문서 타입 확장
+- SCN-001 문서 타입의 독단적 확장
 - 현재 SCN-004 QA/demo freeze 완료 전에 `/before`, `/bridge` frontend 본 구현
 
 ---
@@ -180,7 +182,8 @@
 
 - 검색된 법령 근거 포함
 - retrieval 실제 동작
-- 팀원 Before / Bridge 코드와 frontend adapter contract 정합성 확보
+- SCN-005 확장 시 backend schema와 frontend adapter contract 정합성 확보
+- SCN-001 확장 시 팀원 Before / Bridge 코드와 frontend adapter contract 정합성 확보
 
 ---
 
@@ -193,6 +196,6 @@
 5. SCN-004 frontend demo
 6. QA 정합성 검증
 7. 데모 안정화
-8. 팀원 Before / Bridge 코드와 contract 확인
-9. SCN-001 `Before -> Bridge -> After` frontend 확장
-10. SCN-005 After demo / 문서 타입 확장 검토
+8. SCN-005 After demo / 문서 타입 확장
+9. 팀원 Before / Bridge 코드와 contract 확인
+10. SCN-001 `Before -> Bridge -> After` frontend 확장

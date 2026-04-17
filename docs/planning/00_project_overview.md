@@ -181,7 +181,8 @@
   - sessionStorage backup/restore
   - transition animation
   - `/before`, `/bridge`, Recovery frontend 확장
-  - SCN-005 / SCN-001 문서 타입 추가
+  - 현재 SCN-004 freeze 작업 중 SCN-005 문서 타입 추가
+  - 팀원 Before / Bridge contract 확인 없는 SCN-001 문서 타입 추가
 - 개인정보 저장 금지 원칙을 유지한다.
 - raw `user_statement`, `answer_response`, `case_intake`, `draft_response`는 Web Storage에 저장하지 않는다.
 

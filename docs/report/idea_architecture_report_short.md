@@ -68,7 +68,7 @@
 - `SCN-003`: 장애인 편의제공 및 지원 제도 안내 (`Before`)
 - `SCN-002`: 최저임금/수습 꼼수 (`Before`, partial)
 
-현재 실제 frontend main demo는 `SCN-004`입니다. `top_k=10`, `ef_search=100` preset 경로로 권리 안내와 문서 초안까지 한 번에 보여줄 수 있습니다. `SCN-001`은 전체 제품 스토리(`Before -> Bridge -> After`)를 설명하는 대표 시나리오로 유지하고, `SCN-005`는 backup answer scenario로 둡니다. `SCN-003`은 확장성 설명용, `SCN-002`는 설명형 데모까지만 권장됩니다.
+현재 실제 frontend main demo는 `SCN-004`입니다. `top_k=10`, `ef_search=100` preset 경로로 권리 안내와 문서 초안까지 한 번에 보여줄 수 있습니다. `SCN-001`은 전체 제품 스토리(`Before -> Bridge -> After`)를 설명하는 대표 시나리오로 유지하되, frontend 확장은 팀원 Before / Bridge 코드와 contract 확인 후 진행합니다. `SCN-005`는 backup answer scenario이자 SCN-004 QA/freeze 확인 후 진행 가능한 다음 After 문서 타입 확장 후보입니다. `SCN-003`은 확장성 설명용, `SCN-002`는 설명형 데모까지만 권장됩니다.
 
 ## 6. 제출 전 실행 계획
 

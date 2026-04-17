@@ -36,7 +36,8 @@
 - sessionStorage backup/restore
 - transition animation
 - `/before`, `/bridge`, Recovery 구현
-- SCN-005 / SCN-001 문서 타입 확장
+- 현재 SCN-004 freeze 작업 중 SCN-005 문서 타입 확장
+- 팀원 Before / Bridge contract 확인 없는 SCN-001 문서 타입 확장
 
 다음 단계:
 
@@ -139,7 +140,8 @@ ef_search는 항상 100. top_k만 분기.
 - OCR / 파일 업로드
 - Before 화면 (`/before`, `/before/result`)
 - Bridge 화면 (`/bridge`)
-- SCN-001, SCN-005 문서 타입
+- 현재 SCN-004 freeze 작업 중 SCN-005 문서 타입
+- 팀원 Before / Bridge contract 확인 없는 SCN-001 문서 타입
 - 서버 저장 / PDF 다운로드
 - 실제 제출 기능
 - Recovery 화면
@@ -1133,7 +1135,8 @@ uvicorn backend.main:app --reload
 - `@carbon/react` 또는 다른 외부 UI 라이브러리 설치 금지
 - Tailwind CSS 설치 금지
 - `--kl-*`와 `--cds-*` token prefix 혼용 금지 (`--kl-*` canonical)
-- SCN-001, SCN-005 문서 타입 구현 금지 (현재 QA 전 범위 아님)
+- SCN-005 문서 타입은 SCN-004 QA/freeze 확인 후 별도 작업으로 진행 가능
+- SCN-001 문서 타입 구현 금지 (팀원 Before / Bridge contract 확인 전 범위 아님)
 - `/before`, `/bridge` 화면 구현 금지 (현재 QA 전 범위 아님)
 - 법률 판단 확정 문구 하드코딩 금지 ("위법 확정", "반드시 승소" 등)
 - cited_articles 없는 법률 답변을 결과 화면에 표시 금지
