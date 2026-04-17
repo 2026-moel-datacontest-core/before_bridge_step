@@ -37,6 +37,7 @@
 .grid {
   display: grid;
   gap: var(--kl-space-4);
+  min-width: 0;
 }
 
 .field {
@@ -56,6 +57,8 @@
 .select,
 .textarea {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   border: none;
   border-bottom: 2px solid var(--kl-border);
   border-radius: var(--kl-radius-control);
@@ -95,12 +98,14 @@
 
 .checkboxLabel {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--kl-space-2);
+  min-width: 0;
   color: var(--kl-text-primary);
   font-size: var(--kl-text-body);
   line-height: var(--kl-lh-body);
   letter-spacing: var(--kl-ls-body);
+  overflow-wrap: anywhere;
 }
 
 .checkboxLabel input {

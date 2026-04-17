@@ -22,6 +22,7 @@
   font-size: var(--kl-text-body);
   line-height: var(--kl-lh-body);
   letter-spacing: var(--kl-ls-body);
+  overflow-wrap: anywhere;
 }
 
 .emptyText {
@@ -30,4 +31,5 @@
   font-size: var(--kl-text-body);
   line-height: var(--kl-lh-body);
   letter-spacing: var(--kl-ls-body);
+  overflow-wrap: anywhere;
 }

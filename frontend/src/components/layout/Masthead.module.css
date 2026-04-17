@@ -21,6 +21,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--kl-space-3);
+  min-width: 0;
   min-height: var(--kl-masthead-height);
   color: var(--kl-text-on-dark);
   font-size: var(--kl-text-body);
@@ -31,6 +32,12 @@
 .brand:hover {
   color: var(--kl-text-on-primary);
   text-decoration: none;
+}
+
+.brand span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .mark {

@@ -61,6 +61,7 @@
 .documentBadge {
   display: inline-flex;
   align-items: center;
+  max-width: 100%;
   min-height: 24px;
   padding: var(--kl-space-1) var(--kl-space-3);
   border-radius: var(--kl-radius-pill);
@@ -69,6 +70,8 @@
   font-size: var(--kl-text-caption);
   line-height: var(--kl-lh-caption);
   letter-spacing: var(--kl-ls-caption);
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .lead {
@@ -111,8 +114,13 @@
 .stickyInner {
   display: grid;
   gap: var(--kl-space-4);
+  min-width: 0;
   padding-top: var(--kl-space-4);
   padding-bottom: var(--kl-space-4);
+}
+
+.stickyMessage {
+  min-width: 0;
 }
 
 .stickyMessage:empty {
@@ -123,6 +131,20 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--kl-space-3);
+  min-width: 0;
+}
+
+@media (max-width: 671px) {
+  .actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+  }
+
+  .actions > button {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 @media (min-width: 672px) {

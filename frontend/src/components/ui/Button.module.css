@@ -3,6 +3,8 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--kl-space-2);
+  max-width: 100%;
+  min-width: 0;
   min-height: var(--kl-interactive-height);
   padding: 0 var(--kl-space-6);
   border: 1px solid transparent;
@@ -16,6 +18,11 @@
     background-color var(--kl-duration-short) var(--kl-ease-enter),
     border-color var(--kl-duration-short) var(--kl-ease-enter),
     color var(--kl-duration-short) var(--kl-ease-enter);
+}
+
+.button span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .button:disabled {

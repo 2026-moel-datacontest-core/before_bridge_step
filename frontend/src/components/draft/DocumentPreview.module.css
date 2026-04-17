@@ -26,13 +26,15 @@
 
 .paper {
   width: 100%;
-  max-width: var(--kl-document-width);
+  max-width: min(100%, var(--kl-document-width));
+  min-width: 0;
   border: var(--kl-border-default);
   background: var(--kl-bg);
   color: var(--kl-text-primary);
   padding: var(--kl-space-6);
   font-size: var(--kl-text-body-lg);
   line-height: var(--kl-lh-document);
+  overflow-wrap: anywhere;
   white-space: pre-wrap;
 }
 

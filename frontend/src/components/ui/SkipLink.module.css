@@ -6,6 +6,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--kl-space-2);
+  max-width: calc(100vw - var(--kl-space-4));
   transform: translateY(calc(-100% - var(--kl-space-4)));
 }
 

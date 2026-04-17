@@ -89,6 +89,8 @@
 .textarea {
   min-height: 176px;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   resize: vertical;
   border: none;
   border-bottom: 2px solid var(--kl-border);
@@ -134,12 +136,28 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--kl-space-3);
+  min-width: 0;
 }
 
 .actionRow {
   display: flex;
   justify-content: flex-start;
+  min-width: 0;
   padding-top: var(--kl-space-2);
+}
+
+@media (max-width: 671px) {
+  .presetRow,
+  .actionRow {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .presetRow > button,
+  .actionRow > button {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 .disclaimerBand {

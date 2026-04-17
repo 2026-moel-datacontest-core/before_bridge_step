@@ -55,6 +55,7 @@
   font-size: var(--kl-text-body);
   line-height: var(--kl-lh-body);
   letter-spacing: var(--kl-ls-body);
+  overflow-wrap: anywhere;
 }
 
 .contentGrid {
@@ -95,6 +96,7 @@
   color: var(--kl-text-primary);
   font-size: var(--kl-text-body-lg);
   line-height: var(--kl-lh-body);
+  overflow-wrap: anywhere;
 }
 
 .answerBody p {
@@ -120,6 +122,7 @@
   font-size: var(--kl-text-body);
   line-height: var(--kl-lh-body);
   letter-spacing: var(--kl-ls-body);
+  overflow-wrap: anywhere;
 }
 
 .cautionSection {
@@ -133,12 +136,14 @@
   font-size: var(--kl-text-body);
   line-height: var(--kl-lh-body);
   letter-spacing: var(--kl-ls-body);
+  overflow-wrap: anywhere;
 }
 
 .citationList {
   display: flex;
   flex-wrap: wrap;
   gap: var(--kl-space-2);
+  min-width: 0;
 }
 
 .selectorPanel {
@@ -158,6 +163,7 @@
   display: grid;
   grid-template-columns: 16px 1fr;
   gap: var(--kl-space-3);
+  min-width: 0;
   min-height: 128px;
   padding: var(--kl-space-4);
   border: 2px solid var(--kl-border-subtle);
@@ -190,6 +196,7 @@
 .radioText {
   display: grid;
   gap: var(--kl-space-1);
+  min-width: 0;
 }
 
 .radioTitle {
@@ -198,6 +205,7 @@
   font-weight: 600;
   line-height: var(--kl-lh-body-short);
   letter-spacing: var(--kl-ls-body);
+  overflow-wrap: anywhere;
 }
 
 .radioSubtitle {
@@ -206,6 +214,7 @@
   font-size: var(--kl-text-mono-sm);
   line-height: var(--kl-lh-caption);
   letter-spacing: var(--kl-ls-caption);
+  overflow-wrap: anywhere;
 }
 
 .radioBody {
@@ -213,6 +222,19 @@
   font-size: var(--kl-text-body);
   line-height: var(--kl-lh-body);
   letter-spacing: var(--kl-ls-body);
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 671px) {
+  .selectorPanel {
+    position: static;
+  }
+
+  .radioTile,
+  .radioTileSelected {
+    min-height: 0;
+    padding: var(--kl-space-3);
+  }
 }
 
 @media (min-width: 672px) {

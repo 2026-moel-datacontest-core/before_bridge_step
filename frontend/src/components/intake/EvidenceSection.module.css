@@ -30,6 +30,7 @@
   font-size: var(--kl-text-body);
   line-height: var(--kl-lh-body);
   letter-spacing: var(--kl-ls-body);
+  overflow-wrap: anywhere;
 }
 
 .fieldset {
@@ -49,6 +50,7 @@
   font-size: var(--kl-text-h3);
   font-weight: 600;
   line-height: var(--kl-lh-body);
+  overflow-wrap: anywhere;
 }
 
 .rows {
@@ -60,6 +62,7 @@
 .evidenceRow {
   display: grid;
   gap: var(--kl-space-3);
+  min-width: 0;
   padding-bottom: var(--kl-space-4);
   border-bottom: var(--kl-border-subtle-line);
 }
@@ -80,6 +83,8 @@
 .input,
 .select {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   min-height: var(--kl-interactive-height);
   border: none;
   border-bottom: 2px solid var(--kl-border);
@@ -103,12 +108,14 @@
 
 .addButton,
 .removeButton {
+  max-width: 100%;
   min-height: 40px;
   border-radius: var(--kl-radius-control);
   font-size: var(--kl-text-body);
   font-weight: 600;
   line-height: var(--kl-lh-body-short);
   letter-spacing: var(--kl-ls-body);
+  overflow-wrap: anywhere;
 }
 
 .addButton {
@@ -135,6 +142,24 @@
 .removeButton:hover:not(:disabled) {
   background: var(--kl-primary-light);
   color: var(--kl-primary-hover);
+}
+
+@media (max-width: 671px) {
+  .timelineRow,
+  .evidenceRow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .addButton,
+  .removeButton {
+    width: 100%;
+    justify-self: stretch;
+    text-align: center;
+  }
+
+  .removeButton {
+    align-self: auto;
+  }
 }
 
 @media (min-width: 672px) {
