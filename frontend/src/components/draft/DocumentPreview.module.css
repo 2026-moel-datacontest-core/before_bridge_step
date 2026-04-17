@@ -38,8 +38,61 @@
   white-space: pre-wrap;
 }
 
+.placeholder {
+  color: var(--kl-text-danger);
+}
+
+.printDisclaimer {
+  display: none;
+}
+
 @media (min-width: 672px) {
   .paper {
     padding: var(--kl-space-12);
+  }
+}
+
+@page {
+  margin: 18mm;
+}
+
+@media print {
+  .section {
+    display: block;
+  }
+
+  .header {
+    display: none;
+  }
+
+  .paper {
+    width: auto;
+    max-width: none;
+    min-width: 0;
+    border: 0;
+    padding: 0;
+    background: #ffffff;
+    color: #000000;
+    font-size: 12pt;
+    line-height: 1.7;
+    overflow-wrap: break-word;
+  }
+
+  .placeholder,
+  .paper mark,
+  .paper [data-placeholder],
+  .paper [data-highlight] {
+    color: var(--kl-text-danger) !important;
+  }
+
+  .printDisclaimer {
+    display: block;
+    margin: 24pt 0 0;
+    padding-top: 12pt;
+    border-top: 1px solid var(--kl-border);
+    color: var(--kl-text-secondary);
+    font-size: 10pt;
+    line-height: 1.5;
+    white-space: normal;
   }
 }

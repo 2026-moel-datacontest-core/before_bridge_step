@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { Masthead } from '@/components/layout/Masthead';
@@ -22,11 +22,34 @@ const DOCUMENT_TYPE_LABELS: Record<DocumentType, string> = {
   labor_commission_unfair_dismissal_brief: '노동위원회 부당해고 구제신청 이유서 초안',
 };
 
+const COPY_DISCLAIMER =
+  '\n\n---\n이 문서는 제출 전 검토용 초안입니다. 법률 대리 문서가 아닙니다.';
+
+type CopyFeedbackState = 'idle' | 'success' | 'error';
+
 export default function AfterDraftPage() {
   const router = useRouter();
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const copyFeedbackTimerRef = useRef<number | null>(null);
+  const [copyFeedback, setCopyFeedback] = useState<CopyFeedbackState>('idle');
   const { state, dispatch } = useFlow();
   const draft = state.draft_response;
+
+  function clearCopyFeedbackTimer() {
+    if (copyFeedbackTimerRef.current !== null) {
+      window.clearTimeout(copyFeedbackTimerRef.current);
+      copyFeedbackTimerRef.current = null;
+    }
+  }
+
+  function showTimedCopyFeedback(nextFeedback: CopyFeedbackState, timeoutMs: number) {
+    clearCopyFeedbackTimer();
+    setCopyFeedback(nextFeedback);
+    copyFeedbackTimerRef.current = window.setTimeout(() => {
+      setCopyFeedback('idle');
+      copyFeedbackTimerRef.current = null;
+    }, timeoutMs);
+  }
 
   useEffect(() => {
     if (!draft) {
@@ -44,6 +67,17 @@ export default function AfterDraftPage() {
     }
   }, [draft]);
 
+  useEffect(() => {
+    clearCopyFeedbackTimer();
+    setCopyFeedback('idle');
+  }, [draft?.rendered_text]);
+
+  useEffect(() => {
+    return () => {
+      clearCopyFeedbackTimer();
+    };
+  }, []);
+
   if (!draft) {
     return (
       <>
@@ -54,6 +88,38 @@ export default function AfterDraftPage() {
         </main>
       </>
     );
+  }
+
+  const renderedText = draft.rendered_text;
+  const hasRenderedText = renderedText.trim().length > 0;
+  const copyStatusMessage =
+    copyFeedback === 'success'
+      ? '초안이 클립보드에 복사되었습니다.'
+      : copyFeedback === 'error'
+        ? '직접 선택하여 복사해 주세요.'
+        : '';
+  const copyButtonLabel = copyFeedback === 'success' ? '복사됨 ✓' : '초안 복사하기';
+
+  async function copyDraftText() {
+    if (!hasRenderedText) {
+      showTimedCopyFeedback('error', 3000);
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(`${renderedText}${COPY_DISCLAIMER}`);
+      showTimedCopyFeedback('success', 1500);
+    } catch {
+      showTimedCopyFeedback('error', 3000);
+    }
+  }
+
+  function printDraft() {
+    if (!hasRenderedText) {
+      return;
+    }
+
+    window.print();
   }
 
   function resetFlow() {
@@ -104,13 +170,50 @@ export default function AfterDraftPage() {
 
         <div className={styles.contentGrid}>
           <section className={styles.previewColumn} aria-label="문서 초안 본문">
-            <DisclaimerBanner>
-              <p>이 문서는 제출 전 검토용 초안입니다. 사실관계와 제출 기관 안내를 확인하세요.</p>
-            </DisclaimerBanner>
+            <div className={styles.screenDisclaimer}>
+              <DisclaimerBanner>
+                <p>이 문서는 제출 전 검토용 초안입니다. 사실관계와 제출 기관 안내를 확인하세요.</p>
+              </DisclaimerBanner>
+            </div>
+            <div className={styles.documentActions} aria-label="문서 초안 작업">
+              <div className={styles.actionGroup}>
+                <Button
+                  type="button"
+                  variant="tertiary"
+                  onClick={copyDraftText}
+                  disabled={!hasRenderedText}
+                  aria-describedby="copy-feedback"
+                >
+                  {copyButtonLabel}
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={printDraft}
+                  disabled={!hasRenderedText}
+                >
+                  인쇄하기
+                </Button>
+              </div>
+              <p
+                id="copy-feedback"
+                className={[
+                  styles.copyStatus,
+                  copyFeedback === 'success' ? styles.copyStatusSuccess : '',
+                  copyFeedback === 'error' ? styles.copyStatusError : '',
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                {copyStatusMessage}
+              </p>
+            </div>
             <DocumentPreview
               id="document-draft"
               title={draft.title}
-              renderedText={draft.rendered_text}
+              renderedText={renderedText}
             />
           </section>
 
