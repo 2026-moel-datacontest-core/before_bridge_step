@@ -264,12 +264,16 @@ full 60 retrieval / answer eval은 `backend/app/services/retrieval.py`, `backend
   - `buildLegalBasis()`, `buildCaseIntake()` 전달 경로 확인
   - `navigator.clipboard.writeText`, `window.print()` 연결 확인
   - `localStorage`, `sessionStorage` 사용 없음 확인
+- manual browser rehearsal 통과
+  - `/after -> /after/result -> /after/intake -> /after/draft` runtime flow 확인
+  - SCN-004 preset, result 표시, 문서 타입 선택, 빈 값 또는 일부 값 intake submit 확인
+  - draft 표시, copy, print, direct URL guard 확인
 
 제한 사항:
 
-- Playwright / Cypress / Puppeteer 및 Chrome / Chromium이 없어 실제 DOM 클릭 기반 smoke는 미수행
-- direct URL guard는 client-side `useEffect(router.replace)` 방식이므로 HTTP GET만으로 redirect를 검증할 수 없음
-- 남은 선택지는 수동 브라우저 rehearsal 또는 Playwright/Chromium 설치 후 click smoke 실행
+- Playwright / Cypress / Puppeteer 및 Chrome / Chromium 기반 자동 DOM click smoke는 미수행
+- direct URL guard는 manual browser runtime에서 확인했으며, HTTP GET만으로는 redirect를 검증할 수 없음
+- 필요 시 Playwright/Chromium 설치 후 자동화 click smoke를 별도 실행 가능
 
 ## 실행 예시
 
@@ -309,6 +313,6 @@ python eval/run_answer_eval.py --top-k 5 --ef-search 100 --limit 60 --show-failu
 - raw source HEAD가 더 최신이어도, snapshot 재선정 없이 섞어 반영하면 안 됩니다.
 - planning 문서의 오래된 숫자나 초안 조문은 항상 실제 `all_chunks.json`과 DB 상태로 재검증하는 것이 원칙입니다.
 - frontend는 개인정보 저장을 피하기 위해 raw `user_statement`, `answer_response`, `case_intake`, `draft_response`를 Web Storage에 저장하지 않습니다.
-- 즉시 다음 작업은 `SCN-004` QA 정합성 검증과 demo rehearsal입니다.
+- `SCN-004` QA 정합성 검증과 manual browser rehearsal은 통과 상태입니다.
 - 이후 기능 확장 후보는 `SCN-005` After frontend / 문서 타입입니다.
 - `SCN-001` frontend 확장은 팀원 Before / Bridge 코드와 contract 확인 후 진행합니다.

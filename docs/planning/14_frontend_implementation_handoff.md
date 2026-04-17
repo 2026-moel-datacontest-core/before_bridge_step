@@ -348,7 +348,7 @@ Step 4: /after/draft
 | /after/result | /after/intake | CTA 클릭 | `<h1>` |
 | /after/intake | /after/draft | draft 성공 | `<h1>` |
 | /after/draft | /after/intake | "수정하기" 클릭 | intake form `<h1>` |
-| /after/draft | /after/intake?type=other | "다른 문서 타입" 클릭 | document_type selector |
+| /after/draft | /after/result | "다른 문서 타입" 클릭 | document_type selector |
 | any → /after | "처음으로" 클릭 | state reset | textarea |
 
 ### Route Guards
@@ -886,12 +886,12 @@ export interface CaseIntake {
   worker_info: WorkerInfo;
   employer_info: EmployerInfo;
   employment_info: EmploymentInfo;
-  dismissal_info?: DismissalInfo;
-  unpaid_wage_info?: UnpaidWageInfo;
-  incident_timeline?: Array<{ date: string | null; event: string; evidence_refs?: string[] }>;
-  claims?: Claim[];
-  evidence_items?: EvidenceItem[];
-  requested_actions?: string[];
+  dismissal_info: DismissalInfo;
+  unpaid_wage_info: UnpaidWageInfo;
+  incident_timeline: Array<{ date?: string | null; event: string; evidence_refs: string[] }>;
+  claims: Claim[];
+  evidence_items: EvidenceItem[];
+  requested_actions: string[];
   intake_notes?: string | null;
 }
 
