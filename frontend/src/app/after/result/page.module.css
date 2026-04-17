@@ -1,0 +1,221 @@
+.main {
+  min-height: calc(100vh - var(--kl-masthead-height));
+  background: var(--kl-bg);
+}
+
+.summaryBand {
+  background: var(--kl-surface-01);
+  border-bottom: var(--kl-border-subtle-line);
+}
+
+.shell,
+.contentGrid {
+  max-width: var(--kl-max-width);
+  margin: 0 auto;
+  padding-right: var(--kl-margin-mobile);
+  padding-left: var(--kl-margin-mobile);
+}
+
+.shell {
+  padding-top: var(--kl-space-8);
+  padding-bottom: var(--kl-space-8);
+}
+
+.eyebrow {
+  margin: 0 0 var(--kl-space-2);
+  color: var(--kl-text-secondary);
+  font-size: var(--kl-text-caption);
+  line-height: var(--kl-lh-caption);
+  letter-spacing: var(--kl-ls-caption);
+}
+
+.title {
+  max-width: var(--kl-content-width);
+  margin: 0;
+  color: var(--kl-text-primary);
+  font-size: var(--kl-text-h1);
+  font-weight: 400;
+  line-height: var(--kl-lh-heading);
+}
+
+.summaryText {
+  max-width: var(--kl-content-width);
+  margin: var(--kl-space-4) 0 0;
+  color: var(--kl-text-secondary);
+  font-size: var(--kl-text-body);
+  line-height: var(--kl-lh-body);
+  letter-spacing: var(--kl-ls-body);
+}
+
+.contentGrid {
+  display: grid;
+  gap: var(--kl-space-8);
+  padding-top: var(--kl-space-8);
+  padding-bottom: var(--kl-space-12);
+}
+
+.resultColumn {
+  display: grid;
+  gap: var(--kl-space-6);
+  min-width: 0;
+}
+
+.selectorColumn {
+  min-width: 0;
+}
+
+.answerBlock,
+.section,
+.cautionSection,
+.selectorPanel {
+  padding: var(--kl-space-4);
+  background: var(--kl-surface-01);
+}
+
+.answerSummary {
+  color: var(--kl-text-primary);
+  cursor: pointer;
+  font-size: var(--kl-text-h3);
+  font-weight: 600;
+  line-height: var(--kl-lh-body);
+}
+
+.answerBody {
+  margin-top: var(--kl-space-4);
+  color: var(--kl-text-primary);
+  font-size: var(--kl-text-body-lg);
+  line-height: var(--kl-lh-body);
+}
+
+.answerBody p {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.sectionTitle,
+.selectorTitle {
+  margin: 0 0 var(--kl-space-4);
+  color: var(--kl-text-primary);
+  font-size: var(--kl-text-h3);
+  font-weight: 600;
+  line-height: var(--kl-lh-body);
+}
+
+.list {
+  display: grid;
+  gap: var(--kl-space-2);
+  margin: 0;
+  padding-left: var(--kl-space-6);
+  color: var(--kl-text-primary);
+  font-size: var(--kl-text-body);
+  line-height: var(--kl-lh-body);
+  letter-spacing: var(--kl-ls-body);
+}
+
+.cautionSection {
+  border-left: 4px solid var(--kl-warning);
+  background: var(--kl-surface-warning);
+}
+
+.emptyText {
+  margin: 0;
+  color: var(--kl-text-secondary);
+  font-size: var(--kl-text-body);
+  line-height: var(--kl-lh-body);
+  letter-spacing: var(--kl-ls-body);
+}
+
+.citationList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kl-space-2);
+}
+
+.selectorPanel {
+  position: sticky;
+  top: calc(var(--kl-masthead-height) + var(--kl-space-4));
+  display: grid;
+  gap: var(--kl-space-4);
+}
+
+.radioGroup {
+  display: grid;
+  gap: var(--kl-space-3);
+}
+
+.radioTile,
+.radioTileSelected {
+  display: grid;
+  grid-template-columns: 16px 1fr;
+  gap: var(--kl-space-3);
+  min-height: 128px;
+  padding: var(--kl-space-4);
+  border: 2px solid var(--kl-border-subtle);
+  background: var(--kl-bg);
+  cursor: pointer;
+}
+
+.radioTile:hover,
+.radioTileSelected {
+  background: var(--kl-primary-light);
+}
+
+.radioTileSelected {
+  border-color: var(--kl-primary);
+}
+
+.radioMarker {
+  width: 16px;
+  height: 16px;
+  margin-top: var(--kl-space-1);
+  border: var(--kl-border-default);
+  border-radius: 50%;
+  background: var(--kl-bg);
+}
+
+.radioTileSelected .radioMarker {
+  border: 4px solid var(--kl-primary);
+}
+
+.radioText {
+  display: grid;
+  gap: var(--kl-space-1);
+}
+
+.radioTitle {
+  color: var(--kl-text-primary);
+  font-size: var(--kl-text-body);
+  font-weight: 600;
+  line-height: var(--kl-lh-body-short);
+  letter-spacing: var(--kl-ls-body);
+}
+
+.radioSubtitle {
+  color: var(--kl-text-muted);
+  font-family: var(--kl-font-mono);
+  font-size: var(--kl-text-mono-sm);
+  line-height: var(--kl-lh-caption);
+  letter-spacing: var(--kl-ls-caption);
+}
+
+.radioBody {
+  color: var(--kl-text-secondary);
+  font-size: var(--kl-text-body);
+  line-height: var(--kl-lh-body);
+  letter-spacing: var(--kl-ls-body);
+}
+
+@media (min-width: 672px) {
+  .shell,
+  .contentGrid {
+    padding-right: var(--kl-margin-desktop);
+    padding-left: var(--kl-margin-desktop);
+  }
+}
+
+@media (min-width: 1056px) {
+  .contentGrid {
+    grid-template-columns: minmax(0, 2fr) minmax(320px, 1fr);
+    align-items: start;
+  }
+}

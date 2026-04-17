@@ -1,0 +1,155 @@
+.main {
+  min-height: calc(100vh - var(--kl-masthead-height));
+  background: var(--kl-bg);
+}
+
+.intro {
+  background: var(--kl-surface-01);
+}
+
+.introInner,
+.formShell {
+  max-width: var(--kl-max-width);
+  margin: 0 auto;
+  padding-right: var(--kl-margin-mobile);
+  padding-left: var(--kl-margin-mobile);
+}
+
+.introInner {
+  padding-top: var(--kl-space-12);
+  padding-bottom: var(--kl-space-12);
+}
+
+.eyebrow {
+  margin: 0 0 var(--kl-space-2);
+  color: var(--kl-text-secondary);
+  font-size: var(--kl-text-caption);
+  line-height: var(--kl-lh-caption);
+  letter-spacing: var(--kl-ls-caption);
+}
+
+.title {
+  max-width: var(--kl-content-width);
+  margin: 0;
+  color: var(--kl-text-primary);
+  font-size: var(--kl-text-display);
+  font-weight: 300;
+  line-height: var(--kl-lh-display);
+}
+
+.lead {
+  max-width: var(--kl-content-width);
+  margin: var(--kl-space-4) 0 0;
+  color: var(--kl-text-secondary);
+  font-size: var(--kl-text-body-lg);
+  line-height: var(--kl-lh-body);
+}
+
+.formBand {
+  padding-top: var(--kl-space-8);
+  padding-bottom: var(--kl-space-8);
+}
+
+.form {
+  display: grid;
+  gap: var(--kl-space-4);
+  max-width: var(--kl-form-width);
+}
+
+.formHeader {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--kl-space-4);
+}
+
+.sectionTitle {
+  margin: 0;
+  color: var(--kl-text-primary);
+  font-size: var(--kl-text-h1);
+  font-weight: 400;
+  line-height: var(--kl-lh-heading);
+}
+
+.counter {
+  color: var(--kl-text-muted);
+  font-family: var(--kl-font-mono);
+  font-size: var(--kl-text-mono-sm);
+  line-height: var(--kl-lh-caption);
+  letter-spacing: var(--kl-ls-caption);
+}
+
+.label {
+  color: var(--kl-text-secondary);
+  font-size: var(--kl-text-caption);
+  line-height: var(--kl-lh-caption);
+  letter-spacing: var(--kl-ls-caption);
+}
+
+.textarea {
+  min-height: 176px;
+  width: 100%;
+  resize: vertical;
+  border: none;
+  border-bottom: 2px solid var(--kl-border);
+  border-radius: var(--kl-radius-control);
+  background: var(--kl-surface-01);
+  color: var(--kl-text-primary);
+  padding: var(--kl-space-3) var(--kl-space-4);
+  font-size: var(--kl-text-body-lg);
+  line-height: var(--kl-lh-body);
+}
+
+.textarea::placeholder {
+  color: var(--kl-text-placeholder);
+}
+
+.textarea:focus {
+  border-bottom-color: var(--kl-focus);
+  outline: none;
+}
+
+.textarea:disabled {
+  color: var(--kl-text-muted);
+  background: var(--kl-surface-02);
+}
+
+.helperText,
+.warningText {
+  margin: 0;
+  font-size: var(--kl-text-caption);
+  line-height: var(--kl-lh-caption);
+  letter-spacing: var(--kl-ls-caption);
+}
+
+.helperText {
+  color: var(--kl-text-muted);
+}
+
+.warningText {
+  color: var(--kl-text-warning);
+}
+
+.presetRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kl-space-3);
+}
+
+.actionRow {
+  display: flex;
+  justify-content: flex-start;
+  padding-top: var(--kl-space-2);
+}
+
+.disclaimerBand {
+  padding-bottom: var(--kl-space-12);
+}
+
+@media (min-width: 672px) {
+  .introInner,
+  .formShell {
+    padding-right: var(--kl-margin-desktop);
+    padding-left: var(--kl-margin-desktop);
+  }
+}

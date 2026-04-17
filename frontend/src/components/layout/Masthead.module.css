@@ -1,0 +1,105 @@
+.masthead {
+  position: sticky;
+  top: 0;
+  z-index: var(--kl-z-masthead);
+  height: var(--kl-masthead-height);
+  background: var(--kl-masthead-bg);
+  color: var(--kl-text-on-dark);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  max-width: var(--kl-max-width);
+  margin: 0 auto;
+  padding: 0 var(--kl-margin-mobile);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kl-space-3);
+  min-height: var(--kl-masthead-height);
+  color: var(--kl-text-on-dark);
+  font-size: var(--kl-text-body);
+  font-weight: 600;
+  letter-spacing: var(--kl-ls-body);
+}
+
+.brand:hover {
+  color: var(--kl-text-on-primary);
+  text-decoration: none;
+}
+
+.mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--kl-text-on-dark);
+  font-family: var(--kl-font-mono);
+  font-size: var(--kl-text-mono-sm);
+  line-height: var(--kl-lh-caption);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.nav a {
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 var(--kl-space-4);
+  color: var(--kl-text-on-dark);
+  font-size: var(--kl-text-body);
+  line-height: var(--kl-lh-body-short);
+  letter-spacing: var(--kl-ls-body);
+}
+
+.nav a:hover {
+  color: var(--kl-text-on-primary);
+  background: var(--kl-text-secondary);
+  text-decoration: none;
+}
+
+.progress,
+.progressHidden {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  background: var(--kl-primary);
+  transform-origin: left center;
+}
+
+.progress {
+  width: 100%;
+  animation: progress var(--kl-duration-medium) var(--kl-ease-enter) infinite alternate;
+}
+
+.progressHidden {
+  display: none;
+}
+
+@keyframes progress {
+  from {
+    transform: translateX(0) scaleX(0.2);
+  }
+
+  to {
+    transform: translateX(80%) scaleX(0.2);
+  }
+}
+
+@media (min-width: 672px) {
+  .inner {
+    padding-right: var(--kl-margin-desktop);
+    padding-left: var(--kl-margin-desktop);
+  }
+}

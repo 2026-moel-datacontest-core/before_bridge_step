@@ -1,0 +1,14 @@
+.pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: var(--kl-space-1) var(--kl-space-3);
+  border: var(--kl-border-default);
+  border-radius: var(--kl-radius-pill);
+  background: var(--kl-surface-01);
+  color: var(--kl-text-primary);
+  font-family: var(--kl-font-mono);
+  font-size: var(--kl-text-mono-sm);
+  line-height: var(--kl-lh-caption);
+  letter-spacing: var(--kl-ls-caption);
+}
