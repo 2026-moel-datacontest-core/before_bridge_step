@@ -44,6 +44,7 @@ export function flowReducer(
       return {
         ...state,
         answer_response: action.payload,
+        legal_basis: null,
         selected_document_type: null,
         case_intake_form: null,
         case_intake: null,

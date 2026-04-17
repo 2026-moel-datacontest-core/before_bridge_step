@@ -26,6 +26,28 @@
   line-height: var(--kl-lh-body);
 }
 
+.inlineFieldset {
+  display: grid;
+  gap: var(--kl-space-3);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.inlineFieldset:disabled {
+  opacity: 0.6;
+}
+
+.inlineLegend {
+  margin: 0;
+  padding: 0;
+  color: var(--kl-text-secondary);
+  font-size: var(--kl-text-caption);
+  line-height: var(--kl-lh-caption);
+  letter-spacing: var(--kl-ls-caption);
+}
+
 .helper,
 .inlineCaution {
   margin: 0;

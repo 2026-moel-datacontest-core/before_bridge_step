@@ -24,6 +24,8 @@ const noticeMethodOptions: Array<{ value: NoticeMethod; label: string }> = [
   { value: 'unknown', label: '모름' },
 ];
 
+const writtenNoticeFieldsetId = 'written-notice-received-fieldset';
+
 export function UnfairDismissalForm({
   values,
   disabled = false,
@@ -270,7 +272,7 @@ export function UnfairDismissalForm({
                   },
                 });
               }}
-              aria-expanded={noticeMethod === 'written'}
+              aria-controls={writtenNoticeFieldsetId}
             >
               <option value="">선택 안 함</option>
               {noticeMethodOptions.map((option) => (
@@ -282,7 +284,13 @@ export function UnfairDismissalForm({
           </label>
         </div>
 
-        {noticeMethod === 'written' ? (
+        <fieldset
+          id={writtenNoticeFieldsetId}
+          className={styles.inlineFieldset}
+          hidden={noticeMethod !== 'written'}
+          disabled={disabled || noticeMethod !== 'written'}
+        >
+          <legend className={styles.inlineLegend}>서면 통지서 수령 여부</legend>
           <label className={styles.checkboxLabel}>
             <input
               type="checkbox"
@@ -299,7 +307,7 @@ export function UnfairDismissalForm({
             />
             서면 통지서를 받았습니다
           </label>
-        ) : null}
+        </fieldset>
 
         <div className={styles.checkGrid}>
           <label className={styles.checkboxLabel}>

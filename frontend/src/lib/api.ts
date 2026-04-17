@@ -98,8 +98,8 @@ export function buildLegalBasis(response: AnswerResponse): LegalBasisInput {
   const groundedContextIds = new Set(response.grounded_context_ids);
 
   return {
-    answer_query: response.query,
-    answer: response.answer,
+    answer_query: optionalText(response.query) ?? null,
+    answer: optionalText(response.answer) ?? null,
     key_points: response.key_points,
     cautions: response.cautions,
     cited_articles: response.cited_articles,

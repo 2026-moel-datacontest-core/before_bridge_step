@@ -61,10 +61,9 @@ export default function AfterResultPage() {
   }
 
   const hasCitedArticles = answer.cited_articles.length > 0;
-  const hasGroundedContext = answer.grounded_context_ids.length > 0;
   const canProceedToDraftFlow = hasDraftGrounding(answer);
   const statementSummary = truncateText(state.user_statement || answer.query, 100);
-  const canShowAnswer = hasCitedArticles;
+  const canShowAnswer = canProceedToDraftFlow;
 
   function selectDocumentType(documentType: DocumentType) {
     setSelectedDocumentType(documentType);
@@ -112,10 +111,10 @@ export default function AfterResultPage() {
         <div className={styles.contentGrid}>
           <section className={styles.resultColumn} aria-label="법 조문 검색 결과">
             {!canShowAnswer ? (
-              <Notification variant="warning" title="인용 조문 확인 필요">
+              <Notification variant="warning" title="근거 확인 필요">
                 <p>
-                  인용된 법 조문이 확인되지 않아 답변을 표시하지 않습니다. 입력을 보완해
-                  다시 검색해주세요.
+                  인용된 법 조문 또는 근거 컨텍스트가 확인되지 않아 답변을 표시하지
+                  않습니다. 입력을 보완해 다시 검색해주세요.
                 </p>
               </Notification>
             ) : (

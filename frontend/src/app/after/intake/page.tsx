@@ -4,7 +4,13 @@ import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { Masthead } from '@/components/layout/Masthead';
-import { EvidenceSection } from '@/components/intake/EvidenceSection';
+import {
+  EvidenceSection,
+  ensureEvidenceRowIds,
+  ensureTimelineRowIds,
+  type EvidenceItemRow,
+  type TimelineRow,
+} from '@/components/intake/EvidenceSection';
 import { UnfairDismissalForm } from '@/components/intake/UnfairDismissalForm';
 import { WageComplaintForm } from '@/components/intake/WageComplaintForm';
 import { Button } from '@/components/ui/Button';
@@ -21,8 +27,6 @@ import {
 import type {
   CaseIntakeFormValues,
   DocumentType,
-  EvidenceItemInput,
-  TimelineInput,
 } from '@/types/api';
 
 import styles from './page.module.css';
@@ -30,18 +34,6 @@ import styles from './page.module.css';
 const DOCUMENT_TYPE_LABELS: Record<DocumentType, string> = {
   labor_office_wage_complaint: '고용노동청 임금체불 진정서 초안',
   labor_commission_unfair_dismissal_brief: '노동위원회 부당해고 구제신청 이유서 초안',
-};
-
-const emptyEvidenceItem: EvidenceItemInput = {
-  type: null,
-  description: '',
-  status: 'unknown',
-};
-
-const emptyTimelineEvent: TimelineInput = {
-  date: null,
-  event: '',
-  evidence_refs: [],
 };
 
 export default function AfterIntakePage() {
@@ -53,15 +45,17 @@ export default function AfterIntakePage() {
   const [formValues, setFormValues] = useState<CaseIntakeFormValues>(
     () => state.case_intake_form ?? {},
   );
-  const [incidentTimeline, setIncidentTimeline] = useState<TimelineInput[]>(() =>
-    state.case_intake?.incident_timeline.length
-      ? state.case_intake.incident_timeline
-      : [emptyTimelineEvent],
+  const [incidentTimeline, setIncidentTimeline] = useState<TimelineRow[]>(() =>
+    ensureTimelineRowIds(
+      state.case_intake?.incident_timeline.length
+        ? state.case_intake.incident_timeline
+        : [],
+    ),
   );
-  const [evidenceItems, setEvidenceItems] = useState<EvidenceItemInput[]>(() =>
-    state.case_intake?.evidence_items.length
-      ? state.case_intake.evidence_items
-      : [emptyEvidenceItem],
+  const [evidenceItems, setEvidenceItems] = useState<EvidenceItemRow[]>(() =>
+    ensureEvidenceRowIds(
+      state.case_intake?.evidence_items.length ? state.case_intake.evidence_items : [],
+    ),
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -141,6 +135,14 @@ export default function AfterIntakePage() {
     void submitDraft();
   }
 
+  function handleEvidenceItemsChange(items: EvidenceItemRow[]) {
+    setEvidenceItems(ensureEvidenceRowIds(items));
+  }
+
+  function handleIncidentTimelineChange(items: TimelineRow[]) {
+    setIncidentTimeline(ensureTimelineRowIds(items));
+  }
+
   function resetFlow() {
     dispatch({ type: 'RESET' });
     router.push('/after');
@@ -186,8 +188,8 @@ export default function AfterIntakePage() {
               evidenceItems={evidenceItems}
               incidentTimeline={incidentTimeline}
               disabled={isSubmitting}
-              onEvidenceItemsChange={setEvidenceItems}
-              onIncidentTimelineChange={setIncidentTimeline}
+              onEvidenceItemsChange={handleEvidenceItemsChange}
+              onIncidentTimelineChange={handleIncidentTimelineChange}
             />
 
             <DisclaimerBanner>

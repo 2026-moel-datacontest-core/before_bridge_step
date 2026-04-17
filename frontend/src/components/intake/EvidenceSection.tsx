@@ -10,11 +10,11 @@ import type {
 import styles from './EvidenceSection.module.css';
 
 interface EvidenceSectionProps {
-  evidenceItems: EvidenceItemInput[];
-  incidentTimeline: TimelineInput[];
+  evidenceItems: EvidenceItemRow[];
+  incidentTimeline: TimelineRow[];
   disabled?: boolean;
-  onEvidenceItemsChange: (items: EvidenceItemInput[]) => void;
-  onIncidentTimelineChange: (items: TimelineInput[]) => void;
+  onEvidenceItemsChange: (items: EvidenceItemRow[]) => void;
+  onIncidentTimelineChange: (items: TimelineRow[]) => void;
 }
 
 const evidenceTypeOptions: Array<{ value: EvidenceType; label: string }> = [
@@ -37,17 +37,44 @@ const evidenceStatusOptions: Array<{ value: EvidenceStatus; label: string }> = [
   { value: 'unknown', label: '모름' },
 ];
 
-const emptyEvidenceItem: EvidenceItemInput = {
-  type: null,
-  description: '',
-  status: 'unknown',
-};
+export type EvidenceItemRow = EvidenceItemInput & { ui_id: string };
+export type TimelineRow = TimelineInput & { ui_id: string };
 
-const emptyTimelineEvent: TimelineInput = {
-  date: null,
-  event: '',
-  evidence_refs: [],
-};
+let nextRowId = 0;
+
+export function createEmptyEvidenceItem(): EvidenceItemRow {
+  return {
+    ui_id: createRowId('evidence'),
+    type: null,
+    description: '',
+    status: 'unknown',
+  };
+}
+
+export function createEmptyTimelineEvent(): TimelineRow {
+  return {
+    ui_id: createRowId('timeline'),
+    date: null,
+    event: '',
+    evidence_refs: [],
+  };
+}
+
+export function ensureEvidenceRowIds(items: EvidenceItemInput[]): EvidenceItemRow[] {
+  const sourceItems = items.length > 0 ? items : [createEmptyEvidenceItem()];
+
+  return sourceItems.map((item) =>
+    hasUiId(item) ? item : { ...item, ui_id: createRowId('evidence') },
+  );
+}
+
+export function ensureTimelineRowIds(items: TimelineInput[]): TimelineRow[] {
+  const sourceItems = items.length > 0 ? items : [createEmptyTimelineEvent()];
+
+  return sourceItems.map((item) =>
+    hasUiId(item) ? item : { ...item, ui_id: createRowId('timeline') },
+  );
+}
 
 export function EvidenceSection({
   evidenceItems,
@@ -57,9 +84,9 @@ export function EvidenceSection({
   onIncidentTimelineChange,
 }: EvidenceSectionProps) {
   const normalizedEvidenceItems =
-    evidenceItems.length > 0 ? evidenceItems : [emptyEvidenceItem];
+    evidenceItems.length > 0 ? evidenceItems : [createEmptyEvidenceItem()];
   const normalizedTimeline =
-    incidentTimeline.length > 0 ? incidentTimeline : [emptyTimelineEvent];
+    incidentTimeline.length > 0 ? incidentTimeline : [createEmptyTimelineEvent()];
 
   function updateEvidenceItem(index: number, patch: EvidenceItemInput) {
     onEvidenceItemsChange(
@@ -71,7 +98,7 @@ export function EvidenceSection({
 
   function removeEvidenceItem(index: number) {
     const nextItems = normalizedEvidenceItems.filter((_, itemIndex) => itemIndex !== index);
-    onEvidenceItemsChange(nextItems.length > 0 ? nextItems : [emptyEvidenceItem]);
+    onEvidenceItemsChange(nextItems.length > 0 ? nextItems : [createEmptyEvidenceItem()]);
   }
 
   function updateTimelineEvent(index: number, patch: TimelineInput) {
@@ -84,7 +111,7 @@ export function EvidenceSection({
 
   function removeTimelineEvent(index: number) {
     const nextItems = normalizedTimeline.filter((_, itemIndex) => itemIndex !== index);
-    onIncidentTimelineChange(nextItems.length > 0 ? nextItems : [emptyTimelineEvent]);
+    onIncidentTimelineChange(nextItems.length > 0 ? nextItems : [createEmptyTimelineEvent()]);
   }
 
   return (
@@ -103,7 +130,7 @@ export function EvidenceSection({
         <legend className={styles.legend}>사건 경위</legend>
         <div className={styles.rows}>
           {normalizedTimeline.map((item, index) => (
-            <div className={styles.timelineRow} key={`timeline-${index}`}>
+            <div className={styles.timelineRow} key={item.ui_id}>
               <label className={styles.field}>
                 <span className={styles.label}>일자</span>
                 <input
@@ -141,7 +168,7 @@ export function EvidenceSection({
           className={styles.addButton}
           type="button"
           onClick={() =>
-            onIncidentTimelineChange([...normalizedTimeline, emptyTimelineEvent])
+            onIncidentTimelineChange([...normalizedTimeline, createEmptyTimelineEvent()])
           }
           disabled={disabled}
         >
@@ -153,7 +180,7 @@ export function EvidenceSection({
         <legend className={styles.legend}>증거 목록</legend>
         <div className={styles.rows}>
           {normalizedEvidenceItems.map((item, index) => (
-            <div className={styles.evidenceRow} key={`evidence-${index}`}>
+            <div className={styles.evidenceRow} key={item.ui_id}>
               <label className={styles.field}>
                 <span className={styles.label}>증거 종류</span>
                 <select
@@ -218,7 +245,9 @@ export function EvidenceSection({
         <button
           className={styles.addButton}
           type="button"
-          onClick={() => onEvidenceItemsChange([...normalizedEvidenceItems, emptyEvidenceItem])}
+          onClick={() =>
+            onEvidenceItemsChange([...normalizedEvidenceItems, createEmptyEvidenceItem()])
+          }
           disabled={disabled}
         >
           증거 행 추가
@@ -226,6 +255,18 @@ export function EvidenceSection({
       </fieldset>
     </section>
   );
+}
+
+function createRowId(prefix: 'evidence' | 'timeline'): string {
+  nextRowId += 1;
+  return `${prefix}-${nextRowId}`;
+}
+
+function hasUiId<T extends EvidenceItemInput | TimelineInput>(
+  item: T,
+): item is T & { ui_id: string } {
+  const uiId = (item as { ui_id?: unknown }).ui_id;
+  return typeof uiId === 'string' && uiId.length > 0;
 }
 
 function parseEvidenceType(value: string): EvidenceType | null {
