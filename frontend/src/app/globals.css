@@ -1,0 +1,177 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+
+:root {
+  /* Background & Surface */
+  --kl-bg: #ffffff;
+  --kl-surface-01: #f4f4f4;
+  --kl-surface-02: #e0e0e0;
+  --kl-surface-warning: #fcf4d6;
+  --kl-surface-info: #edf5ff;
+  --kl-surface-success: #defbe6;
+  --kl-surface-danger: #fff1f1;
+
+  /* Text */
+  --kl-text-primary: #161616;
+  --kl-text-secondary: #525252;
+  --kl-text-muted: #6f6f6f;
+  --kl-text-placeholder: #8d8d8d;
+  --kl-text-on-dark: #f4f4f4;
+  --kl-text-on-primary: #ffffff;
+  --kl-text-warning: #b28600;
+  --kl-text-danger: #da1e28;
+  --kl-text-success: #24a148;
+
+  /* Interactive */
+  --kl-primary: #0f62fe;
+  --kl-primary-hover: #0353e9;
+  --kl-primary-active: #002d9c;
+  --kl-primary-light: #edf5ff;
+
+  /* Status */
+  --kl-warning: #f1c21b;
+  --kl-danger: #da1e28;
+  --kl-success: #24a148;
+
+  /* Border */
+  --kl-border: #c6c6c6;
+  --kl-border-subtle: #e0e0e0;
+  --kl-focus: #0f62fe;
+
+  /* Masthead */
+  --kl-masthead-bg: #161616;
+  --kl-masthead-height: 48px;
+
+  /* Typography */
+  --kl-font-sans: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+  --kl-font-mono: 'IBM Plex Mono', Menlo, 'Courier New', monospace;
+
+  /* Font sizes */
+  --kl-text-display: 2.625rem;
+  --kl-text-h1: 2rem;
+  --kl-text-h2: 1.5rem;
+  --kl-text-h3: 1.25rem;
+  --kl-text-body-lg: 1rem;
+  --kl-text-body: 0.875rem;
+  --kl-text-caption: 0.75rem;
+  --kl-text-mono: 0.875rem;
+  --kl-text-mono-sm: 0.75rem;
+
+  /* Line heights */
+  --kl-lh-display: 1.19;
+  --kl-lh-heading: 1.25;
+  --kl-lh-body: 1.5;
+  --kl-lh-body-short: 1.29;
+  --kl-lh-caption: 1.33;
+  --kl-lh-document: 1.8;
+
+  /* Letter spacing */
+  --kl-ls-body: 0.16px;
+  --kl-ls-caption: 0.32px;
+
+  /* Spacing (8px grid) */
+  --kl-space-1: 4px;
+  --kl-space-2: 8px;
+  --kl-space-3: 12px;
+  --kl-space-4: 16px;
+  --kl-space-6: 24px;
+  --kl-space-8: 32px;
+  --kl-space-12: 48px;
+  --kl-space-16: 64px;
+  --kl-space-24: 96px;
+
+  /* Layout */
+  --kl-max-width: 1312px;
+  --kl-content-width: 800px;
+  --kl-form-width: 640px;
+  --kl-document-width: 720px;
+  --kl-margin-desktop: 64px;
+  --kl-margin-mobile: 16px;
+
+  /* Interactive sizes */
+  --kl-interactive-height: 48px;
+  --kl-sticky-bar-height: 80px;
+
+  /* Radius */
+  --kl-radius-control: 0px;
+  --kl-radius-card: 0px;
+  --kl-radius-pill: 24px;
+
+  /* Border styles */
+  --kl-border-default: 1px solid var(--kl-border);
+  --kl-border-subtle-line: 1px solid var(--kl-border-subtle);
+  --kl-focus-ring: 2px solid var(--kl-focus);
+
+  /* Z-index */
+  --kl-z-masthead: 100;
+  --kl-z-sticky-bar: 90;
+  --kl-z-overlay: 200;
+
+  /* Motion */
+  --kl-duration-short: 100ms;
+  --kl-duration-base: 200ms;
+  --kl-duration-medium: 250ms;
+  --kl-ease-enter: ease-out;
+  --kl-ease-exit: ease-in;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --kl-duration-short: 0ms;
+    --kl-duration-base: 0ms;
+    --kl-duration-medium: 0ms;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: var(--kl-bg);
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  background: var(--kl-bg);
+  color: var(--kl-text-primary);
+  font-family: var(--kl-font-sans);
+  font-size: var(--kl-text-body-lg);
+  line-height: var(--kl-lh-body);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+a {
+  color: var(--kl-primary);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--kl-primary-hover);
+  text-decoration: underline;
+}
+
+:focus-visible {
+  outline: var(--kl-focus-ring);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--kl-primary-light);
+  color: var(--kl-text-primary);
+}
