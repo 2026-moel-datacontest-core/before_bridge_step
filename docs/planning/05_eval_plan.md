@@ -13,6 +13,7 @@
 - current live chunk count: `1722`
 - eval dataset file: `eval/mvp_in_scope_eval_v1.json`
 - current item count: `60`
+- document draft smoke: `backend/verify/check_document_draft.py`
 
 현재 eval 셋은 아래 8개 법령군만 대상으로 한다.
 
@@ -30,6 +31,7 @@
 - current live corpus는 scenario expansion 결과 장애인 관련 법령 chunk까지 포함해 `1722`개다.
 - 그러나 현재 `eval/mvp_in_scope_eval_v1.json`은 여전히 기존 8개 법령군, 60문항 baseline을 기준으로 유지한다.
 - `SCN-001`~`SCN-005` 시나리오 검증은 이 eval 셋과 별도의 scenario smoke 검증으로 관리한다.
+- SCN-004 문서 초안 검증은 answer eval이 아니라 별도 fixture smoke로 관리한다.
 
 중요:
 
@@ -231,6 +233,8 @@ full 60 live answer eval 기준:
 
 - grounding clean / gold citation hit은 유지된 상태에서 coverage를 추가 개선하는 것이 다음 단계 목표
 - eval runner는 partial coverage가 남으면 non-zero exit로 종료될 수 있음
+- 현재 QA 단계에서 RAG service를 건드리지 않는 frontend/document draft 문서 수정만 한다면 full 60 eval은 기본 재실행하지 않는다.
+- `/api/v1/answer` 또는 retrieval service를 수정할 때만 retrieval/answer full 60 재실행을 우선한다.
 
 ## Current Retrieval Baseline (2026-04-13)
 

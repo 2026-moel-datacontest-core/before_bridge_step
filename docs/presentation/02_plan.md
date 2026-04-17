@@ -1,10 +1,10 @@
 # Execution Plan For Instructor Review
 
-작성일: `2026-04-16`
+작성일: `2026-04-17`
 
 기준선:
 
-- RAG 및 시나리오 상태 기준일: `2026-04-16`
+- RAG 및 시나리오 상태 기준일: `2026-04-17`
 - corpus 기준일: `selected_as_of = 2026-04-11`
 
 ## 문서 목적
@@ -19,10 +19,13 @@
 - 법령 corpus 고정 완료: `1722` chunks
 - retrieval MVP 완료: `hit@5 = 60/60`
 - grounded answer MVP 완료: `citation_grounding_clean = 60/60`
+- RAG refinement landing 완료
+- SCN-004 document draft API 완료
+- SCN-004 frontend demo flow 완료
 - scenario audit 완료: 주요 데모 시나리오 5개 검토
-- 남은 핵심 이슈: 데이터 부족보다 answer-side clause selection, phrasing sensitivity, 일부 복합 질의 composition 문제
+- 남은 핵심 이슈: 신규 기능 확장이 아니라 QA 정합성과 demo freeze
 
-즉, 다음 단계의 핵심은 대규모 기능 추가가 아니라 "현재 만든 시스템을 더 안정적으로 시연 가능한 상태로 다듬는 것"입니다.
+즉, 다음 단계의 핵심은 대규모 기능 추가가 아니라 "현재 만든 SCN-004 path를 더 안정적으로 시연 가능한 상태로 다듬는 것"입니다.
 
 ## 2. 제출 전 실행 계획
 
@@ -38,19 +41,19 @@
 
 즉, 공통 계획의 핵심은 새 기능을 넓히는 것보다 현재 기준선을 흔들지 않고 시연 안정성을 확보하는 것입니다.
 
-### 2-2. After 계획
+### 2-2. After / Frontend QA 계획
 
-현재 저장소와 구현 기준으로는 `After` 단계가 먼저 진행된 상태이며, 제출 전까지의 핵심 과제도 이쪽에 많이 몰려 있습니다.
+현재 저장소와 구현 기준으로는 `After` 단계가 먼저 진행된 상태이며, 제출 전 핵심 과제는 SCN-004 frontend/backend 정합성 확인입니다.
 
-- Step 0: `SCN-004`에서 `근로기준법 제23조` citation survival 이슈가 실제로 재현되는지 먼저 확인
-- Step 1: `SCN-005` 중심의 좁은 phrasing normalization 보강
-- Step 2: 긴 조문 / 하위 항목 / 숫자·기간·예외·절차·범위 surface를 위한 answer-side deterministic hardening 진행
-- Step 3: Step 0이 재현된 경우에만 conservative citation-diversity / coverage-aware context assembly 검토
-- Step 4: `SCN-001 Full` 같은 composition-heavy 질문에 한해서만 selective decomposition 적용 (`top_k=10` demo path)
-- `After` 질문 문안별 smoke test 재확인
-- 필요 시 초기 MVP 앱도 로직을 먼저 완성한 `After` 흐름 기준으로 선행 구성
+- Step 0: backend DocumentDraftResponse와 frontend 타입 정합성 확인
+- Step 1: `/api/v1/answer -> buildLegalBasis -> /api/v1/documents/draft` 전달 경로 확인
+- Step 2: `/after` happy path 및 API error retry 확인
+- Step 3: `/after/result` citation 없음 / grounded context 없음 guard 확인
+- Step 4: `/after/intake` 빈 필드 submit과 `buildCaseIntake()` payload 확인
+- Step 5: `/after/draft` rendered_text, missing_fields, cautions, evidence_checklist, cited_articles 표시 확인
+- Step 6: copy / print / direct URL guard / mobile layout 확인
 
-중요한 판단은 `After` 단계에서 decomposition을 기본 전략으로 두는 것이 아니라, low-risk fix를 먼저 적용하고 decomposition은 조건부 escalation path로 두는 것입니다.
+중요한 판단은 새 기능을 추가하지 않고, 현재 SCN-004 demo path의 실패 지점을 줄이는 것입니다.
 
 
 ### 2-3. Before 계획
@@ -79,6 +82,8 @@
 - 법령 retrieval
 - grounded answer
 - cited articles 표시
+- SCN-004 document draft API
+- SCN-004 frontend demo
 - `Before`, `After`, `Bridge` 흐름 설명
 - 시나리오 기반 데모
 
@@ -89,7 +94,9 @@
 - 단순노무 직종 자동 판정
 - 대규모 hybrid retrieval 전환
 - Local LLM 운영 전환
-- 문서 자동 생성 기능의 본격 구현
+- SCN-005 / SCN-001 문서 타입 확장
+- sessionStorage backup/restore
+- Before / Bridge / Recovery frontend 본 구현
 
 이 구분이 중요한 이유는, 발표에서 확장 가능성을 말하더라도 실제 구현 범위와 혼동되면 프로젝트 평가가 오히려 불안정해질 수 있기 때문입니다.
 
@@ -97,8 +104,8 @@
 
 | 구분 | 권장 선택 | 이유 |
 |---|---|---|
-| 메인 시나리오 | `SCN-001` | `Before -> Bridge -> After` 흐름을 모두 보여주고 정보 취약 사용자 문제까지 함께 설명할 수 있음 |
-| 백업 시나리오 A | `SCN-004` | 근거 조문이 선명하고 After 데모 안정성이 높음 |
+| 제품 스토리 | `SCN-001` | `Before -> Bridge -> After` 흐름을 모두 보여주고 정보 취약 사용자 문제까지 함께 설명할 수 있음 |
+| frontend main demo | `SCN-004` | 근거 조문이 선명하고 권리 안내 -> 문서 초안까지 end-to-end 시연 가능 |
 | 백업 시나리오 B | `SCN-005` | 사회적 공감도가 높고 권리 + 대응 순서 설명이 자연스러움 |
 | 확장 설명용 | `SCN-003` | 약자 지원형 UX 확장성 설명에 적합 |
 | 범위 제한 시나리오 | `SCN-002` | 설명형 데모는 가능하지만 자동 숫자 판정은 현재 범위 밖 |
@@ -117,18 +124,18 @@
 
 ### 리스크 3. 범위 확장 욕심
 
-- 문제: 자동 문서 작성, OCR, Recovery를 한 번에 모두 보여주려 하면 메시지가 흐려짐
-- 대응: 현재는 grounded legal answer와 대표 시나리오 안정성에 집중
+- 문제: OCR, Recovery, 추가 문서 타입을 한 번에 모두 보여주려 하면 메시지가 흐려짐
+- 대응: 현재는 SCN-004 end-to-end 안정성에 집중
 
-### 리스크 4. frontend 완성도보다 backend 품질이 더 중요
+### 리스크 4. frontend 확장보다 QA가 더 중요
 
-- 문제: 화면 polish에 시간을 많이 쓰면 핵심 품질 개선이 밀릴 수 있음
-- 대응: 최소 흐름만 유지하고 RAG refinement를 우선
+- 문제: 새 화면을 늘리면 QA surface가 커짐
+- 대응: 최소 흐름만 유지하고 schema 정합성, route guard, API error 상태를 우선
 
 ## 6. 강사님 검토 요청 포인트
 
 - 현재 계획에서 범위를 더 줄이는 것이 맞는지, 아니면 발표 설득력을 위해 일부를 더 보여줘야 하는지
-- 메인 시나리오를 하나로 고정하는 전략이 적절한지
+- 제품 스토리와 실제 frontend demo 시나리오를 분리하는 전략이 적절한지
 - `SCN-002`를 과감히 제외하고 안정적 시나리오 중심으로 가는 판단이 맞는지
 - 발표 자료에서 "실제 구현 완료"와 "후속 확장"의 경계를 어떻게 설명하는 것이 좋은지
 

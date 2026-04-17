@@ -1,12 +1,13 @@
 # Task 6 Answer Generation Status
 
-기준일: `2026-04-16`
+기준일: `2026-04-17`
 
 ## 목적
 
 - Task 6 answer generation MVP의 현재 구현 상태를 고정
 - 실제 검증 결과와 남은 약점을 한 문서에 정리
 - 이후 RAG 수정 세션에서 재사용할 기준선을 남김
+- 현재는 RAG refinement 이후 QA 기준선으로 사용
 
 ---
 
@@ -23,6 +24,7 @@
 - alembic head: `20260413_000003`
 
 retrieval MVP는 유지 중이며, answer generation MVP와 그 후속 안정화 작업이 완료된 상태다.
+이후 RAG refinement landing, SCN-004 document draft API, SCN-004 frontend flow까지 진행되었으며 answer generation 기준선은 아래 수치로 freeze한다.
 
 현재 기본 모델:
 
@@ -269,9 +271,9 @@ landing verification:
 
 ## 다음 RAG 수정 세션 권장 방향
 
-현재 landing은 완료 상태다. 즉시 필요한 answer/retrieval 구조 수정 세션은 없다.
+현재 RAG landing은 완료 상태다. 즉시 필요한 answer/retrieval 구조 수정 세션은 없다.
 
-후속 작업이 필요할 때만 아래 순서로 다시 보는 것이 합리적이다.
+다음 실질 작업은 SCN-004 frontend/backend QA 정합성 검증이다. RAG 후속 작업이 필요할 때만 아래 순서로 다시 보는 것이 합리적이다.
 
 1. 남은 `16` partial에 대한 answer-side surface / completeness 보강
 2. low-signal key point noise 정리

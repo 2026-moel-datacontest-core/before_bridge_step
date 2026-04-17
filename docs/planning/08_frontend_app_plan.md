@@ -5,6 +5,7 @@
 - MVP 앱 구현 범위 고정
 - 웹앱 기준 화면/상태/API 전제 정리
 - 데모 우선 구현 순서 명확화
+- 2026-04-17 기준 실제 frontend 구현 상태와 다음 QA 범위 정리
 
 ---
 
@@ -20,10 +21,31 @@
 
 ## Current Status
 
-- frontend는 이번 backend MVP 범위에서 아직 본격 구현하지 않음
-- backend retrieval / answer schema는 현재 고정 기준선이 존재함
-- frontend 후속 작업은 `cited_articles`, grounded answer 구조, timeout/503 처리 방식을 그대로 따라야 함
-- 다음 단계는 frontend polishing보다 backend RAG refinement가 우선
+- frontend는 SCN-004 After document draft demo 기준으로 구현 완료 상태다.
+- 구현 stack:
+  - Next.js `16.2.4`
+  - React `19.2.5`
+  - TypeScript
+  - CSS Modules + `--kl-*` design tokens
+- 구현 route:
+  - `/`
+  - `/after`
+  - `/after/result`
+  - `/after/intake`
+  - `/after/draft`
+- 실제 API 연동:
+  - `POST /api/v1/answer`
+  - `POST /api/v1/documents/draft`
+- 구현 완료 범위:
+  - Phase 1 API-connected happy path
+  - Phase 2 error / loading / a11y / route guard
+  - Phase 3 A/B: copy, print, evidence checklist local status
+- 보류 범위:
+  - Phase 3C 이후 확장 작업
+  - sessionStorage backup/restore
+  - transition animation
+  - `/before`, `/bridge`, Recovery 본 구현
+- 다음 단계는 QA 정합성 검증이다.
 
 ---
 
@@ -31,19 +53,13 @@
 
 ### Home
 
-- 서비스 소개
-- `Before 시작`
-- `After 시작`
-- 저장된 Before 결과가 있으면 Bridge 진입 안내
+- 현재는 frontend foundation placeholder다.
+- 제출 전 QA에서 `/after`로 redirect할지, 안내 placeholder로 둘지 결정한다.
 
 ### Before
 
-- 근로계약서 텍스트 입력
-- OCR 결과 붙여넣기 입력
-- 주요 항목 구조화
-- 위험 신호 분류
-- 관련 조문 / 근거 요약 표시
-- Bridge용 최소 결과 저장
+- 현재 frontend 구현 범위 밖이다.
+- 제품 구조상 남겨두되 SCN-004 demo QA 전에는 확장하지 않는다.
 
 ### After
 
@@ -52,13 +68,16 @@
 - 관련 조문 검색
 - 다음 행동 안내
 - 필요 증빙 항목 제시
-- 저장된 Before 결과가 있으면 연결 메시지 표시
+- 문서 타입 선택
+- 선택적 case intake 입력
+- 노동청 진정서 또는 노동위원회 이유서 초안 생성
+- rendered_text, missing_fields, cautions, evidence_checklist, cited_articles 표시
+- 복사 / 인쇄 제공
 
 ### Bridge
 
-- Before의 위험 태그 / 요약 표시
-- After 결과와 연결
-- `계약 단계에서 예견 가능했던 위험` 섹션 표시
+- 현재 frontend 구현 범위 밖이다.
+- Before 구현 이후 별도 단계에서 연결한다.
 
 ### Recovery
 
@@ -70,19 +89,21 @@
 ## 화면 제안
 
 - `/`
-- `/before`
-- `/before/result`
 - `/after`
 - `/after/result`
-- `/bridge`
+- `/after/intake`
+- `/after/draft`
 
 필수 공통 UI:
 
-- 상단 언어 토글
 - 입력 안내 문구
 - 인용 조문 카드
 - 주의 문구
 - 다시 분석 버튼
+- masthead
+- skip link
+- loading/error notification
+- route guard fallback
 
 ---
 
@@ -111,9 +132,10 @@
 
 ---
 
-## Bridge 저장 원칙
+## 후속 Bridge 저장 원칙
 
-- MVP는 브라우저 로컬 저장 우선
+- 현재 SCN-004 frontend demo는 Bridge 저장을 구현하지 않는다.
+- 후속 Bridge 구현 시에는 브라우저 로컬 저장을 우선 검토한다.
 - 저장 대상은 최소 필드만 허용
 - 원문 전체 저장은 기본 비활성
 
@@ -137,38 +159,44 @@
 ## Backend 연동 전제
 
 - frontend는 backend schema 확정 전 임의 필드 가정 금지
-- 초기 UI 구현은 mock data로 가능
-- 실제 연동은 확정된 API response에 맞춰 adapter 층에서 연결
+- 현재 frontend는 mock data가 아니라 실제 backend API contract에 연결되어 있음
+- `NEXT_PUBLIC_API_BASE_URL` 기본값은 `http://localhost:8000`
+- `cited_articles.length === 0` 또는 `grounded_context_ids.length === 0`이면 문서 초안 flow로 진행하지 않음
+- raw `user_statement`, `answer_response`, `case_intake`, `draft_response`는 Web Storage에 저장하지 않음
 
 MVP 최소 필요 API:
 
-- `POST /before/analyze`
-- `POST /after/analyze`
-- `POST /ocr/extract` optional
+- `POST /api/v1/answer`
+- `POST /api/v1/documents/draft`
 
 응답 최소 요구:
 
-- 구조화 결과
-- summary
+- answer / key_points / cautions
 - cited_articles
-- risk signals 또는 next actions
+- grounded_context_ids
+- retrieved_chunks
+- rendered_text
+- missing_fields
+- evidence_checklist
 
 ---
 
-## 구현 순서
+## 구현 상태
 
-1. 공통 layout / typography / language toggle
-2. Home 화면
-3. After 입력/결과 화면
-4. Before 입력/결과 화면
-5. Bridge 최소 연결 화면
-6. mock data 연결
-7. backend API 연결
-8. demo polish
+1. 공통 layout / typography / design tokens: 완료
+2. API types / FlowContext / API helper: 완료
+3. `/after` answer input: 완료
+4. `/after/result` answer result + document type selection: 완료
+5. `/after/intake` case intake form: 완료
+6. `/after/draft` document draft result: 완료
+7. API error / route guard / focus / skip link: 완료
+8. copy / print: 완료
+9. sessionStorage backup/restore: 보류
+10. Before / Bridge / Recovery: 보류
 
 우선순위 기준:
 
-- `After > Before > Bridge > Recovery`
+- 현재는 `SCN-004 After > QA > demo readiness`
 
 ---
 
@@ -181,17 +209,20 @@ MVP 최소 필요 API:
 - 관리자 페이지
 - 복잡한 멀티스텝 폼 엔진
 - 채팅형 agent loop UI 고도화
+- sessionStorage / localStorage backup-restore
+- SCN-005 / SCN-001 문서 타입 frontend 확장
 
 ---
 
 ## 완료 기준
 
-- Home / Before / After / Bridge 화면이 모두 존재
-- mock data만으로도 데모 흐름 재현 가능
-- cited_articles가 결과 카드에 표시됨
-- Before 결과를 저장하고 After에서 불러올 수 있음
-- Recovery는 placeholder로 분리됨
-- 모바일 폭에서도 레이아웃이 깨지지 않음
+- `/after` 4-route flow가 backend API와 연결되어 동작
+- cited_articles와 grounded context가 없으면 법률 답변 / 문서 초안 flow를 guard
+- 문서 초안 결과에 rendered_text / missing_fields / cautions / evidence_checklist / cited_articles 표시
+- copy / print 동작 확인
+- direct URL guard 확인
+- 모바일 폭에서도 SCN-004 demo path 레이아웃이 깨지지 않음
+- `npm run build` 통과
 
 ---
 
@@ -200,3 +231,5 @@ MVP 최소 필요 API:
 - 이번 문서의 `앱`은 네이티브 앱이 아니라 웹앱 의미
 - 프론트엔드 구현은 demo stability first
 - 세부 UI copy와 시각 스타일은 별도 문서로 분리 가능
+- 현재 구현 상세 기준은 `docs/planning/14_frontend_implementation_handoff.md`
+- 다음 작업 상세 기준은 QA 정합성 검증

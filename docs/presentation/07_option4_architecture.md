@@ -1,6 +1,8 @@
 # Option 4 Architecture Draft
 
-작성일: `2026-04-16`
+작성일: `2026-04-17`
+
+상태 메모: 현재 구현 완료 범위는 로컬 SCN-004 frontend/backend demo이며, 이 문서는 option 4를 적용할 경우의 후속 클라우드 아키텍처 초안이다.
 
 ## 문서 목적
 
@@ -31,6 +33,7 @@
 │ - FastAPI                                                         │
 │ - retrieval                                                      │
 │ - grounded answer orchestration                                  │
+│ - document draft                                                  │
 │ - citation 검증                                                  │
 │ - 모델 경로 라우팅                                                │
 └───────────────┬───────────────────────────────┬───────────────────┘

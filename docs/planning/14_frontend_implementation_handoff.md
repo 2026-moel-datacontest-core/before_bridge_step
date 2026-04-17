@@ -1,8 +1,48 @@
 # Frontend Implementation Handoff — K-Labor Shield SCN-004 Demo
 
-기준일: `2026-04-16`  
-대상: Codex (Next.js frontend 구현 에이전트)  
+기준일: `2026-04-17`
+대상: Codex / QA handoff
 범위: SCN-004 After flow (4 routes)
+
+---
+
+## 0. Current Implementation Status
+
+이 문서는 원래 2026-04-16 기준 frontend 구현 handoff였고, 2026-04-17 현재 구현은 완료 단계까지 진행됐다. 이후에는 이 문서를 새 feature 지시서가 아니라 **QA 정합성 기준서**로 사용한다.
+
+현재 코드 위치:
+
+- `frontend/src/app/after/page.tsx`
+- `frontend/src/app/after/result/page.tsx`
+- `frontend/src/app/after/intake/page.tsx`
+- `frontend/src/app/after/draft/page.tsx`
+- `frontend/src/lib/api.ts`
+- `frontend/src/types/api.ts`
+- `frontend/src/context/FlowContext.tsx`
+
+완료:
+
+- Phase 1A foundation
+- Phase 1B answer flow
+- Phase 1C draft flow
+- Phase 2 error / loading / a11y / route guard
+- Phase 3A rendered_text copy
+- Phase 3B browser print + print disclaimer
+- evidence_checklist 화면 내 로컬 상태
+
+보류:
+
+- Phase 3C 이후 확장 작업
+- sessionStorage backup/restore
+- transition animation
+- `/before`, `/bridge`, Recovery 구현
+- SCN-005 / SCN-001 문서 타입 확장
+
+다음 단계:
+
+- backend schema와 frontend type 정합성 QA
+- SCN-004 happy path / error path / guard path smoke
+- desktop/mobile demo layout 확인
 
 ---
 
@@ -86,7 +126,7 @@ ef_search는 항상 100. top_k만 분기.
 - `/after/intake` — 사건 정보 입력
 - `/after/draft` — 문서 초안 결과
 
-**Scope override note**: `frontend/CLAUDE.md`의 route 목록은 이전 MVP 범위 기준이다. SCN-004 After demo 구현에서는 이 문서의 4-route 범위를 최신 기준으로 따른다.
+**Scope override note**: `frontend/CLAUDE.md`도 현재는 이 문서의 4-route 범위로 갱신되었다. 이전 `/before`, `/bridge` 중심 route 목록은 historical scope로만 본다.
 
 ### 지원 문서 타입 (SCN-004)
 
@@ -252,7 +292,7 @@ Step 4: /after/draft
 - draft header band: 제목, document_type badge, recipient, disclaimer
 - disclaimer band: "이 문서는 제출 전 검토용 초안입니다." (Yellow 10 bg)
 - document preview: rendered_text를 `<article>` 안에 IBM Plex Sans로 표시 (white surface)
-- "복사" 버튼 (article 우상단, Phase 3 전에는 노출하지 않거나 disabled + guard 처리)
+- "복사" 버튼 (article 우상단, Phase 3A에서 구현 완료)
 - missing_fields panel (Yellow Amber bg, 빈 필드 목록)
 - cautions panel (static note, list semantics)
 - evidence_checklist panel (체크박스, 로컬 상태만, 저장 안 됨)
@@ -622,14 +662,14 @@ required defaults:
 
 | 항목 | 결정 |
 |---|---|
-| Framework | Next.js 14+ (App Router) |
+| Framework | Next.js 16.2.4 (App Router) |
 | Language | TypeScript (strict) |
 | Styling | CSS Modules + CSS Variables (`--kl-*` prefix) |
 | UI Library | 없음 (Carbon React 설치 금지) |
 | State | React Context + useReducer (FlowContext) |
 | Font | Google Fonts 또는 직접 import (IBM Plex Sans, IBM Plex Mono) |
 | API | native fetch (AbortController 포함) |
-| 테스트 | 없음 (demo 안정성 중심, 복잡한 test setup 금지) |
+| 테스트 | `npm run build` + manual smoke 중심, 복잡한 test setup 금지 |
 
 **Token prefix 결정**: Phase 1 구현의 canonical CSS variable prefix는 `--kl-*`다. `DESIGN.md`에 남아 있는 `--cds-*` 표기는 Carbon reference로만 읽고, 구현 CSS에는 섞지 않는다. 꼭 필요한 경우에만 `--cds-*` alias를 `--kl-*`에 매핑한다.
 
@@ -645,7 +685,7 @@ frontend/
 │   ├── app/
 │   │   ├── layout.tsx              # root layout (masthead, font, global CSS)
 │   │   ├── globals.css             # :root CSS variables, reset
-│   │   ├── page.tsx                # / (랜딩 또는 /after로 redirect)
+│   │   ├── page.tsx                # / (현재 foundation placeholder)
 │   │   └── after/
 │   │       ├── page.tsx            # /after
 │   │       ├── result/
@@ -657,9 +697,7 @@ frontend/
 │   ├── components/
 │   │   ├── layout/
 │   │   │   ├── Masthead.tsx
-│   │   │   ├── Masthead.module.css
-│   │   │   ├── StickyActionBar.tsx
-│   │   │   └── StickyActionBar.module.css
+│   │   │   └── Masthead.module.css
 │   │   ├── ui/
 │   │   │   ├── Button.tsx
 │   │   │   ├── Button.module.css
@@ -669,13 +707,6 @@ frontend/
 │   │   │   ├── Notification.tsx
 │   │   │   ├── Spinner.tsx
 │   │   │   └── SkipLink.tsx
-│   │   ├── after/
-│   │   │   ├── StatementInput.tsx
-│   │   │   ├── PresetButton.tsx
-│   │   │   └── AnswerResultSection.tsx
-│   │   ├── result/
-│   │   │   ├── DocumentTypeTile.tsx
-│   │   │   └── DocumentTypeSelector.tsx
 │   │   ├── intake/
 │   │   │   ├── WageComplaintForm.tsx
 │   │   │   ├── UnfairDismissalForm.tsx
@@ -689,14 +720,11 @@ frontend/
 │   ├── context/
 │   │   └── FlowContext.tsx         # FlowContext + useReducer + Provider
 │   ├── lib/
-│   │   ├── api.ts                  # fetchAnswer, fetchDraft, ApiError
-│   │   └── session.ts              # optional Phase 3 only, privacy-safe helpers
+│   │   └── api.ts                  # fetchAnswer, fetchDraft, ApiError, builders
 │   └── types/
 │       ├── api.ts                  # AnswerRequest, AnswerResponse, etc.
 │       └── flow.ts                 # KLaborShieldFlowState, FlowAction
-├── public/
-│   └── fonts/                      # IBM Plex 폰트 파일 (선택)
-├── next.config.js
+├── next.config.mjs
 ├── tsconfig.json
 └── package.json
 ```
@@ -751,8 +779,8 @@ export interface AnswerResponse {
 }
 
 export interface LegalBasisInput {
-  answer_query: string;
-  answer: string;
+  answer_query: string | null;
+  answer: string | null;
   key_points: string[];
   cautions: string[];
   cited_articles: string[];
@@ -924,7 +952,8 @@ export interface KLaborShieldFlowState {
   answer_response: AnswerResponse | null;
   selected_document_type: DocumentType | null;
   legal_basis: LegalBasisInput | null;
-  case_intake: Partial<CaseIntake> | null;
+  case_intake_form: CaseIntakeFormValues | null;
+  case_intake: CaseIntake | null;
   evidence_status_map: Record<string, EvidenceUiStatus>;
   draft_response: DocumentDraftResponse | null;
 }
@@ -932,10 +961,13 @@ export interface KLaborShieldFlowState {
 export type FlowAction =
   | { type: 'SET_STATEMENT'; payload: { statement: string; is_preset: boolean } }
   | { type: 'SET_ANSWER'; payload: AnswerResponse }
+  | { type: 'SET_LEGAL_BASIS'; payload: LegalBasisInput }
   | { type: 'SET_DOCUMENT_TYPE'; payload: DocumentType }
-  | { type: 'SET_CASE_INTAKE'; payload: Partial<CaseIntake> }
+  | { type: 'SET_CASE_INTAKE_FORM'; payload: CaseIntakeFormValues }
+  | { type: 'SET_CASE_INTAKE'; payload: CaseIntake }
   | { type: 'SET_EVIDENCE_STATUS'; payload: { key: string; status: EvidenceUiStatus } }
   | { type: 'SET_DRAFT'; payload: DocumentDraftResponse }
+  | { type: 'CLEAR_DRAFT' }
   | { type: 'RESET' };
 ```
 
@@ -1002,7 +1034,7 @@ export type FlowAction =
 **목표**: SCN-004 전체 flow가 실제 API와 연동되어 1회 smoke test를 통과하는 상태. 최소 route guard와 guard CTA는 Phase 1에 포함한다.
 
 **Phase 1A — foundation**:
-1. Next.js 14 프로젝트 scaffold (npx create-next-app, TypeScript, App Router, CSS Modules)
+1. Next.js 프로젝트 scaffold (현재 Next.js `16.2.4`, TypeScript, App Router, CSS Modules)
 2. `globals.css`에 CSS Variables 전체 추가, IBM Plex Sans/Mono 폰트 로드
 3. `types/api.ts`, `types/flow.ts` 작성
 4. `context/FlowContext.tsx` — FlowContext + useReducer + Provider
@@ -1021,7 +1053,7 @@ export type FlowAction =
 2. `/after/intake` direct URL guard — `answer_response` 없으면 `/after`, `selected_document_type` 없으면 `/after/result`
 3. `/after/draft` page — DocumentPreview + MissingFieldsPanel + CautionsPanel + EvidenceChecklist + LegalBasisPanel
 4. `/after/draft` direct URL guard — `draft_response` 없으면 `/after`
-5. Copy/print buttons are not exposed until Phase 3 behavior is implemented.
+5. Copy/print buttons were added in Phase 3A/B after the core draft flow was stable.
 
 ### Phase 2: Error / Loading / a11y (필수)
 
@@ -1037,11 +1069,18 @@ export type FlowAction =
 
 ### Phase 3: Polish (선택, 시간 여유 시)
 
-1. rendered_text 복사 버튼 (Clipboard API)
-2. 인쇄 버튼 (window.print, print CSS에 disclaimer 포함)
-3. evidence_checklist 로컬 체크 상태 동기화
-4. sessionStorage backup/restore는 후순위이며, raw user_statement / answer_response / case_intake / draft_response는 저장하지 않는다.
-5. transition animation (collapse, page entry)
+현재 운영 기준:
+
+- **Phase 3A 완료**: rendered_text 복사 버튼 (Clipboard API)
+- **Phase 3B 완료**: 인쇄 버튼 (window.print, print CSS에 disclaimer 포함)
+- **증거 체크리스트 로컬 상태 완료**: 화면 내 state만 사용하고 저장하지 않음
+- **Phase 3C 이후 보류**: sessionStorage backup/restore, transition animation, 추가 flow 확장
+
+보류 이유:
+
+- raw user_statement / answer_response / case_intake / draft_response는 개인정보 및 사건 사실관계를 포함할 수 있음
+- 새로고침 복구를 위해 저장 계층을 추가하면 QA surface가 커짐
+- 제출 전 demo 안정성을 위해 현재 메모리 상태 flow를 유지한다.
 
 ---
 
@@ -1066,6 +1105,9 @@ npm run dev      # 개발 서버 실행
 6. rendered_text 표시 확인
 7. "처음으로 돌아가기" → state reset 확인
 8. `/after/draft` 직접 접근 → `/after`로 redirect 확인
+9. copy 버튼 → clipboard 성공/실패 feedback 확인
+10. print 버튼 → print CSS disclaimer 포함 확인
+11. 모바일 폭에서 `/after/result`, `/after/intake`, `/after/draft` single column 확인
 
 ### Backend 연동 확인
 
@@ -1091,8 +1133,8 @@ uvicorn backend.main:app --reload
 - `@carbon/react` 또는 다른 외부 UI 라이브러리 설치 금지
 - Tailwind CSS 설치 금지
 - `--kl-*`와 `--cds-*` token prefix 혼용 금지 (`--kl-*` canonical)
-- SCN-001, SCN-005 문서 타입 구현 금지 (Phase 1 범위 아님)
-- `/before`, `/bridge` 화면 구현 금지 (Phase 1 범위 아님)
+- SCN-001, SCN-005 문서 타입 구현 금지 (현재 QA 전 범위 아님)
+- `/before`, `/bridge` 화면 구현 금지 (현재 QA 전 범위 아님)
 - 법률 판단 확정 문구 하드코딩 금지 ("위법 확정", "반드시 승소" 등)
 - cited_articles 없는 법률 답변을 결과 화면에 표시 금지
 - 검색되지 않은 조문 인용 금지
@@ -1115,14 +1157,14 @@ uvicorn backend.main:app --reload
 - backend/app/schemas/retrieval.py
 - backend/app/schemas/document_draft.py
 
-그 다음 docs/planning/14_frontend_implementation_handoff.md 기준으로 Phase 1A부터 frontend 구현을 시작해줘.
+그 다음 docs/planning/14_frontend_implementation_handoff.md 기준으로 구현 상태와 QA 체크리스트를 확인해줘.
 ```
 
 추가로 필요하면:
 - `docs/planning/13_document_draft_plan.md` — CaseIntake schema 상세
 
-**구현 시작점**: `frontend/` 디렉토리에서 `npm run dev`가 동작하는 Next.js scaffold를 먼저 만들고, 위 Section 8의 파일 구조대로 진행한다.
+**현재 시작점**: `frontend/` 디렉토리에서 `npm run build`로 타입/빌드 정합성을 확인하고, backend 실행 후 `npm run dev`로 SCN-004 flow smoke를 진행한다.
 
 ---
 
-*이 문서는 2026-04-16 기준 K-Labor Shield SCN-004 frontend demo를 위한 구현 handoff 문서다. backend 코드 및 API contract는 변경하지 않는다.*
+*이 문서는 2026-04-17 기준 K-Labor Shield SCN-004 frontend demo의 구현 완료 상태와 QA handoff를 함께 기록한다. backend 코드 및 API contract는 QA에서 확인하되 임의 변경하지 않는다.*

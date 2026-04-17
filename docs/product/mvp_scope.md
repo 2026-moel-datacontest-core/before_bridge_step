@@ -11,14 +11,31 @@
 
 ## MVP 목표
 
-- 계약서 또는 산업재해 입력
+- 계약서 또는 노동분쟁 상황 입력
 - 관련 법령 조문 검색
 - 근거 기반 응답 생성
 - 다음 행동 안내 제공
+- 현재 freeze 기준: SCN-004 기준 문서 초안 생성 demo 안정화
+- 최종 demo 확장 목표: SCN-001 `Before -> Bridge -> After`, SCN-004 After document draft, SCN-005 After answer/document flow까지 단계적으로 포함
 
 ---
 
 ## 포함 범위
+
+현재 구현 기준일: `2026-04-17`
+
+### 현재 구현된 demo scope
+
+- `After` 중심 SCN-004 flow
+- 자유 진술 또는 preset 입력
+- `/api/v1/answer` 기반 grounded answer
+- 문서 타입 선택
+- 선택적 case intake 입력
+- `/api/v1/documents/draft` 기반 문서 초안 생성
+- `rendered_text`, `missing_fields`, `cautions`, `evidence_checklist`, `cited_articles` 표시
+- 초안 복사 / 인쇄
+
+아래 Before / Bridge는 제품 구조상 MVP 범위다. 다만 현재 frontend 구현은 SCN-004 After flow에만 맞춰져 있으므로, Before / Bridge frontend 확장은 팀원이 작성한 Before / Bridge 코드와 contract를 확인한 뒤 별도 단계에서 진행한다.
 
 ### Before
 
@@ -40,6 +57,9 @@
 - 근거 기반 설명
 - 다음 행동 안내
 - 필요 증빙 항목 제시
+- SCN-004 문서 초안 생성:
+  - 고용노동청 임금체불 진정서 초안
+  - 노동위원회 부당해고 구제신청 이유서 초안
 
 ### Bridge
 
@@ -71,23 +91,32 @@
 - top-k 조문 검색
 - 근거 기반 응답 생성
 - Gemini API 기반 MVP
+- deterministic document draft service
+- Next.js SCN-004 demo frontend
+- 후속 frontend 확장 대상:
+  - SCN-001 `Before -> Bridge -> After` demo
+  - SCN-005 After demo
+  - 팀원 Before / Bridge 코드 확인 후 연결되는 route와 payload adapter
 
 ### 조건부 포함
 
-- vector + keyword/BM25 결합
-- metadata filtering
 - JSON 응답 구조 고정
 - cited_articles 검증
+- frontend QA에서 필요한 최소 polish
+- Before / Bridge contract 확인 후 SCN-001 / SCN-005 frontend route 확장
 
 ### 후순위
 
+- vector + keyword/BM25 결합
+- metadata filtering
 - reranker
-- query decomposition
+- query decomposition 대규모 확장
 - critic LLM
 - local LLM 전환
 - agent loop 고도화
 - 다국어 UI 확장
 - 프론트엔드 polishing
+- 팀원 Before / Bridge 코드 확인 전 임의 frontend 확장
 
 ---
 
@@ -100,36 +129,58 @@
 - 운영용 보안 고도화
 - 관리자 기능
 - 완전한 모바일 UX 최적화
+- sessionStorage / localStorage backup-restore
+- PDF / HWP 다운로드
+- 실제 제출 기능
+- 팀원 Before / Bridge code / schema / API contract 확인 없는 SCN-001 frontend 확장
+- SCN-005 / SCN-001 문서 타입의 독단적 확장
+- 현재 SCN-004 QA/demo freeze 완료 전에 `/before`, `/bridge` frontend 본 구현
 
 ---
 
 ## 성공 기준
 
-### Before
+### 현재 freeze 성공 기준
+
+- SCN-004 `/after` 4-route flow가 backend API와 연결되어 동작
+- cited_articles와 grounded_context_ids가 없으면 법률 답변 / 문서 초안 flow를 guard
+- 문서 초안 결과에 rendered_text / missing_fields / cautions / evidence_checklist / cited_articles 표시
+- copy / print 동작 확인
+- direct URL guard 확인
+- QA에서 backend/frontend schema mismatch 없음
+- 데모 중단 없이 SCN-004 시연 가능
+
+### 최종 demo 확장 성공 기준
+
+#### Before
 
 - 계약서 입력 가능
 - 주요 항목 구조화 가능
 - 관련 법령 검색 가능
 - 위험 신호 + 근거 제시 가능
 
-### After
+#### After
 
 - 자유 진술 입력 가능
 - 사건 정보 구조화 가능
 - 관련 법령 검색 가능
 - 다음 행동 안내 가능
+- SCN-004 문서 초안 생성 가능
+- 검색된 legal basis 밖 조문을 초안에 새로 만들지 않음
+- SCN-005 After demo 확장 가능
 
-### Bridge
+#### Bridge
 
 - Before 결과 저장 가능
 - After에서 이전 결과 불러오기 가능
 - 최소 연결 메시지 출력 가능
+- SCN-001에서 `Before -> Bridge -> After` 연결 demo 가능
 
-### 공통
+#### 공통
 
 - 검색된 법령 근거 포함
 - retrieval 실제 동작
-- 데모 중단 없이 시연 가능
+- 팀원 Before / Bridge 코드와 frontend adapter contract 정합성 확보
 
 ---
 
@@ -137,7 +188,11 @@
 
 1. 법령 retrieval MVP
 2. After MVP
-3. Before MVP
-4. Bridge 최소 연결
-5. 응답 품질 개선
-6. 데모 안정화
+3. grounded answer 품질 개선
+4. SCN-004 document draft MVP
+5. SCN-004 frontend demo
+6. QA 정합성 검증
+7. 데모 안정화
+8. 팀원 Before / Bridge 코드와 contract 확인
+9. SCN-001 `Before -> Bridge -> After` frontend 확장
+10. SCN-005 After demo / 문서 타입 확장 검토

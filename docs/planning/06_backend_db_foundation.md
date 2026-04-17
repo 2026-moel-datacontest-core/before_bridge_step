@@ -14,6 +14,10 @@
 > - grounded answer generation MVP와 후속 안정화까지 완료
 > - latest end-to-end backend status is tracked in `docs/ops/task6_answer_generation_status.md`
 > - current live corpus is `1722` chunks after scenario-driven minimal data addition for SCN-003
+>
+> Update (2026-04-17):
+> - RAG refinement, SCN-004 document draft API, and SCN-004 frontend demo flow are complete
+> - next practical step is QA consistency, not DB schema work
 
 ## Goal
 
@@ -115,3 +119,5 @@ Observed state after execution:
   - embeddings complete
   - HNSW index complete
   - retrieval MVP complete
+  - grounded answer complete
+  - SCN-004 document draft API complete

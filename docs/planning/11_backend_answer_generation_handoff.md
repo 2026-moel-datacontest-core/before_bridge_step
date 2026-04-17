@@ -13,9 +13,10 @@
 다음 세션에서 우선 참고할 문서:
 
 1. `docs/ops/task6_answer_generation_status.md`
-2. `docs/planning/02_rag_strategy.md`
-3. `docs/planning/05_eval_plan.md`
-4. `docs/planning/10_backend_retrieval_plan.md`
+2. `docs/planning/13_document_draft_plan.md`
+3. `docs/planning/14_frontend_implementation_handoff.md`
+4. `docs/planning/02_rag_strategy.md`
+5. `docs/planning/05_eval_plan.md`
 
 ---
 
@@ -164,7 +165,7 @@ Task 6 answer generation MVP를 end-to-end로 진행해줘. 계획만 말하지 
   - hit@3 = 59/60 (98.33%)
   - hit@5 = 60/60 (100.00%)
 - KLS-EVAL-019는 query embedding hint normalization으로 보정 완료
-- agent / frontend는 아직 이번 다음 단계의 기본 범위 밖
+- historical note: 이 시점에는 agent / frontend가 다음 단계의 기본 범위 밖이었음
 
 이번 세션 목표:
 1. answer generation service 구현
@@ -219,9 +220,10 @@ blocker 처리 규칙:
 ## Current Next Step
 
 - answer generation 자체는 완료됨
-- 다음 실질 과제는 retrieval-grounding-answer 연결부의 RAG refinement
-- clause ranking / adjacent context expansion / query normalization을 중심으로 개선
-- model swap보다 현재 baseline 유지와 선택 품질 개선이 우선
+- RAG refinement도 `2026-04-16` clean pass 기준 landing 완료됨
+- SCN-004 document draft API와 frontend After flow도 구현 완료됨
+- 다음 실질 과제는 신규 backend feature가 아니라 QA 정합성 검증
+- QA에서 answer / draft / frontend contract mismatch 또는 citation survival regression이 재현될 때만 좁게 수정
 
 ## Historical Success Criteria
 

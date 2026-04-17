@@ -1,6 +1,8 @@
 # Infrastructure Expansion For Instructor Review
 
-작성일: `2026-04-15`
+작성일: `2026-04-17`
+
+상태 메모: 2026-04-17 기준 현재 구현은 로컬 WSL/conda 기반 SCN-004 frontend/backend demo까지 완료됐다. 이 문서는 배포 완료 상태가 아니라 이후 GCP 확장 방향을 설명하는 자료다.
 
 ## 문서 목적
 
@@ -16,6 +18,8 @@
 - backend: FastAPI
 - database: PostgreSQL + pgvector
 - retrieval / answer API 구현 완료
+- document draft API 구현 완료
+- Next.js SCN-004 frontend demo 구현 완료
 - embedding model: `gemini-embedding-001`
 - answer model: `gemini-2.5-flash`
 - 개발 환경: WSL + conda

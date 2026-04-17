@@ -81,3 +81,8 @@ python3 scripts/ingest_chunks.py --dry-run
     - `SCN-003` 대응으로 장애인 관련 조문 9개를 최소 범위로 추가
     - current live `law_chunks` row count: `1722`
     - current live `embedding` populated: `1722 / 1722`
+- Current status (2026-04-17):
+  - RAG refinement 완료
+  - SCN-004 document draft API 완료
+  - SCN-004 frontend demo flow 완료
+  - ingestion 재실행은 현재 QA 범위가 아님

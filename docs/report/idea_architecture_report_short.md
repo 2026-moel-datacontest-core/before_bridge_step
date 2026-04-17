@@ -1,11 +1,12 @@
 # K-Labor Shield 아이디어·아키텍처 요약 보고서
 
-작성일: `2026-04-16`
+작성일: `2026-04-17`
 
 기준선:
 
 - 서비스 corpus 기준일: `selected_as_of = 2026-04-11`
-- RAG 및 시나리오 상태 기준일: `2026-04-16`
+- RAG 및 시나리오 상태 기준일: `2026-04-17`
+- frontend 구현 상태 기준일: `2026-04-17`
 
 ## 1. 프로젝트 개요
 
@@ -46,6 +47,10 @@
 - `citation_grounding_clean = 60/60`
 - 검색 결과에 없는 조문 인용 금지, `cited_articles` 포함 응답 구조 고정
 - `SCN-001`, `SCN-004`, `SCN-005` After 핵심 데모 안정화
+- `POST /api/v1/documents/draft` 구현 완료
+- SCN-004 노동청 진정서 / 노동위원회 이유서 초안 생성 구현 완료
+- Next.js frontend에서 `/after -> /after/result -> /after/intake -> /after/draft` 흐름 구현 완료
+- copy / print 구현 완료, sessionStorage backup/restore는 데모 안정성 때문에 보류
 
 ### Before 단계
 
@@ -63,11 +68,11 @@
 - `SCN-003`: 장애인 편의제공 및 지원 제도 안내 (`Before`)
 - `SCN-002`: 최저임금/수습 꼼수 (`Before`, partial)
 
-발표 메인 시나리오는 `SCN-001`이며, `top_k=10`, `ef_search=100` 데모 경로로 운영합니다. 백업 시나리오는 `SCN-004`, `SCN-005`가 적절합니다. `SCN-003`은 확장성 설명용, `SCN-002`는 설명형 데모까지만 권장됩니다.
+현재 실제 frontend main demo는 `SCN-004`입니다. `top_k=10`, `ef_search=100` preset 경로로 권리 안내와 문서 초안까지 한 번에 보여줄 수 있습니다. `SCN-001`은 전체 제품 스토리(`Before -> Bridge -> After`)를 설명하는 대표 시나리오로 유지하고, `SCN-005`는 backup answer scenario로 둡니다. `SCN-003`은 확장성 설명용, `SCN-002`는 설명형 데모까지만 권장됩니다.
 
 ## 6. 제출 전 실행 계획
 
-현재 단계의 핵심은 신규 기능 확장보다 시연 안정성 강화입니다.
+현재 단계의 핵심은 신규 기능 확장보다 QA 정합성과 시연 안정성 강화입니다.
 
 ### 공통 계획
 
@@ -76,12 +81,13 @@
 - 질문 문안, 기대 citation, 시연 순서 최종 고정
 - “현재 구현 완료”와 “후속 확장”을 발표 자료에서 명확히 분리
 
-### After 계획
+### After / Frontend 계획
 
-- `SCN-004` citation survival 재현 여부 확인
-- `SCN-005` 중심의 phrasing normalization 보강
-- answer-side deterministic hardening 진행
-- 필요할 때만 selective decomposition 검토
+- SCN-004 frontend/backend contract 정합성 확인
+- `/api/v1/answer -> /api/v1/documents/draft` legal basis 전달 확인
+- direct URL guard, API error, citation 없음 상태 확인
+- copy / print / mobile layout smoke
+- RAG 수정은 QA에서 regression이 재현될 때만 좁게 진행
 
 ### Before 계획
 
@@ -136,4 +142,5 @@ Local LLM이 꼭 필요할 경우에는 `Compute Engine GPU + Ollama + Qwen` 계
 - 메인 시나리오를 `SCN-001`로 두는 전략이 적절한지
 - `SCN-002`를 현재 범위 밖으로 두는 판단이 맞는지
 - `After`를 먼저 구현하고 `Before`를 후속 연결하는 진행 방식이 괜찮은지
+- 실제 실행 가능한 frontend demo를 `SCN-004`로 두고, 제품 대표 스토리를 `SCN-001`로 설명하는 구성이 자연스러운지
 - `Cloud Run` 중심 serverless-first 구조와 GPU 기반 Local LLM 확장 방향이 적절한지

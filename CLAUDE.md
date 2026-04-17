@@ -9,12 +9,24 @@
 | Goal | 공모전 제출 안정성 중심 MVP 완성 |
 | Priority | 제출 안정성 > 기능 추가 > 리팩토링 |
 
+## Current Phase
+
+기준일: `2026-04-17`
+
+- RAG refinement landing 완료
+- SCN-004 document draft backend 완료
+- SCN-004 After frontend 4-route flow 완료
+- Phase 3A/B 완료: rendered_text copy, browser print, print disclaimer
+- 현재 작업 중심은 신규 기능 확장이 아니라 **QA 정합성 검증과 demo freeze**
+- 현재 source of truth는 `backend/data/law_chunks/all_chunks.json`
+- current live corpus: `1722` chunks, `selected_as_of = 2026-04-11`
+
 ## Structure
 
 | Path | Role |
 |---|---|
-| `backend/` | FastAPI, RAG, agents, LLM routing, DB |
-| `frontend/` | Next.js 웹앱, 한/영 UI |
+| `backend/` | FastAPI, retrieval / answer / document draft, LLM routing, DB |
+| `frontend/` | Next.js SCN-004 After demo 웹앱 |
 | `scripts/` | 데이터 전처리 / 청킹 Step 1~10 |
 | `data/legalize-kr/` | 법령 원본 git submodule |
 | `backend/data/law_chunks/` | 전처리 결과 저장 위치 |
@@ -44,11 +56,14 @@
 - 전처리 결과는 `backend/data/law_chunks/`에만 저장
 - 청킹 파이프라인 순서 고정: `1 → 4 → 5 → 6 → 7 → 8 → 9 → 10`
 - Step 2, 3은 별도 실행하지 않음
+- 현재 frozen output metadata 기준은 `selected_as_of = 2026-04-11`
+- current live source of truth는 SCN-003 최소 보강 `+9` chunks 포함 `1722` chunks
 - 초안이 아니라 **수정 확정본** 기준으로 작업
 - `docs/planning/`은 기준 문서. 상세 설계는 거기서 확인
 - 개인정보 최소 수집 원칙 유지
 - 로그인/이메일/전화번호 수집 기능 추가 금지
-- Feature Freeze 이후 신규 기능 추가 금지
+- 현재 SCN-004 QA/demo freeze 중 신규 기능 추가 금지
+- 현재 다음 단계는 신규 기능 확장이 아니라 QA 정합성 검증
 - 제출 안정성 우선. 막히면 범위 축소 허용
 - API contract 임의 변경 금지
 - 하위 디렉토리 작업 시 해당 디렉토리 `CLAUDE.md` 우선 확인
@@ -84,19 +99,35 @@
 ### `scripts/`
 - 청킹/전처리 민감 구간
 - Step 1/4/7 수정본 기준
+- pipeline 재실행 command는 `--as-of 2026-04-10` 기준으로 재현성 우선
+- 현재 frozen output metadata 기준은 `selected_as_of = 2026-04-11`
+- current live source of truth는 `1722` chunks
 - `article_ordinal` 충돌 방지 중요
 - Step 9 실패 시 다음 단계 진행 금지
 
 ### `backend/`
-- RAG 1차/2차/3차 계층 유지
+- `POST /api/v1/retrieve`, `POST /api/v1/answer`, `POST /api/v1/documents/draft` 구현 완료
+- 일반 `/api/v1/retrieve`와 `/api/v1/answer` 기본값은 `top_k=5`, `ef_search=100`
+- SCN demo / scenario smoke는 `top_k=10`, `ef_search=100` 명시
 - HIGH/MEDIUM 민감 작업은 local LLM 우선
+- 현재 implemented answer / embedding path는 Vertex AI Gemini 기준
 - 환각 방지 규칙 유지
 - cited_articles 없는 법률 답변 금지
+- `/api/v1/documents/draft`는 `/api/v1/answer` legal basis 안의 근거만 사용
+- draft service는 retrieval / answer_generation service를 직접 호출하지 않음
+- 사용자가 입력하지 않은 사실은 단정하지 않고 placeholder 또는 `missing_fields`로 남김
+- SCN-004 외 문서 타입 확장은 QA 통과 후 별도 단계로 검토
 
 ### `frontend/`
 - 한국어 메인 / 영어 보조
 - 발표 데모 안정성 우선
 - backend schema 확인 없이 응답 필드 가정 금지
+- 현재 구현 범위는 SCN-004 After 4-route flow: `/after`, `/after/result`, `/after/intake`, `/after/draft`
+- `/before`, `/bridge`, Recovery 확장은 현재 QA 전 단계에서 진행하지 않음
+- 현재 SCN-004 QA/demo freeze 완료 전에는 SCN-005 / SCN-001 문서 타입 frontend 확장 금지
+- SCN-001 `Before -> Bridge -> After` 및 SCN-005 frontend 확장은 팀원 Before / Bridge 코드와 contract 확인 후 별도 단계에서 검토
+- raw `user_statement`, `answer_response`, `case_intake`, `draft_response`는 Web Storage에 저장하지 않음
+- SCN-004 preset은 `top_k=10`, 자유 입력은 `top_k=5`, 항상 `ef_search=100`
 
 ## Do Not
 
@@ -105,9 +136,13 @@
 - 계획 문서와 다른 방향으로 독단 수정
 - 과도한 구조 변경
 - 여러 feature 브랜치 동시 작업 전제 코드 작성
+- API contract를 frontend 편의만으로 변경
+- RAG / answer / retrieval behavior 변경 없는 doc-only 작업에서 broad full eval 실행
+- raw case facts 또는 full answer/draft payload를 browser storage에 저장
 
 ## Reminder
 
 - root `CLAUDE.md`는 전역 요약본
 - 상세 규칙은 하위 `CLAUDE.md`와 `docs/planning/*` 참조
 - 현재 목표는 “완벽한 구조”가 아니라 “안정적으로 제출 가능한 결과물”
+- 2026-04-17 기준 RAG refinement, SCN-004 document draft backend, SCN-004 After frontend Phase 3A/B까지 완료됨. 다음 실질 작업은 QA 정합성 검증과 demo freeze

@@ -1,7 +1,9 @@
 # K-Labor Shield Design Direction
 Based on IBM Carbon-inspired structure, adapted for legal aid, migrant worker support, and document drafting flows.
 
-Implementation note: this document uses Carbon `--cds-*` names as design-system references. SCN-004 frontend implementation must use the canonical `--kl-*` variables defined in `docs/planning/14_frontend_implementation_handoff.md`; do not mix both prefixes in component CSS.
+Implementation note: this document uses Carbon `--cds-*` names as design-system references. SCN-004 frontend implementation uses the canonical `--kl-*` variables defined in `docs/planning/14_frontend_implementation_handoff.md`; do not mix both prefixes in component CSS.
+
+Current status note (2026-04-17): the SCN-004 After frontend flow is implemented through Phase 3B. Design work before QA should stay limited to regression-free fixes for the existing `/after` routes, not new Before/Bridge/Recovery screens.
 
 ## 1. Visual Theme & Atmosphere
 

@@ -16,3 +16,9 @@
 
 ## Output
 - 결과 저장 위치: `backend/data/law_chunks/`
+
+## Current Status
+- chunking pipeline은 frozen 상태
+- current source of truth는 `backend/data/law_chunks/all_chunks.json`
+- current live chunks는 `1722`
+- 다음 작업은 chunk 재생성이 아니라 SCN-004 frontend/backend QA 정합성 검증

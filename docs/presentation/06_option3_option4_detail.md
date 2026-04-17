@@ -1,6 +1,6 @@
 # Detailed Explanation Of Option 3 And 4
 
-작성일: `2026-04-16`
+작성일: `2026-04-17`
 
 ## 문서 목적
 
@@ -13,6 +13,8 @@
 
 - `3안`: 모듈화된 모놀리스 + serverless-first
 - `4안`: 모듈화된 모놀리스 + serverless-first + LLM 서버 분리
+
+상태 메모: 현재 로컬 구현은 FastAPI backend, PostgreSQL/pgvector, Vertex AI 기반 retrieval/answer, SCN-004 document draft API, Next.js SCN-004 frontend demo까지 완료된 상태다. 이 문서는 그 다음 배포/확장 구조를 설명한다.
 
 이유는 다음과 같습니다.
 

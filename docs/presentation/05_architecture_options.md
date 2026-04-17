@@ -1,6 +1,6 @@
 # Architecture Options For Instructor Review
 
-작성일: `2026-04-16`
+작성일: `2026-04-17`
 
 ## 문서 목적
 
@@ -16,6 +16,8 @@
 - backend는 FastAPI 기반
 - database는 PostgreSQL + pgvector
 - retrieval / grounded answer MVP 확보
+- SCN-004 document draft API 확보
+- SCN-004 frontend demo 확보
 - 현재는 로컬 MVP 단계이며, 이후 GCP 기반 서비스형 인프라 확장 검토 중
 
 즉, 지금의 핵심 과제는 대규모 분산 시스템 설계 자체가 아니라, 이미 검증한 MVP를 어떻게 안정적이고 설득력 있는 구조로 확장할 것인가에 가깝습니다.

@@ -7,6 +7,7 @@
 - `mvp_in_scope_eval_v1.json`: 현재 `backend/data/law_chunks/all_chunks.json` 범위 안에서만 답할 수 있는 baseline 60문항 eval 셋
 - `scenario_demo_question_sets_v1.json`: `SCN-001`, `SCN-004`, `SCN-005` 데모용 retrieval/answer smoke 질문 세트
 - `run_retrieval_eval.py`: retrieval service 기준 `hit@1`, `hit@3`, `hit@5`를 계산하는 runner
+- `run_answer_eval.py`: grounded answer의 schema / citation grounding / expected point coverage를 계산하는 runner
 
 ## Source Scope
 
@@ -65,8 +66,11 @@
    - `scenario_demo_question_sets_v1.json`의 질문을 시나리오별 retrieval/answer smoke에 재사용
 4. regression 평가:
    - 같은 질문을 반복 실행해 retrieval/citation 안정성 확인
+5. document draft QA:
+   - document draft 자체는 `backend/verify/check_document_draft.py`를 기준으로 확인
+   - RAG service를 수정하지 않은 문서 초안/frontend 작업에서는 full 60 eval을 기본 재실행하지 않음
 
-## Current Baseline (2026-04-13)
+## Current Retrieval Baseline (2026-04-13)
 
 실행 명령:
 
@@ -92,9 +96,30 @@ note:
 - 초기 실행에서 `KLS-EVAL-019`가 top-5 miss였음
 - query embedding 단계의 법률용어 hint normalization 보강 후 `hit@5_failures = 0`
 
+## Current Answer Baseline (2026-04-16)
+
+실행 명령:
+
+```bash
+python eval/run_answer_eval.py --top-k 5 --ef-search 100 --limit 60 --show-failures 20
+```
+
+측정 결과:
+
+- `items_answered = 60/60`
+- `JSON/schema failure = 0`
+- `timed_out_ids = []`
+- `citation_grounding_clean = 60/60`
+- `gold_citation_hit = 60/60`
+- `expected_point_strict_coverage = 137/153`
+- `failures_or_partial_coverage = 16`
+
+현재 RAG refinement는 landing 완료 상태다. 다음 작업이 frontend/document draft QA만 건드리는 경우, 이 baseline은 재실행보다 회귀 의심 시 재검증 대상으로 본다.
+
 ## Notes
 
 - 현재 baseline eval 파일은 모두 `in-scope` 질문만 포함한다.
 - out-of-scope 거절 평가셋은 별도로 분리하는 것이 좋다.
 - 데모용 질문 세트는 baseline scoring dataset이 아니라 scenario smoke / 발표 시연용 자산이다.
 - 문항은 실제 현재 chunk label에 맞춰 작성했기 때문에, 청킹을 다시 돌리거나 snapshot이 바뀌면 함께 갱신해야 한다.
+- SCN-004 document draft smoke는 `backend/verify/check_document_draft.py`에 있다.

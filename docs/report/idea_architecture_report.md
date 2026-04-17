@@ -1,12 +1,13 @@
 # K-Labor Shield 아이디어·아키텍처 보고서
 
-작성일: `2026-04-16`
+작성일: `2026-04-17`
 
 기준선:
 
 - 서비스 corpus 기준일: `selected_as_of = 2026-04-11`
-- RAG 및 시나리오 상태 기준일: `2026-04-16`
-- 문서 작성일: `2026-04-16`
+- RAG 및 시나리오 상태 기준일: `2026-04-17`
+- frontend 구현 상태 기준일: `2026-04-17`
+- 문서 작성일: `2026-04-17`
 
 ## 1. 프로젝트 개요
 
@@ -77,6 +78,8 @@
 | 응답 구조 | 검색 결과에 없는 조문 인용 금지, `cited_articles` 포함 응답 고정 |
 | 평가 | baseline answer eval `137/153`, partial/failure `16` |
 | 시나리오 검증 | `SCN-001`, `SCN-004`, `SCN-005` After 핵심 데모 안정화 |
+| 문서 초안 | `POST /api/v1/documents/draft` 구현 완료, SCN-004 진정서/이유서 초안 지원 |
+| Frontend | Next.js `/after` 4-route flow 구현 완료, copy/print 포함 |
 
 현재 저장소 기준으로는 `After` 단계의 핵심 backend 로직과 검증 자산이 먼저 구현된 상태입니다.
 
@@ -98,27 +101,29 @@
 
 | 시나리오 | 유형 | 현재 상태 | 발표 활용도 |
 |---|---|---|---|
-| `SCN-001` 외국인 계약서·기숙사·차별·사업장 변경 | `Full` | 커버됨, `top_k=10` 데모 경로에서 안정화 | 대표 시연 후보 |
-| `SCN-004` 카톡 해고 및 임금·퇴직금 체불 | `After` | 커버됨 | 안정적인 보조 시연 후보 |
+| `SCN-001` 외국인 계약서·기숙사·차별·사업장 변경 | `Full` | 커버됨, `top_k=10` 데모 경로에서 안정화 | 제품 스토리 대표 후보 |
+| `SCN-004` 카톡 해고 및 임금·퇴직금 체불 | `After` | frontend demo 구현 완료 | 실제 frontend main demo |
 | `SCN-005` 육아휴직 및 가족돌봄휴가 거절 | `After` | 커버됨 | 사회적 공감도가 높은 보조 시연 후보 |
 | `SCN-003` 장애인 편의제공 및 지원 제도 안내 | `Before` | 최소 데이터 보강 후 커버됨 | 확장성 설명용 후보 |
 | `SCN-002` 최저임금/수습 꼼수 | `Before` | `Partial` | 설명형 데모까지만 권장 |
 
-메인 시나리오는 `SCN-001`입니다. 이 시나리오는 정보 취약 사용자 문제를 설명하면서 `Before -> Bridge -> After` 전체 흐름을 한 번에 보여줄 수 있어 프로젝트 메시지를 가장 잘 전달합니다.
+제품 스토리의 메인 시나리오는 `SCN-001`입니다. 이 시나리오는 정보 취약 사용자 문제를 설명하면서 `Before -> Bridge -> After` 전체 흐름을 한 번에 보여줄 수 있어 프로젝트 메시지를 가장 잘 전달합니다.
 
-`SCN-001 Full`은 `top_k=10`, `ef_search=100` 데모 경로에서 안정화되어 메인 시연 후보로 사용할 수 있습니다. 다만 발표 운영상 `SCN-004`와 `SCN-005`를 백업 시나리오로 함께 준비하는 것이 안전합니다. `SCN-003`은 확장성 설명용으로 적합하며, `SCN-002`는 자동 숫자 판정이 현재 범위를 벗어나므로 설명형 데모로 제한하는 것이 맞습니다.
+다만 현재 실제 frontend main demo는 `SCN-004`입니다. `SCN-004`는 `/after`에서 권리 안내와 노동청 진정서/노동위원회 이유서 초안까지 end-to-end로 보여줄 수 있습니다. `SCN-001 Full`은 `top_k=10`, `ef_search=100` 데모 경로에서 제품 스토리와 API smoke 후보로 유지하고, `SCN-005`를 backup answer scenario로 준비하는 것이 안전합니다. `SCN-003`은 확장성 설명용으로 적합하며, `SCN-002`는 자동 숫자 판정이 현재 범위를 벗어나므로 설명형 데모로 제한하는 것이 맞습니다.
 
 ## 6. 제출 전 실행 계획
 
-현재 프로젝트는 아이디어 검토 단계가 아니라 이미 동작하는 RAG MVP를 확보한 상태입니다. 따라서 제출 전 계획의 핵심은 신규 기능을 크게 넓히는 것이 아니라, 현재 시스템의 시연 안정성을 높이는 것입니다.
+현재 프로젝트는 아이디어 검토 단계가 아니라 이미 동작하는 RAG MVP와 SCN-004 frontend demo를 확보한 상태입니다. 따라서 제출 전 계획의 핵심은 신규 기능을 크게 넓히는 것이 아니라, 현재 시스템의 QA 정합성과 시연 안정성을 높이는 것입니다.
 
 ### 6-1. 현재 기준선
 
 - 법령 corpus 고정 완료: `1722` chunks
 - retrieval MVP 완료: `hit@5 = 60/60`
 - grounded answer MVP 완료: `citation_grounding_clean = 60/60`
+- SCN-004 document draft API 완료
+- SCN-004 frontend flow 완료
 - scenario audit 완료: 주요 데모 시나리오 5개 검토
-- 남은 핵심 이슈: 데이터 부족보다 answer-side clause selection, phrasing sensitivity, 일부 복합 질의 composition 문제
+- 남은 핵심 이슈: 기능 확장보다 backend/frontend contract QA와 demo path 안정화
 
 ### 6-2. 공통 계획
 
@@ -128,17 +133,16 @@
 - 질문 문안, 기대 citation, 시연 순서 최종 고정
 - 발표 자료에서 “현재 구현 완료”와 “후속 확장”을 명확히 분리
 
-### 6-3. After 계획
+### 6-3. After / Frontend QA 계획
 
-- Step 0: `SCN-004`에서 `근로기준법 제23조` citation survival 이슈가 실제로 재현되는지 먼저 확인
-- Step 1: `SCN-005` 중심의 좁은 phrasing normalization 보강
-- Step 2: 긴 조문 / 하위 항목 / 숫자·기간·예외·절차·범위 surface를 위한 answer-side deterministic hardening 진행
-- Step 3: Step 0이 재현된 경우에만 conservative citation-diversity / coverage-aware context assembly 검토
-- Step 4: `SCN-001 Full` 같은 composition-heavy 질문에 한해서만 selective decomposition 적용 (`top_k=10` demo path)
-- `After` 질문 문안별 smoke test 재확인
-- 필요 시 초기 MVP 앱도 로직을 먼저 완성한 `After` 흐름 기준으로 선행 구성
+- Step 0: `/api/v1/answer`와 frontend `AnswerResponse` type 정합성 확인
+- Step 1: `/api/v1/documents/draft`와 frontend `DocumentDraftResponse` type 정합성 확인
+- Step 2: `buildLegalBasis()`가 grounded_context_ids 기준 retrieved_chunks만 전달하는지 확인
+- Step 3: `buildCaseIntake()`가 빈 row 제거, 기본 object/list 채움, 개인정보 최소 수집 원칙을 지키는지 확인
+- Step 4: `/after` happy path, API error, direct URL guard, citation 없음 상태, copy/print, mobile layout smoke
+- Step 5: QA에서 RAG regression이 재현될 때만 좁게 answer/retrieval을 수정
 
-핵심은 decomposition을 기본 전략으로 두지 않고, low-risk fix를 먼저 적용한 뒤 조건부 escalation path로만 사용한다는 점입니다.
+핵심은 새 화면이나 새 문서 타입을 추가하지 않고, 이미 구현한 SCN-004 path를 안정화하는 것입니다.
 
 ### 6-4. Before 계획
 
@@ -163,8 +167,8 @@
 
 | 구분 | 항목 |
 |---|---|
-| 이번 제출 범위 안 | 법령 retrieval, grounded answer, cited articles 표시, `Before` / `After` / `Bridge` 흐름 설명, 시나리오 기반 데모 |
-| 이번 제출 범위 밖 | Recovery 본격 구현, 연도별 최저임금 자동 비교, 단순노무 직종 자동 판정, 대규모 hybrid retrieval 전환, Local LLM 운영 전환, 문서 자동 생성 기능의 본격 구현 |
+| 이번 제출 범위 안 | 법령 retrieval, grounded answer, cited articles 표시, SCN-004 문서 초안 API, SCN-004 frontend demo, `Before` / `After` / `Bridge` 흐름 설명 |
+| 이번 제출 범위 밖 | Recovery 본격 구현, 연도별 최저임금 자동 비교, 단순노무 직종 자동 판정, 대규모 hybrid retrieval 전환, Local LLM 운영 전환, SCN-005/SCN-001 문서 타입 확장, sessionStorage backup/restore |
 
 ### 6-6. 리스크와 대응
 
@@ -173,9 +177,9 @@
 2. snapshot 혼합 위험
    - raw source HEAD가 더 최신이어도 발표와 검증은 frozen corpus(`2026-04-11`) 기준으로만 정리
 3. 범위 확장 욕심
-   - 자동 문서 작성, OCR, Recovery를 한 번에 모두 보여주지 않고 grounded legal answer와 대표 시나리오 안정성에 집중
-4. frontend 완성도보다 backend 품질이 더 중요
-   - 화면 polish보다 RAG refinement를 우선
+   - OCR, Recovery, 추가 문서 타입을 한 번에 모두 보여주지 않고 SCN-004 end-to-end 안정성에 집중
+4. frontend 확장보다 QA가 더 중요
+   - 새 화면보다 backend/frontend schema 정합성과 demo smoke를 우선
 
 ## 7. 팀 구성 및 역할 분담
 

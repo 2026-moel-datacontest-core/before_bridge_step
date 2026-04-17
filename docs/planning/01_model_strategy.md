@@ -11,7 +11,7 @@
 ## 현재 방향
 
 - **MVP는 Gemini API 기반으로 진행**
-- 우선 목표는 **동작하는 retrieval + generation 흐름 검증**
+- 우선 목표는 **동작하는 retrieval + grounded answer + SCN-004 document draft 흐름 검증**
 - 복잡한 자체 호스팅보다 **제출 안정성** 우선
 - 모델은 확정이 아니라 **현재 기준 후보 및 방향**으로 관리
 
@@ -66,6 +66,8 @@
 - MVP는 Gemini API 기반으로 우선 진행
 - retrieval MVP 완료
 - grounded answer generation 및 citation grounding 구조 구현 완료
+- RAG refinement landing 완료
+- SCN-004 document draft backend 및 frontend demo flow 구현 완료
 - default answer model은 `gemini-2.5-flash` 유지
 - default embedding model은 `gemini-embedding-001` 유지
 
@@ -86,6 +88,7 @@
 - critic 루프 적용 여부
 - 민감도별 모델 분리 수준
 - 향후 RAG 수정 이후 answer model 재평가 필요 여부
+- QA에서 answer / draft 품질 회귀가 확인될 경우의 model 재측정 필요 여부
 
 ---
 
@@ -112,4 +115,4 @@
 - RAG 구조 조정 이후 model choice 재측정
 
 ### 기준
-- 지금은 **모델 확정보다 동작 검증이 우선**
+- 지금은 **모델 교체보다 QA 정합성 검증이 우선**
