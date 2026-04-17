@@ -82,7 +82,52 @@ npm run dev
 - 파일 수정이 필요하면 먼저 수정 범위를 보고해주세요.
 
 이번 세션 목표는 먼저 SCN-004 freeze 상태가 유지되는지 확인하는 것입니다.
-확인 후 사용자가 요청하면 다음 단계 후보로 SCN-005 After 문서 타입 확장을 별도 범위로 검토해주세요.
+확인 후에는 아래 MVP 완성 순서를 기준으로 다음 작업을 정리해주세요.
+
+MVP 완성 순서:
+1. SCN-004 freeze 재확인
+   - answer, draft, frontend flow, copy, print, direct URL guard가 기존 기준대로 동작하는지 확인
+   - preset path가 통과하면 기존 SCN-004 demo output은 더 흔들지 않음
+2. 자유 입력 문서 선택 guard 보강
+   - 현재 `/after/result` 문서 선택지는 SCN-004 문서 2개로 고정되어 있음
+   - 자유 입력 질문이 해고/임금체불/퇴직금 SCN-004 범위와 맞지 않으면 문서 선택지를 보여주지 않거나 disabled 처리
+   - unsupported free input은 answer/key_points/cautions/cited_articles만 표시하고, "현재 문서 초안 지원 범위 밖" 안내를 표시
+   - SCN-004 관련 자유 입력이면 기존 2개 문서 타입을 계속 선택 가능하게 유지
+   - eligibility 판단은 query/cited_articles/grounded chunks 기반의 작은 frontend guard로 먼저 검토하고, backend API contract는 변경하지 않음
+   - 이 작업은 SCN-005 구현이 아니라 SCN-004 자유 입력 correctness guard로 취급
+3. 발표용 demo script / fallback script 고정
+   - 실제 입력 문장, 클릭 순서, 강조할 조문, 보여줄 draft 영역, API 실패 시 fallback 멘트 정리
+4. SCN-005 After 확장 여부 결정
+   - 시간이 충분하면 문서 타입 1개만 좁게 구현
+   - 시간이 애매하면 backup answer scenario / 후속 확장 후보로만 유지
+5. SCN-005를 진행하는 경우 최소 범위로 구현
+   - 육아휴직 / 가족돌봄휴가 질의 1~2개 확정
+   - retrieval/answer smoke로 핵심 조문 확인
+   - deterministic draft template 1개, fixture, verifier, 필요한 frontend 선택지만 추가
+6. 팀원 Before output contract 확인
+   - Before가 내보내는 JSON, risk_tags, extracted_terms, cited_articles, 개인정보 포함 여부 확인
+   - 이 확인 전 SCN-001 frontend 확장 금지
+7. Bridge 최소 contract 초안 정리
+   - scenario_id, summary, risk_tags, extracted_terms, cited_articles, created_at, source 정도의 최소 필드만 검토
+   - raw 계약서 원문, OCR 이미지, 민감 개인정보 저장은 피함
+8. SCN-001 Before -> Bridge -> After는 마지막에 검토
+   - Before contract와 Bridge 최소 contract가 정해진 뒤에만 진행 여부 판단
+9. 최종 제출 패키징
+   - README / runbook / demo_scenario / 발표 자료 최신화
+   - 구현 완료 범위와 후속 확장 범위 구분
+   - 스크린샷 또는 녹화, 로컬 실행 fallback 준비
+
+위 1~9가 정리되면 인프라 단계로 넘어가면 됩니다.
+
+인프라 전환 순서:
+1. 로컬 실행 재현성 정리
+2. `.env` / secret / credential 분리
+3. backend 배포 방식 결정
+4. frontend 배포 방식 결정
+5. PostgreSQL + pgvector 운영 위치 결정
+6. Vertex AI 인증 방식 정리
+7. demo용 최소 배포 또는 로컬 발표 fallback 결정
+8. 비용 / 보안 / 장애 대응 문서화
 
 마지막에는 다음을 짧게 정리해주세요:
 - git 상태
@@ -96,5 +141,7 @@ npm run dev
 ## 참고
 
 현재 문서상 다음 작업은 신규 기능 구현이 아니라 SCN-004 demo freeze 유지와 제출 전 재현성 확인이다.
+그 다음은 MVP 완성 순서 1~9를 진행하고, 이후 인프라 전환 순서로 넘어간다.
+자유 입력을 열어둘 계획이므로, SCN-005보다 먼저 `/after/result` 문서 선택 eligibility guard를 보강한다.
 SCN-005는 다음 확장 후보지만, SCN-004 freeze 기준을 깨지 않는 별도 패치로만 진행한다.
 SCN-001 / Before / Bridge / Recovery는 팀원 contract 확인 전까지 구현하지 않는다.
