@@ -1,0 +1,121 @@
+.main {
+  min-height: calc(100vh - var(--kl-masthead-height));
+  background: var(--kl-bg);
+}
+
+.headerBand {
+  background: var(--kl-surface-01);
+  border-bottom: var(--kl-border-subtle-line);
+}
+
+.shell,
+.contentGrid,
+.actionInner {
+  max-width: var(--kl-max-width);
+  margin: 0 auto;
+  padding-right: var(--kl-margin-mobile);
+  padding-left: var(--kl-margin-mobile);
+}
+
+.shell {
+  padding-top: var(--kl-space-8);
+  padding-bottom: var(--kl-space-8);
+}
+
+.eyebrow {
+  margin: 0 0 var(--kl-space-2);
+  color: var(--kl-text-secondary);
+  font-size: var(--kl-text-caption);
+  line-height: var(--kl-lh-caption);
+  letter-spacing: var(--kl-ls-caption);
+}
+
+.title {
+  max-width: var(--kl-content-width);
+  margin: 0;
+  color: var(--kl-text-primary);
+  font-size: var(--kl-text-h1);
+  font-weight: 400;
+  line-height: var(--kl-lh-heading);
+}
+
+.metaGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kl-space-2);
+  margin-top: var(--kl-space-4);
+}
+
+.documentBadge,
+.metaItem {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: var(--kl-space-1) var(--kl-space-3);
+  font-size: var(--kl-text-caption);
+  line-height: var(--kl-lh-caption);
+  letter-spacing: var(--kl-ls-caption);
+}
+
+.documentBadge {
+  border-radius: var(--kl-radius-pill);
+  background: var(--kl-primary-light);
+  color: var(--kl-primary);
+}
+
+.metaItem {
+  background: var(--kl-bg);
+  color: var(--kl-text-secondary);
+}
+
+.contentGrid {
+  display: grid;
+  gap: var(--kl-space-8);
+  padding-top: var(--kl-space-8);
+  padding-bottom: var(--kl-space-8);
+}
+
+.previewColumn,
+.sideColumn {
+  display: grid;
+  align-content: start;
+  gap: var(--kl-space-6);
+  min-width: 0;
+}
+
+.actionBar {
+  position: sticky;
+  bottom: 0;
+  z-index: var(--kl-z-sticky-bar);
+  min-height: var(--kl-sticky-bar-height);
+  border-top: var(--kl-border-default);
+  background: var(--kl-bg);
+}
+
+.actionInner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kl-space-3);
+  padding-top: var(--kl-space-4);
+  padding-bottom: var(--kl-space-4);
+}
+
+@media (min-width: 672px) {
+  .shell,
+  .contentGrid,
+  .actionInner {
+    padding-right: var(--kl-margin-desktop);
+    padding-left: var(--kl-margin-desktop);
+  }
+}
+
+@media (min-width: 1056px) {
+  .contentGrid {
+    grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.8fr);
+    align-items: start;
+  }
+
+  .actionInner {
+    justify-content: flex-end;
+  }
+}

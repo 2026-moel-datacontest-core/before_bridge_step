@@ -42,7 +42,7 @@ export default function AfterResultPage() {
   const [selectedDocumentType, setSelectedDocumentType] = useState<DocumentType | null>(
     state.selected_document_type,
   );
-  const [phaseNoticeVisible, setPhaseNoticeVisible] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
 
   useEffect(() => {
     if (!answer) {
@@ -68,7 +68,6 @@ export default function AfterResultPage() {
 
   function selectDocumentType(documentType: DocumentType) {
     setSelectedDocumentType(documentType);
-    setPhaseNoticeVisible(false);
     dispatch({ type: 'SET_DOCUMENT_TYPE', payload: documentType });
   }
 
@@ -83,11 +82,17 @@ export default function AfterResultPage() {
   }
 
   function handleNextClick() {
-    if (!selectedDocumentType || !canProceedToDraftFlow) {
+    if (!selectedDocumentType || !canProceedToDraftFlow || isNavigating) {
       return;
     }
 
-    setPhaseNoticeVisible(true);
+    setIsNavigating(true);
+    router.push('/after/intake');
+  }
+
+  function resetFlow() {
+    dispatch({ type: 'RESET' });
+    router.push('/after');
   }
 
   return (
@@ -220,19 +225,17 @@ export default function AfterResultPage() {
                 })}
               </div>
 
-              {phaseNoticeVisible ? (
-                <Notification variant="info" title="선택 저장됨">
-                  <p>문서 유형 선택은 저장되었습니다. 사건 정보 입력 단계는 아직 연결하지 않았습니다.</p>
-                </Notification>
-              ) : null}
-
               <Button
                 type="button"
                 fullWidth
-                disabled={!selectedDocumentType || !canProceedToDraftFlow}
+                disabled={!selectedDocumentType || !canProceedToDraftFlow || isNavigating}
+                isLoading={isNavigating}
                 onClick={handleNextClick}
               >
                 사건 정보 입력하기 →
+              </Button>
+              <Button type="button" variant="ghost" fullWidth onClick={resetFlow}>
+                처음으로 돌아가기
               </Button>
             </section>
           </aside>

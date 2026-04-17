@@ -1,0 +1,34 @@
+.panel {
+  display: grid;
+  gap: var(--kl-space-3);
+  padding: var(--kl-space-4);
+  border-left: 4px solid var(--kl-warning);
+  background: var(--kl-surface-warning);
+}
+
+.title {
+  margin: 0;
+  color: var(--kl-text-primary);
+  font-size: var(--kl-text-h3);
+  font-weight: 600;
+  line-height: var(--kl-lh-body);
+}
+
+.list {
+  display: grid;
+  gap: var(--kl-space-2);
+  margin: 0;
+  padding-left: var(--kl-space-6);
+  color: var(--kl-text-primary);
+  font-size: var(--kl-text-body);
+  line-height: var(--kl-lh-body);
+  letter-spacing: var(--kl-ls-body);
+}
+
+.emptyText {
+  margin: 0;
+  color: var(--kl-text-secondary);
+  font-size: var(--kl-text-body);
+  line-height: var(--kl-lh-body);
+  letter-spacing: var(--kl-ls-body);
+}

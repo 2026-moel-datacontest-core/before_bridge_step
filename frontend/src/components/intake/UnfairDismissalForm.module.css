@@ -1,0 +1,128 @@
+.formSections {
+  display: grid;
+  gap: var(--kl-space-6);
+}
+
+.fieldset {
+  display: grid;
+  gap: var(--kl-space-4);
+  min-width: 0;
+  margin: 0;
+  padding: var(--kl-space-4);
+  border: 0;
+  background: var(--kl-surface-01);
+}
+
+.fieldset:disabled {
+  opacity: 0.6;
+}
+
+.legend {
+  margin: 0;
+  padding: 0;
+  color: var(--kl-text-primary);
+  font-size: var(--kl-text-h3);
+  font-weight: 600;
+  line-height: var(--kl-lh-body);
+}
+
+.helper,
+.inlineCaution {
+  margin: 0;
+  font-size: var(--kl-text-body);
+  line-height: var(--kl-lh-body);
+  letter-spacing: var(--kl-ls-body);
+}
+
+.helper {
+  color: var(--kl-text-secondary);
+}
+
+.inlineCaution {
+  border-left: 4px solid var(--kl-warning);
+  background: var(--kl-surface-warning);
+  color: var(--kl-text-warning);
+  padding: var(--kl-space-3) var(--kl-space-4);
+}
+
+.grid {
+  display: grid;
+  gap: var(--kl-space-4);
+}
+
+.field {
+  display: grid;
+  gap: var(--kl-space-2);
+  min-width: 0;
+}
+
+.label {
+  color: var(--kl-text-secondary);
+  font-size: var(--kl-text-caption);
+  line-height: var(--kl-lh-caption);
+  letter-spacing: var(--kl-ls-caption);
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  border: none;
+  border-bottom: 2px solid var(--kl-border);
+  border-radius: var(--kl-radius-control);
+  background: var(--kl-bg);
+  color: var(--kl-text-primary);
+  padding: var(--kl-space-3) var(--kl-space-4);
+  font-size: var(--kl-text-body-lg);
+  line-height: var(--kl-lh-body);
+}
+
+.input,
+.select {
+  min-height: var(--kl-interactive-height);
+}
+
+.textarea {
+  min-height: 112px;
+  resize: vertical;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--kl-text-placeholder);
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  border-bottom-color: var(--kl-focus);
+  outline: none;
+}
+
+.checkGrid {
+  display: grid;
+  gap: var(--kl-space-3);
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--kl-space-2);
+  color: var(--kl-text-primary);
+  font-size: var(--kl-text-body);
+  line-height: var(--kl-lh-body);
+  letter-spacing: var(--kl-ls-body);
+}
+
+.checkboxLabel input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--kl-primary);
+}
+
+@media (min-width: 672px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

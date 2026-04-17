@@ -1,0 +1,150 @@
+.section {
+  display: grid;
+  gap: var(--kl-space-6);
+}
+
+.header {
+  display: grid;
+  gap: var(--kl-space-2);
+}
+
+.eyebrow {
+  margin: 0 0 var(--kl-space-2);
+  color: var(--kl-text-secondary);
+  font-size: var(--kl-text-caption);
+  line-height: var(--kl-lh-caption);
+  letter-spacing: var(--kl-ls-caption);
+}
+
+.title {
+  margin: 0;
+  color: var(--kl-text-primary);
+  font-size: var(--kl-text-h2);
+  font-weight: 400;
+  line-height: var(--kl-lh-heading);
+}
+
+.helper {
+  margin: 0;
+  color: var(--kl-text-secondary);
+  font-size: var(--kl-text-body);
+  line-height: var(--kl-lh-body);
+  letter-spacing: var(--kl-ls-body);
+}
+
+.fieldset {
+  display: grid;
+  gap: var(--kl-space-4);
+  min-width: 0;
+  margin: 0;
+  padding: var(--kl-space-4);
+  border: 0;
+  background: var(--kl-surface-01);
+}
+
+.legend {
+  margin: 0;
+  padding: 0;
+  color: var(--kl-text-primary);
+  font-size: var(--kl-text-h3);
+  font-weight: 600;
+  line-height: var(--kl-lh-body);
+}
+
+.rows {
+  display: grid;
+  gap: var(--kl-space-4);
+}
+
+.timelineRow,
+.evidenceRow {
+  display: grid;
+  gap: var(--kl-space-3);
+  padding-bottom: var(--kl-space-4);
+  border-bottom: var(--kl-border-subtle-line);
+}
+
+.field {
+  display: grid;
+  gap: var(--kl-space-2);
+  min-width: 0;
+}
+
+.label {
+  color: var(--kl-text-secondary);
+  font-size: var(--kl-text-caption);
+  line-height: var(--kl-lh-caption);
+  letter-spacing: var(--kl-ls-caption);
+}
+
+.input,
+.select {
+  width: 100%;
+  min-height: var(--kl-interactive-height);
+  border: none;
+  border-bottom: 2px solid var(--kl-border);
+  border-radius: var(--kl-radius-control);
+  background: var(--kl-bg);
+  color: var(--kl-text-primary);
+  padding: var(--kl-space-3) var(--kl-space-4);
+  font-size: var(--kl-text-body-lg);
+  line-height: var(--kl-lh-body);
+}
+
+.input::placeholder {
+  color: var(--kl-text-placeholder);
+}
+
+.input:focus,
+.select:focus {
+  border-bottom-color: var(--kl-focus);
+  outline: none;
+}
+
+.addButton,
+.removeButton {
+  min-height: 40px;
+  border-radius: var(--kl-radius-control);
+  font-size: var(--kl-text-body);
+  font-weight: 600;
+  line-height: var(--kl-lh-body-short);
+  letter-spacing: var(--kl-ls-body);
+}
+
+.addButton {
+  justify-self: start;
+  padding: 0 var(--kl-space-4);
+  border: 1px solid var(--kl-primary);
+  background: transparent;
+  color: var(--kl-primary);
+}
+
+.addButton:hover:not(:disabled) {
+  background: var(--kl-primary-light);
+  color: var(--kl-primary-hover);
+}
+
+.removeButton {
+  align-self: end;
+  padding: 0 var(--kl-space-3);
+  border: 0;
+  background: transparent;
+  color: var(--kl-primary);
+}
+
+.removeButton:hover:not(:disabled) {
+  background: var(--kl-primary-light);
+  color: var(--kl-primary-hover);
+}
+
+@media (min-width: 672px) {
+  .timelineRow {
+    grid-template-columns: minmax(160px, 0.5fr) minmax(0, 1fr) auto;
+    align-items: end;
+  }
+
+  .evidenceRow {
+    grid-template-columns: minmax(160px, 0.6fr) minmax(0, 1fr) minmax(160px, 0.6fr) auto;
+    align-items: end;
+  }
+}
