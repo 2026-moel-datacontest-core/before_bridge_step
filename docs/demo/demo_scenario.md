@@ -44,18 +44,24 @@ Before/Bridge handoff 설명용 preset:
 - `SCN-004-DEMO-FREEZE` exact preset은 기존 freeze 기준을 유지한다: `cited_articles=6`, `grounded_context_ids=[1, 2, 3, 5, 10, 4]`, `retrieval_total=10`, `model_name=gemini-2.5-flash`.
 - SCN-005는 현재 preset 버튼과 frontend fixed answer fixture에서 제외한다. 후속 확장 후보로만 설명한다.
 
-## Pre-Demo Freeze QA
+## Pre-Demo Quick Check / Freeze QA
 
 시연 전 README/runbook과 같은 순서로 아래 smoke를 통과시킨다.
 
-### 1. Backend import
+### 1. PostgreSQL readiness
+
+```bash
+pg_isready -h 127.0.0.1 -p 5432
+```
+
+### 2. Backend import
 
 ```bash
 conda activate law_main_road
 python -c "from backend.main import app; print('import_ok')"
 ```
 
-### 2. Document draft smoke
+### 3. Document draft smoke
 
 ```bash
 conda activate law_main_road
@@ -69,7 +75,7 @@ python backend/verify/check_document_draft.py
 - answer-derived wage complaint legal basis fixture
 - answer-derived unfair dismissal legal basis fixture
 
-### 3. Frontend build
+### 4. Frontend build
 
 ```bash
 cd frontend
@@ -84,7 +90,22 @@ npm run build
 - `/after/intake`
 - `/after/draft`
 
-### 4. Optional RAG answer smoke
+### 5. WSL Chromium smoke
+
+runbook의 WSL Chromium smoke 명령을 사용한다.
+
+```bash
+cd frontend
+node -e "const { chromium } = require('@playwright/test'); (async () => { const browser = await chromium.launch({ headless: true }); const page = await browser.newPage(); await page.goto('data:text/html,<h1>ok</h1>'); console.log(await page.textContent('h1')); await browser.close(); })().catch((error) => { console.error(error); process.exit(1); });"
+```
+
+Expected output:
+
+```text
+ok
+```
+
+### 6. Optional RAG answer smoke
 
 RAG / answer / retrieval behavior를 수정했거나 citation survival을 다시 확인해야 할 때만 실행한다.
 
@@ -175,11 +196,14 @@ npm run dev
 
 - backend: `http://localhost:8000`
 - frontend: `http://localhost:3000`
+- browser QA 기준 URL은 `http://localhost:3000`이다. `http://127.0.0.1:3000`은 QA 기준 URL로 쓰지 않는다.
 
-## Live Demo Flow
+## Main Demo Script: SCN-004-DEMO-FREEZE
 
 1. `/after` 접속
-2. `SCN-004-DEMO-FREEZE` 클릭
+   - 말할 포인트: “After flow는 사용자의 상황 진술을 법령 근거와 연결하고, 근거가 충분할 때만 문서 초안으로 이어집니다.”
+2. `SCN-004-DEMO-FREEZE` preset 클릭
+   - 말할 포인트: “이 경로는 발표용 fixed answer fixture를 사용해 live LLM ordering 흔들림을 제거합니다.”
 3. `법 조문 찾기` 클릭
    - unchanged preset exact path는 fixed answer fixture를 사용하므로 `/api/v1/answer`를 호출하지 않음
    - preset 문장을 수정하면 live `/api/v1/answer`를 `top_k=10`, `ef_search=100`으로 호출
@@ -187,18 +211,60 @@ npm run dev
    - `cited_articles` 또는 `grounded_context_ids`가 없으면 문서 초안 flow로 진행하지 않음
    - SCN-004 범위 밖 자유 입력은 answer만 확인하고 문서 초안 flow로 진행하지 않음
    - SCN-004 관련 자유 입력은 answer 근거에 맞는 문서 타입만 표시
-5. 문서 타입 선택
-   - 임금체불 demo: 고용노동청 임금체불 진정서 초안
-   - 부당해고 demo: 노동위원회 부당해고 구제신청 이유서 초안
-6. `/after/intake`에서 일부 필드만 입력하거나 빈 값으로 진행
-   - 빈 field는 submit을 막지 않고 draft response의 `missing_fields`에서 확인
-7. `/after/draft`에서 rendered_text, missing_fields, cautions, evidence_checklist, cited_articles 확인
-8. copy / print 동작 확인
-9. direct URL guard 확인:
+   - 문서 타입 2개가 표시되는지 확인: 고용노동청 임금체불 진정서 초안, 노동위원회 부당해고 구제신청 이유서 초안
+5. 강조할 조문:
+   - `근로기준법 제23조`
+   - `근로기준법 제26조`
+   - `근로기준법 제27조`
+   - `근로기준법 제28조`
+   - `근로기준법 제36조`
+   - `근로자퇴직급여 보장법 제9조`
+6. 임금체불 진정서 flow
+   - `고용노동청 임금체불 진정서 초안` 선택
+   - `/after/intake`에서 일부 필드만 입력하거나 빈 값으로 제출
+   - 말할 포인트: “빈 필드는 제출을 막지 않고, 초안의 missing_fields에서 확인 필요 항목으로 남깁니다.”
+   - `/after/draft`에서 rendered_text, missing_fields, cautions, evidence_checklist, cited_articles 확인
+   - copy / print 확인
+7. 부당해고 이유서 flow
+   - `다른 문서 타입으로 생성하기` 클릭 후 `/after/result`로 돌아가는지 확인
+   - `노동위원회 부당해고 구제신청 이유서 초안` 선택
+   - `/after/intake`에서 초안 생성
+   - `/after/draft`에서 `source_context_ids=[1, 2, 3, 4]`, `missing_legal_basis=[]` 확인
+   - 말할 포인트: “문서 초안은 answer의 legal basis 안에 있는 근거만 사용합니다.”
+8. direct URL guard는 시간이 있으면 보여주고, 시간이 없으면 말로만 설명한다.
    - `/after/result`에 state 없음 -> `/after`
    - `/after/intake`에 answer 없음 -> `/after`
    - `/after/intake`에 document_type 없음 -> `/after/result`
    - `/after/draft`에 draft 없음 -> `/after`
+
+## Bridge Handoff Demo: SCN-001-BRIDGE-DEMO
+
+목적:
+
+- Before/Bridge가 넘겨줄 위험 신호가 After 질문으로 이어지는 흐름을 설명한다.
+- 현재는 Bridge 연결점으로 preset id와 질문을 고정해둔 상태다.
+
+클릭 순서:
+
+1. `/after` 접속
+2. `SCN-001-BRIDGE-DEMO` preset 클릭
+3. `법 조문 찾기` 클릭
+4. `/after/result`에서 answer, key_points, cautions, cited_articles 확인
+5. 문서 초안 선택지가 표시되지 않는 것이 정상임을 확인
+
+발표 멘트:
+
+- “이 경로는 현재 answer-only입니다.”
+- “사업장 변경 사유서/상담용 요약서는 Before/Bridge output contract 확정 후 별도 확장합니다.”
+- “현재는 Bridge 연결점으로 preset id와 질문을 고정해둔 상태입니다.”
+
+## Modified Preset / Free Input
+
+- preset 문장을 수정하면 fixed answer fixture가 아니라 live `/api/v1/answer`를 호출한다.
+- preset modified는 `top_k=10`, `ef_search=100`이다.
+- 완전 자유 입력은 `top_k=5`, `ef_search=100`이다.
+- free input이 SCN-004 범위면 근거에 맞는 문서 타입만 표시한다.
+- free input이 SCN-004 범위 밖이면 answer-only로 처리한다.
 
 ## Expected Legal Basis
 
@@ -217,14 +283,21 @@ npm run dev
 
 현재 SCN-004 preset answer와 answer-derived draft output은 위 기대 근거를 충족한다. 부당해고 이유서 draft는 `근로기준법 제23조`, `제26조`, `제27조`, `제28조`를 포함하고, 임금체불 진정서 draft는 `근로기준법 제36조`, `근로자퇴직급여 보장법 제9조`를 포함한다.
 
-## Backup
+## Fallback Script
 
-- backend만 시연해야 할 경우:
-  - `/api/v1/answer`
-  - `/api/v1/documents/draft`
-  - `python backend/verify/check_document_draft.py`
-- frontend가 backend 연결에 실패하면 API error notification과 retry UI를 보여주고 backend 상태를 확인한다.
-- frontend build만 통과하고 live backend가 불안정하면 `/after` error / retry state와 `check_document_draft.py` 결과를 fallback으로 보여준다.
+아래는 발표자가 그대로 읽을 fallback 멘트다.
+
+1. PostgreSQL이 꺼짐
+   - 멘트: “현재 retrieval DB가 내려가 있어 live answer는 중단됩니다. 제출 전 freeze smoke에서는 DB 1722 chunks / embedding 1722 기준으로 검증했습니다.”
+2. Vertex/Gemini API 실패
+   - 멘트: “SCN-004 fixed preset은 발표 재현성을 위해 고정 answer fixture를 사용합니다. 자유 입력 live path는 외부 API 상태에 영향을 받을 수 있습니다.”
+3. frontend/backend 연결 실패
+   - 멘트: “backend /health와 frontend build를 먼저 확인하고, 필요 시 `check_document_draft.py`와 고정 fixture 결과로 backend document draft를 보여줍니다.”
+4. Browser/Playwright 문제
+   - 멘트: “WSL Playwright Chromium을 우선 사용하고, 실패 시 원인과 필요한 사용자 조치를 확인합니다.”
+5. 시간이 부족할 때
+   - SCN-004 result + wage draft 하나만 보여준다.
+   - SCN-001은 말로만 Bridge handoff 후보라고 설명한다.
 
 ## Out Of Demo Scope
 
