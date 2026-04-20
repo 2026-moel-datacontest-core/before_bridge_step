@@ -141,6 +141,8 @@ python backend/verify/check_document_draft.py
 - answer-derived wage complaint legal basis fixture
 - answer-derived unfair dismissal legal basis fixture
 
+참고: `check_document_draft.py`는 backend verify fixture 기준 smoke이므로 answer-derived fixture 숫자(wage cited_articles=3, unfair cited_articles=5)는 발표용 `SCN-004-DEMO-FREEZE` browser dry-run fixed preset path 값(wage=2, unfair=4)과 다를 수 있다. 이 차이는 정상이며 발표 demo freeze 기준은 browser dry-run fixed preset path 값으로 확인한다.
+
 ### 4. Frontend build
 
 ```bash

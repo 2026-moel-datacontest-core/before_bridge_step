@@ -1,6 +1,6 @@
 # Bridge Flow
 
-기준일: `2026-04-17`
+기준일: `2026-04-20`
 
 ## 현재 상태
 
@@ -32,6 +32,10 @@ MVP에서는 개인정보 최소 수집 원칙을 우선한다.
 - 위험 태그
 - 주요 추출 항목
 - cited_articles
+- scenario_id
+- source_scenario 또는 preset_id
+
+`scenario_id`, `source_scenario`, `preset_id`는 `SCN-001-BRIDGE-DEMO` 같은 presentation preset과 Before output을 After에서 연결하기 위한 후보 필드다. 실제 API/DB 스펙 확정 전까지는 계획 수준 후보로만 둔다.
 
 저장 금지 또는 후순위:
 

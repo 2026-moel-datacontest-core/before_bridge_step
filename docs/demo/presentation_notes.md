@@ -1,6 +1,6 @@
 # Presentation Notes
 
-기준일: `2026-04-17`
+기준일: `2026-04-20`
 
 ## 현재 구현 설명
 
@@ -15,6 +15,8 @@
 - SCN-004 document draft API
 - SCN-004 After frontend demo flow
 - SCN-004 QA/content/frontend rehearsal
+- SCN-001/004 presentation-local After preset fixture architecture
+- SCN-004 free-input document eligibility guard
 
 다음 단계:
 
@@ -31,7 +33,7 @@
 
 ## 현재 범위 설명
 
-이번 demo는 `SCN-004`에 집중한다.
+이번 main demo는 `SCN-004-DEMO-FREEZE` After document draft flow에 집중한다.
 
 - 해고
 - 서면통지
@@ -41,7 +43,15 @@
 - 노동청 진정서 초안
 - 노동위원회 이유서 초안
 
-Before / Bridge / Recovery는 제품 구조상 존재하지만 이번 frontend demo 범위에서는 확장하지 않는다.
+발표용 preset 구조:
+
+- Main demo: `SCN-004-DEMO-FREEZE`. exact preset은 fixed answer path를 사용하므로 `/api/v1/answer`를 호출하지 않는다. document draft 2종이 가능하며 fixed answer 기준은 `cited_articles=6`, `grounded_context_ids=[1, 2, 3, 5, 10, 4]`다.
+- Bridge handoff 설명: `SCN-001-BRIDGE-DEMO`. Before/Bridge handoff 연결점으로 쓰는 answer-only preset이며, 문서 초안은 팀원 Before/Bridge contract 확인 후 별도 검토한다.
+- `SCN-005`는 현재 UI preset에서 제외하고 후속 확장 후보로만 설명한다.
+- preset 문장을 수정하면 live answer path로 전환하고 `top_k=10`, `ef_search=100`을 사용한다.
+- 자유 입력은 live answer path로 `top_k=5`, `ef_search=100`을 사용한다. SCN-004 문서 초안 지원 범위 밖이면 answer-only로 처리한다.
+
+Before / Bridge / Recovery는 제품 구조상 존재하지만 이번 frontend demo 범위에서는 구현을 확장하지 않는다.
 
 ## 리스크 대응 문구
 
