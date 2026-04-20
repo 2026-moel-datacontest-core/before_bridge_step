@@ -46,7 +46,7 @@ Before/Bridge handoff 설명용 preset:
 
 ## Pre-Demo Quick Check / Freeze QA
 
-시연 전 README/runbook과 같은 순서로 아래 smoke를 통과시킨다.
+시연 전 묶음 실행은 runbook의 `scripts/demo_preflight.sh`를 우선 사용한다. 아래 smoke 목록은 수동 확인 또는 script 내용 참고용이다.
 
 ### 1. PostgreSQL readiness
 

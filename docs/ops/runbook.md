@@ -110,6 +110,38 @@ ok
 
 AI agent는 WSL Playwright가 실패했을 때 Windows Chrome CDP / PowerShell 우회로 시간을 쓰기 전에 실패 원인과 필요한 사용자 조치를 보고한다.
 
+## Demo Preflight Script
+
+발표 직전 preflight는 repo root에서 아래 script로 한 번에 실행한다.
+
+```bash
+bash scripts/demo_preflight.sh
+```
+
+이 script는 아래 순서로 smoke를 실행한다.
+
+- `git status -sb`
+- `main == origin/main` 확인
+- `pg_isready -h 127.0.0.1 -p 5432`
+- `source /home/jongwon/anaconda3/etc/profile.d/conda.sh`
+- `conda activate law_main_road`
+- `python -c "from backend.main import app; print('import_ok')"`
+- `python backend/verify/check_document_draft.py`
+- `cd frontend && npm run build`
+- build 후 `git status -sb` 재확인
+- WSL Playwright Chromium smoke
+
+운영 원칙:
+
+- backend / frontend dev server를 자동 실행하지 않는다.
+- PostgreSQL을 start/stop하지 않는다.
+- 포트 kill 또는 process kill을 하지 않는다.
+- `git add`, `git commit`, `git restore`를 실행하지 않는다.
+- local-only dirty file은 preflight 실패 사유가 아니다. 단, 제출/발표 commit 전 expected local-only file이 staged 상태인지 확인한다.
+- `npm run build`가 `frontend/next-env.d.ts`를 갱신할 수 있으므로 build 후 status를 반드시 확인한다.
+
+script가 통과하면 마지막에 demo server 수동 실행 명령을 출력한다.
+
 ## Verification
 
 QA는 아래 순서로 실행한다.
