@@ -117,7 +117,7 @@ Response:
 
 | 상황 | top_k | ef_search |
 |---|---|---|
-| preset exact (textarea 값이 preset query와 동일) | fixed fixture, API 호출 없음 | API 호출 없음 |
+| preset exact (trim된 textarea 값이 preset query와 동일, 앞뒤 공백은 무시) | fixed fixture, API 호출 없음 | API 호출 없음 |
 | preset modified (프리셋 버튼 사용 후 문장 수정) | preset `recommendedTopK` (`10`) | 100 |
 | 일반 자유 입력 | 5 | 100 |
 
@@ -201,7 +201,7 @@ Step 4: /after/draft
 - 다크 masthead (height: 48px, bg: #161616)
 - 서비스 intro band (Gray 10 surface)
 - 메인 입력 textarea (min-height: 160px, 10자 미만 soft warning)
-- 발표용 프리셋 버튼 2개 (ghost 스타일, 클릭 시 고정 텍스트 자동 입력 + is_scn_demo_preset = true)
+- 발표용 프리셋 버튼 2개 (ghost 스타일, 클릭 시 고정 텍스트 자동 입력 + selected_preset_id 저장)
   - `SCN-001-BRIDGE-DEMO`
   - `SCN-004-DEMO-FREEZE`
 - "법 조문 찾기" primary CTA (10자 이상일 때 활성)
@@ -376,9 +376,9 @@ Step 4: /after/draft
 ### API Flow
 
 **POST /api/v1/answer**:
-1. FlowContext에 `user_statement`, `is_scn_demo_preset`, `selected_preset_id` 저장 (React memory only, Web Storage 저장 아님)
-2. selected preset이 있고 textarea 값이 preset `query`와 정확히 같으면 fixed `AnswerResponse` fixture를 `answer_response`에 저장한다.
-3. selected preset이 있고 textarea 값이 preset `query`와 다르면 `{ query, top_k: preset.recommendedTopK, ef_search: 100 }`으로 live `/api/v1/answer`를 호출한다.
+1. FlowContext에 `user_statement`, `selected_preset_id` 저장 (React memory only, Web Storage 저장 아님)
+2. selected preset이 있고 trim된 textarea 값이 preset `query`와 정확히 같으면 fixed `AnswerResponse` fixture를 `answer_response`에 저장한다. 앞뒤 공백만 추가된 경우는 fixed path로 본다.
+3. selected preset이 있고 trim된 textarea 값이 preset `query`와 다르면 `{ query, top_k: preset.recommendedTopK, ef_search: 100 }`으로 live `/api/v1/answer`를 호출한다.
 4. selected preset이 없으면 `{ query, top_k: 5, ef_search: 100 }`으로 live `/api/v1/answer`를 호출한다.
 5. 성공: `answer_response`를 FlowContext에 저장한다. 개인정보 최소 수집 원칙상 Phase 1에서는 sessionStorage에 원문 진술이나 응답을 저장하지 않는다.
 6. 실패 503: "잠시 후 다시 시도해주세요" + retry 버튼
@@ -977,7 +977,6 @@ import type { ScenarioPresetId } from '@/lib/scenarioPresets';
 
 export interface KLaborShieldFlowState {
   user_statement: string;
-  is_scn_demo_preset: boolean;
   selected_preset_id: ScenarioPresetId | null;
   answer_response: AnswerResponse | null;
   selected_document_type: DocumentType | null;
@@ -993,7 +992,6 @@ export type FlowAction =
       type: 'SET_STATEMENT';
       payload: {
         statement: string;
-        is_preset: boolean;
         selected_preset_id: ScenarioPresetId | null;
       };
     }
@@ -1056,8 +1054,8 @@ export type FlowAction =
 // 화면 copy가 "입력 내용은 저장되지 않습니다"라고 안내하기 때문이다.
 //
 // 선택적 Phase 3에서 새로고침 복구가 꼭 필요해질 때만 아래처럼 제한한다:
-// saveNonSensitiveFlowHint({ selected_document_type, is_scn_demo_preset }): void
-// loadNonSensitiveFlowHint(): { selected_document_type?: DocumentType; is_scn_demo_preset?: boolean } | null
+// saveNonSensitiveFlowHint({ selected_document_type, selected_preset_id }): void
+// loadNonSensitiveFlowHint(): { selected_document_type?: DocumentType; selected_preset_id?: ScenarioPresetId } | null
 // clearSession(): void
 //
 // 저장 금지: user_statement, answer_response, case_intake, draft_response

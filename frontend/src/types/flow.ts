@@ -11,7 +11,6 @@ import type { ScenarioPresetId } from '@/lib/scenarioPresets';
 
 export interface KLaborShieldFlowState {
   user_statement: string;
-  is_scn_demo_preset: boolean;
   selected_preset_id: ScenarioPresetId | null;
   answer_response: AnswerResponse | null;
   selected_document_type: DocumentType | null;
@@ -27,7 +26,6 @@ export type FlowAction =
       type: 'SET_STATEMENT';
       payload: {
         statement: string;
-        is_preset: boolean;
         selected_preset_id: ScenarioPresetId | null;
       };
     }

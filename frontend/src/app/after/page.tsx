@@ -43,7 +43,8 @@ export default function AfterPage() {
   const isShort = characterCount > 0 && characterCount < 10;
   const canSubmit = characterCount >= 10 && !isLoading;
   const selectedPreset = getScenarioPreset(selectedPresetId);
-  const isPresetTextUnchanged = selectedPreset !== null && statement === selectedPreset.query;
+  const isPresetQueryMatched =
+    selectedPreset !== null && trimmedStatement === selectedPreset.query;
 
   useEffect(() => {
     const frameId = window.requestAnimationFrame(() => {
@@ -60,13 +61,13 @@ export default function AfterPage() {
     }
 
     if (selectedPreset) {
-      return isPresetTextUnchanged
+      return isPresetQueryMatched
         ? `${selectedPreset.label} 프리셋이 입력되었습니다.`
         : `${selectedPreset.label} 프리셋을 바탕으로 수정 중입니다.`;
     }
 
     return '해고, 임금, 퇴직금, 사업장 변경, 육아휴직처럼 핵심 사실을 함께 적어주세요.';
-  }, [isPresetTextUnchanged, isShort, selectedPreset]);
+  }, [isPresetQueryMatched, isShort, selectedPreset]);
 
   function buildAnswerPayload(): AnswerRequest | null {
     if (trimmedStatement.length < 10) {
@@ -95,14 +96,13 @@ export default function AfterPage() {
       type: 'SET_STATEMENT',
       payload: {
         statement: payload.query,
-        is_preset: preset !== null,
         selected_preset_id: preset?.id ?? null,
       },
     });
 
     try {
       const answer =
-        preset && statement === preset.query && payload.query === preset.query
+        preset && trimmedStatement === preset.query
           ? preset.fixedAnswer
           : await fetchAnswer(payload);
 
@@ -146,7 +146,6 @@ export default function AfterPage() {
       type: 'SET_STATEMENT',
       payload: {
         statement: preset.query,
-        is_preset: true,
         selected_preset_id: preset.id,
       },
     });

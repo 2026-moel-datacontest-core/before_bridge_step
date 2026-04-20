@@ -13,7 +13,6 @@ import type { FlowAction, KLaborShieldFlowState } from '@/types/flow';
 
 export const initialFlowState: KLaborShieldFlowState = {
   user_statement: '',
-  is_scn_demo_preset: false,
   selected_preset_id: null,
   answer_response: null,
   selected_document_type: null,
@@ -33,7 +32,6 @@ export function flowReducer(
       return {
         ...state,
         user_statement: action.payload.statement,
-        is_scn_demo_preset: action.payload.is_preset,
         selected_preset_id: action.payload.selected_preset_id,
         answer_response: null,
         legal_basis: null,
