@@ -8,3 +8,4 @@ scripts/*.json
 backend/.env
 backend/.pgdata/
 backend/logs/
+law-service-main-page-design/
