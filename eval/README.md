@@ -220,6 +220,16 @@ python eval/run_answer_evidence_report.py --top-k 5 --ef-search 100 --limit 60 -
 
 이번 `PARTIAL` 16건은 citation/retrieval failure가 아니라 expected point 일부 누락이다. 주된 missing 유형은 법정 예외, 숫자/기간/상한, 보조 절차 의무 등이다.
 
+MVP 기준에서는 acceptable로 본다. 이유는 `FAIL=0`, expected citation hit clean, citation grounding violation `0`, invalid context id `0`, timeout/provider/schema error `0`이기 때문이다. 남은 `PARTIAL`은 후속 answer quality tuning 후보이며, SCN-004 demo freeze나 presentation fixed fixture의 blocker로 보지 않는다.
+
+후속 튜닝은 다음 순서로 검토한다.
+
+1. `PARTIAL` 16건을 법정 예외, 숫자/기간/상한, 보조 절차 의무, 복수 쟁점 답변 누락으로 분류한다.
+2. answer prompt / answer planning 단계에서 main rule, exception, deadline/amount, next action을 더 안정적으로 포함할 수 있는지 검토한다.
+3. expected point matcher가 의미상 맞는 답변을 과소평가한 항목과 실제 답변 누락 항목을 분리한다.
+4. retrieval / citation / grounding clean 상태를 유지하면서 expected point coverage 개선만 별도 패치로 진행한다.
+5. 변경 후 full 60 evidence report를 재실행해 `FAIL=0` 유지와 `PARTIAL` 감소 여부를 비교한다.
+
 `run_answer_evidence_report.py`는 live LLM/API를 호출하므로 wording과 ordering 변동성이 있다. 따라서 발표 직전 기본 preflight 경로와 분리하고, `scripts/demo_preflight.sh`에는 포함하지 않는다. frontend presentation fixed fixture와도 목적이 다르며, presentation fixture는 데모 안정성을 위한 고정 응답이고 evidence report는 live retrieval / answer 결과의 QA 산출물이다.
 
 ## Notes

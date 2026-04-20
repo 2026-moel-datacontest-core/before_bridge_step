@@ -97,3 +97,17 @@ Representative missing point patterns:
 This run supports the current SCN-004 freeze state because answer generation returned valid grounded citations for all 60 MVP eval items and did not produce context id or provider failures.
 
 The remaining weakness is answer-side expected point coverage, not retrieval, citation grounding, or API behavior. No backend API contract, retrieval behavior, answer behavior, frontend presentation preset fixture, or demo preflight script was changed for this report.
+
+## MVP Judgment And Future Tuning
+
+MVP 기준으로는 acceptable로 판단한다. 근거는 `FAIL=0`, expected citation hit clean, citation grounding violation `0`, invalid context id `0`, timeout/provider/schema error `0`이며, 모든 `PARTIAL`은 근거 신뢰성 문제가 아니라 expected point 일부 누락이다.
+
+후속 튜닝은 SCN-004 demo freeze와 분리해서 진행한다. 우선순위는 다음과 같다.
+
+1. PARTIAL 16건을 유형별로 분류한다: 법정 예외, 숫자/기간/상한, 보조 절차 의무, 복수 쟁점 답변 누락.
+2. answer prompt 또는 answer planning 단계에서 "main rule + exception + deadline/amount + next action" 구조를 더 강하게 유도할지 검토한다.
+3. expected point matcher가 실제 답변 의미를 과소평가한 항목과 실제 답변 누락 항목을 분리한다.
+4. retrieval / citation / grounding이 clean한 상태를 유지하면서 답변 coverage만 개선한다.
+5. 개선 후 `run_answer_evidence_report.py` full 60을 다시 실행해 `FAIL=0` 유지와 PARTIAL 감소 여부를 비교한다.
+
+이 튜닝은 live answer 품질 개선 작업이며 presentation fixed fixture, `scripts/demo_preflight.sh`, SCN-004 document draft freeze 기준을 직접 변경하지 않는다.
