@@ -121,5 +121,6 @@ python eval/run_answer_eval.py --top-k 5 --ef-search 100 --limit 60 --show-failu
 - 현재 baseline eval 파일은 모두 `in-scope` 질문만 포함한다.
 - out-of-scope 거절 평가셋은 별도로 분리하는 것이 좋다.
 - 데모용 질문 세트는 baseline scoring dataset이 아니라 scenario smoke / 발표 시연용 자산이다.
+- `scenario_demo_question_sets_v1.json`은 retrieval/answer smoke question set이며 frontend presentation preset source of truth가 아니다. presentation-local presets는 `frontend/src/lib/scenarioPresets.ts`, fixed answer fixtures는 `frontend/src/lib/scenarioPresetAnswers.json`에 있으며 eval id와 presentation preset id를 혼용하지 않는다.
 - 문항은 실제 현재 chunk label에 맞춰 작성했기 때문에, 청킹을 다시 돌리거나 snapshot이 바뀌면 함께 갱신해야 한다.
 - SCN-004 document draft smoke는 `backend/verify/check_document_draft.py`에 있다.
