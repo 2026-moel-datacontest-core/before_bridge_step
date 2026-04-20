@@ -105,6 +105,13 @@ Expected output:
 ok
 ```
 
+2026-04-20 final demo preflight pass:
+
+- `bash scripts/demo_preflight.sh` 통과, exit code `0`
+- 확인 항목: `main == origin/main`, PostgreSQL readiness, conda env activation, backend import, document draft smoke, frontend build, WSL Playwright Chromium smoke
+- 남은 운영 리스크: script는 DB를 start하지 않고 PostgreSQL readiness만 확인하며, backend / frontend dev server를 자동 실행하지 않는다.
+- 발표 직전 backend / frontend를 별도 터미널에서 수동 실행하고 `http://localhost:3000/after`에서 final browser rehearsal을 수행한다.
+
 ### 6. Optional RAG answer smoke
 
 RAG / answer / retrieval behavior를 수정했거나 citation survival을 다시 확인해야 할 때만 실행한다.
