@@ -29,6 +29,10 @@
 - Phase 3A rendered_text copy
 - Phase 3B browser print + print disclaimer
 - evidence_checklist 화면 내 로컬 상태
+- SCN-004 free-input document eligibility guard
+  - SCN-004 범위 밖 자유 입력은 answer / key_points / cautions / cited_articles만 표시
+  - 문서 타입 선택 및 `/after/intake` 진행은 차단
+  - backend API contract와 document draft schema 변경 없음
 
 보류:
 
@@ -383,6 +387,13 @@ answer_response.retrieved_chunks.filter(chunk =>
 Grounding guard:
 - `cited_articles.length === 0` 또는 `grounded_context_ids.length === 0`이면 draft 생성 flow로 진행하지 않는다.
 - `/after/result`에서 "인용된 법 조문이 확인되지 않았습니다. 문서 초안을 만들 수 없습니다."를 표시하고 document type CTA를 guard 처리한다.
+
+SCN-004 free-input document eligibility guard:
+- grounded answer라도 자유 입력이 SCN-004 문서 초안 범위 밖이면 `/after/result`에서 answer / key_points / cautions / cited_articles는 표시한다.
+- 이때 "현재 문서 초안 지원 범위 밖" 안내를 표시하고 document type 선택과 `/after/intake` 진입을 막는다.
+- eligibility는 frontend helper에서 `query`, `cited_articles`, grounded `retrieved_chunks`의 SCN-004 핵심 조문/키워드로 판단한다.
+- 지원 신호는 해고, 서면통지, 해고예고, 노동위원회, 임금체불, 퇴직금, 금품청산, 14일 및 `근로기준법 제23조·제26조·제27조·제28조·제36조·제37조`, `근로자퇴직급여 보장법 제9조`, `근로기준법 시행규칙 제5조`다.
+- SCN-005 / SCN-001 문서 타입 추가가 아니며 backend contract를 변경하지 않는다.
 
 **CaseIntake payload 구성**:
 ```

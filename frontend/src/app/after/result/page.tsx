@@ -11,6 +11,7 @@ import { Notification } from '@/components/ui/Notification';
 import { SkipLink } from '@/components/ui/SkipLink';
 import { useFlow } from '@/context/FlowContext';
 import { hasDraftGrounding } from '@/lib/api';
+import { getScn004DraftEligibility } from '@/lib/scn004DraftEligibility';
 import type { DocumentType } from '@/types/api';
 
 import styles from './page.module.css';
@@ -74,11 +75,23 @@ export default function AfterResultPage() {
   }
 
   const hasCitedArticles = answer.cited_articles.length > 0;
-  const canProceedToDraftFlow = hasDraftGrounding(answer);
+  const hasGrounding = hasDraftGrounding(answer);
+  const eligibility = getScn004DraftEligibility(answer);
+  const availableDocumentTypes = DOCUMENT_TYPES.filter(
+    (documentType) => eligibility.documentTypes[documentType.value],
+  );
+  const hasAvailableDocumentTypes = availableDocumentTypes.length > 0;
+  const selectedDocumentTypeIsAvailable =
+    selectedDocumentType !== null && eligibility.documentTypes[selectedDocumentType];
+  const canProceedToDraftFlow = hasGrounding && hasAvailableDocumentTypes;
   const statementSummary = truncateText(state.user_statement || answer.query, 100);
-  const canShowAnswer = canProceedToDraftFlow;
+  const canShowAnswer = hasGrounding;
 
   function selectDocumentType(documentType: DocumentType) {
+    if (!canProceedToDraftFlow || !eligibility.documentTypes[documentType]) {
+      return;
+    }
+
     setSelectedDocumentType(documentType);
     dispatch({ type: 'SET_DOCUMENT_TYPE', payload: documentType });
   }
@@ -94,7 +107,7 @@ export default function AfterResultPage() {
   }
 
   function handleNextClick() {
-    if (!selectedDocumentType || !canProceedToDraftFlow || isNavigating) {
+    if (!selectedDocumentTypeIsAvailable || !canProceedToDraftFlow || isNavigating) {
       return;
     }
 
@@ -191,7 +204,15 @@ export default function AfterResultPage() {
               )}
             </section>
 
-            {!canProceedToDraftFlow ? (
+            {hasGrounding && !hasAvailableDocumentTypes ? (
+              <Notification variant="warning" title="현재 문서 초안 지원 범위 밖">
+                <p>
+                  답변은 확인할 수 있지만, 현재 문서 초안은 SCN-004의 해고·서면통지·해고예고·노동위원회·임금체불·퇴직금·금품청산 범위에서만 지원합니다.
+                </p>
+              </Notification>
+            ) : null}
+
+            {!hasGrounding ? (
               <Notification variant="warning" title="문서 초안 진행 불가">
                 <p>
                   인용된 법 조문 또는 근거 컨텍스트가 확인되지 않았습니다. 문서 초안을 만들 수
@@ -209,39 +230,58 @@ export default function AfterResultPage() {
               <h2 id="document-type-title" className={styles.selectorTitle}>
                 다음 단계에서 만들 문서를 선택하세요
               </h2>
-              <div
-                className={styles.radioGroup}
-                role="radiogroup"
-                aria-labelledby="document-type-title"
-              >
-                {DOCUMENT_TYPES.map((documentType) => {
-                  const isSelected = selectedDocumentType === documentType.value;
+              {canProceedToDraftFlow ? (
+                <div
+                  className={styles.radioGroup}
+                  role="radiogroup"
+                  aria-labelledby="document-type-title"
+                >
+                  {availableDocumentTypes.map((documentType) => {
+                    const isSelected = selectedDocumentType === documentType.value;
 
-                  return (
-                    <div
-                      key={documentType.value}
-                      className={isSelected ? styles.radioTileSelected : styles.radioTile}
-                      role="radio"
-                      aria-checked={isSelected}
-                      tabIndex={0}
-                      onClick={() => selectDocumentType(documentType.value)}
-                      onKeyDown={(event) => handleTileKeyDown(event, documentType.value)}
-                    >
-                      <span className={styles.radioMarker} aria-hidden="true" />
-                      <span className={styles.radioText}>
-                        <span className={styles.radioTitle}>{documentType.title}</span>
-                        <span className={styles.radioSubtitle}>{documentType.subtitle}</span>
-                        <span className={styles.radioBody}>{documentType.body}</span>
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
+                    return (
+                      <div
+                        key={documentType.value}
+                        className={isSelected ? styles.radioTileSelected : styles.radioTile}
+                        role="radio"
+                        aria-checked={isSelected}
+                        tabIndex={0}
+                        onClick={() => selectDocumentType(documentType.value)}
+                        onKeyDown={(event) => handleTileKeyDown(event, documentType.value)}
+                      >
+                        <span className={styles.radioMarker} aria-hidden="true" />
+                        <span className={styles.radioText}>
+                          <span className={styles.radioTitle}>{documentType.title}</span>
+                          <span className={styles.radioSubtitle}>{documentType.subtitle}</span>
+                          <span className={styles.radioBody}>{documentType.body}</span>
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <Notification
+                  variant="warning"
+                  title={
+                    hasGrounding
+                      ? '현재 문서 초안 지원 범위 밖'
+                      : '문서 초안 진행 불가'
+                  }
+                >
+                  <p>
+                    {hasGrounding
+                      ? '이 답변은 확인할 수 있지만 SCN-004 문서 초안으로 이어지지 않습니다.'
+                      : '인용된 법 조문 또는 근거 컨텍스트가 확인되지 않아 문서 유형을 선택할 수 없습니다.'}
+                  </p>
+                </Notification>
+              )}
 
               <Button
                 type="button"
                 fullWidth
-                disabled={!selectedDocumentType || !canProceedToDraftFlow || isNavigating}
+                disabled={
+                  !selectedDocumentTypeIsAvailable || !canProceedToDraftFlow || isNavigating
+                }
                 isLoading={isNavigating}
                 onClick={handleNextClick}
               >

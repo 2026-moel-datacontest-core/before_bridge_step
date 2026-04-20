@@ -25,6 +25,7 @@ import {
   fetchDraft,
   hasDraftGrounding,
 } from '@/lib/api';
+import { getScn004DraftEligibility } from '@/lib/scn004DraftEligibility';
 import type { CaseIntakeFormValues, DocumentType } from '@/types/api';
 
 import styles from './page.module.css';
@@ -46,6 +47,13 @@ export default function AfterIntakePage() {
   const { state, dispatch } = useFlow();
   const answer = state.answer_response;
   const selectedDocumentType = state.selected_document_type;
+  const hasGrounding = answer ? hasDraftGrounding(answer) : false;
+  const eligibility = answer ? getScn004DraftEligibility(answer) : null;
+  const selectedDocumentTypeIsEligible =
+    selectedDocumentType !== null && eligibility !== null
+      ? eligibility.documentTypes[selectedDocumentType]
+      : false;
+  const canUseDraftFlow = hasGrounding && selectedDocumentTypeIsEligible;
   const [formValues, setFormValues] = useState<CaseIntakeFormValues>(
     () => state.case_intake_form ?? {},
   );
@@ -70,22 +78,29 @@ export default function AfterIntakePage() {
       return;
     }
 
-    if (!selectedDocumentType) {
+    if (!hasGrounding || !selectedDocumentType || !selectedDocumentTypeIsEligible) {
       router.replace('/after/result');
+      return;
     }
-  }, [answer, router, selectedDocumentType]);
+  }, [
+    answer,
+    hasGrounding,
+    router,
+    selectedDocumentType,
+    selectedDocumentTypeIsEligible,
+  ]);
 
   useEffect(() => {
-    if (answer && selectedDocumentType) {
+    if (answer && selectedDocumentType && canUseDraftFlow) {
       const frameId = window.requestAnimationFrame(() => {
         headingRef.current?.focus();
       });
 
       return () => window.cancelAnimationFrame(frameId);
     }
-  }, [answer, selectedDocumentType]);
+  }, [answer, canUseDraftFlow, selectedDocumentType]);
 
-  if (!answer || !selectedDocumentType) {
+  if (!answer || !selectedDocumentType || !canUseDraftFlow) {
     return (
       <>
         <SkipLink />
@@ -108,6 +123,17 @@ export default function AfterIntakePage() {
       setErrorState({
         message:
           '인용된 법 조문 또는 근거 컨텍스트가 확인되지 않아 문서 초안을 만들 수 없습니다.',
+        retryable: false,
+      });
+      return;
+    }
+
+    const selectedEligibility = getScn004DraftEligibility(answer);
+
+    if (!selectedEligibility.documentTypes[selectedDocumentType]) {
+      setErrorState({
+        message:
+          '선택한 문서 타입을 뒷받침하는 SCN-004 근거가 없어 문서 초안을 만들 수 없습니다.',
         retryable: false,
       });
       return;
