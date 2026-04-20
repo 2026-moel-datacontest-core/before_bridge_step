@@ -30,4 +30,5 @@ export type FlowAction =
   | { type: 'SET_EVIDENCE_STATUS'; payload: { key: string; status: EvidenceUiStatus } }
   | { type: 'SET_DRAFT'; payload: DocumentDraftResponse }
   | { type: 'CLEAR_DRAFT' }
+  | { type: 'CLEAR_DRAFT_AND_CASE_INTAKE' }
   | { type: 'RESET' };

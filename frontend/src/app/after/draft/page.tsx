@@ -14,6 +14,7 @@ import { DisclaimerBanner } from '@/components/ui/DisclaimerBanner';
 import { SkipLink } from '@/components/ui/SkipLink';
 import { useFlow } from '@/context/FlowContext';
 import type { DocumentType } from '@/types/api';
+import type { FlowAction } from '@/types/flow';
 
 import styles from './page.module.css';
 
@@ -31,6 +32,7 @@ export default function AfterDraftPage() {
   const router = useRouter();
   const headingRef = useRef<HTMLHeadingElement>(null);
   const copyFeedbackTimerRef = useRef<number | null>(null);
+  const pendingDraftCleanupActionRef = useRef<FlowAction | null>(null);
   const [copyFeedback, setCopyFeedback] = useState<CopyFeedbackState>('idle');
   const { state, dispatch } = useFlow();
   const draft = state.draft_response;
@@ -77,6 +79,18 @@ export default function AfterDraftPage() {
       clearCopyFeedbackTimer();
     };
   }, []);
+
+  useEffect(() => {
+    // Defer draft cleanup until this route unmounts so the direct URL guard
+    // does not treat intentional back-navigation as missing draft state.
+    return () => {
+      const pendingAction = pendingDraftCleanupActionRef.current;
+
+      if (pendingAction) {
+        dispatch(pendingAction);
+      }
+    };
+  }, [dispatch]);
 
   if (!draft) {
     return (
@@ -127,16 +141,18 @@ export default function AfterDraftPage() {
     router.push('/after');
   }
 
+  function navigateAfterDraft(targetPath: string, cleanupAction: FlowAction) {
+    pendingDraftCleanupActionRef.current = cleanupAction;
+    router.push(targetPath);
+  }
+
   function returnToIntake() {
-    dispatch({ type: 'CLEAR_DRAFT' });
-    router.push('/after/intake');
+    navigateAfterDraft('/after/intake', { type: 'CLEAR_DRAFT' });
   }
 
   function returnToDocumentTypeSelection() {
-    dispatch({ type: 'CLEAR_DRAFT' });
-
     if (state.answer_response) {
-      router.push('/after/result');
+      navigateAfterDraft('/after/result', { type: 'CLEAR_DRAFT_AND_CASE_INTAKE' });
       return;
     }
 

@@ -92,6 +92,13 @@ export function flowReducer(
         ...state,
         draft_response: null,
       };
+    case 'CLEAR_DRAFT_AND_CASE_INTAKE':
+      return {
+        ...state,
+        case_intake_form: null,
+        case_intake: null,
+        draft_response: null,
+      };
     case 'RESET':
       return initialFlowState;
     default:
