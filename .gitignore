@@ -9,3 +9,8 @@ backend/.env
 backend/.pgdata/
 backend/logs/
 law-service-main-page-design/
+
+# Local agent/tool state
+.omx/
+frontend/.codex
+frontend/.omx/
