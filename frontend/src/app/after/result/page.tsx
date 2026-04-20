@@ -12,6 +12,7 @@ import { SkipLink } from '@/components/ui/SkipLink';
 import { useFlow } from '@/context/FlowContext';
 import { hasDraftGrounding } from '@/lib/api';
 import { getScn004DraftEligibility } from '@/lib/scn004DraftEligibility';
+import { getScenarioPreset } from '@/lib/scenarioPresets';
 import type { DocumentType } from '@/types/api';
 
 import styles from './page.module.css';
@@ -41,6 +42,8 @@ export default function AfterResultPage() {
   const headingRef = useRef<HTMLHeadingElement>(null);
   const { state, dispatch } = useFlow();
   const answer = state.answer_response;
+  const activePreset = getScenarioPreset(state.selected_preset_id);
+  const supportsDraft = activePreset?.supportsDraft ?? true;
   const [selectedDocumentType, setSelectedDocumentType] = useState<DocumentType | null>(
     state.selected_document_type,
   );
@@ -76,19 +79,29 @@ export default function AfterResultPage() {
 
   const hasCitedArticles = answer.cited_articles.length > 0;
   const hasGrounding = hasDraftGrounding(answer);
-  const eligibility = getScn004DraftEligibility(answer);
+  const eligibility = supportsDraft
+    ? getScn004DraftEligibility(answer)
+    : {
+        isEligible: false,
+        documentTypes: {
+          labor_office_wage_complaint: false,
+          labor_commission_unfair_dismissal_brief: false,
+        },
+      };
   const availableDocumentTypes = DOCUMENT_TYPES.filter(
     (documentType) => eligibility.documentTypes[documentType.value],
   );
   const hasAvailableDocumentTypes = availableDocumentTypes.length > 0;
   const selectedDocumentTypeIsAvailable =
-    selectedDocumentType !== null && eligibility.documentTypes[selectedDocumentType];
-  const canProceedToDraftFlow = hasGrounding && hasAvailableDocumentTypes;
+    supportsDraft &&
+    selectedDocumentType !== null &&
+    eligibility.documentTypes[selectedDocumentType];
+  const canProceedToDraftFlow = supportsDraft && hasGrounding && hasAvailableDocumentTypes;
   const statementSummary = truncateText(state.user_statement || answer.query, 100);
   const canShowAnswer = hasGrounding;
 
   function selectDocumentType(documentType: DocumentType) {
-    if (!canProceedToDraftFlow || !eligibility.documentTypes[documentType]) {
+    if (!supportsDraft || !canProceedToDraftFlow || !eligibility.documentTypes[documentType]) {
       return;
     }
 
@@ -204,7 +217,16 @@ export default function AfterResultPage() {
               )}
             </section>
 
-            {hasGrounding && !hasAvailableDocumentTypes ? (
+            {hasGrounding && activePreset && !activePreset.supportsDraft ? (
+              <Notification variant="warning" title="답변 확인 전용 프리셋">
+                <p>
+                  이 프리셋은 현재 답변 확인 전용입니다. SCN-004 문서 초안 선택지는
+                  표시하지 않습니다.
+                </p>
+              </Notification>
+            ) : null}
+
+            {hasGrounding && supportsDraft && !hasAvailableDocumentTypes ? (
               <Notification variant="warning" title="현재 문서 초안 지원 범위 밖">
                 <p>
                   답변은 확인할 수 있지만, 현재 문서 초안은 SCN-004의 해고·서면통지·해고예고·노동위원회·임금체불·퇴직금·금품청산 범위에서만 지원합니다.
@@ -263,13 +285,17 @@ export default function AfterResultPage() {
                 <Notification
                   variant="warning"
                   title={
-                    hasGrounding
+                    activePreset && !activePreset.supportsDraft
+                      ? '답변 확인 전용 프리셋'
+                      : hasGrounding
                       ? '현재 문서 초안 지원 범위 밖'
                       : '문서 초안 진행 불가'
                   }
                 >
                   <p>
-                    {hasGrounding
+                    {activePreset && !activePreset.supportsDraft
+                      ? '이 프리셋은 현재 답변 확인 전용입니다.'
+                      : hasGrounding
                       ? '이 답변은 확인할 수 있지만 SCN-004 문서 초안으로 이어지지 않습니다.'
                       : '인용된 법 조문 또는 근거 컨텍스트가 확인되지 않아 문서 유형을 선택할 수 없습니다.'}
                   </p>

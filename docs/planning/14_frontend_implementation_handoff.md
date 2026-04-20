@@ -1,6 +1,6 @@
 # Frontend Implementation Handoff — K-Labor Shield SCN-004 Demo
 
-기준일: `2026-04-17`
+기준일: `2026-04-20`
 대상: Codex / QA handoff
 범위: SCN-004 After flow (4 routes)
 
@@ -33,6 +33,13 @@
   - SCN-004 범위 밖 자유 입력은 answer / key_points / cautions / cited_articles만 표시
   - 문서 타입 선택 및 `/after/intake` 진행은 차단
   - backend API contract와 document draft schema 변경 없음
+- SCN-001/004 presentation-local After preset fixture architecture
+  - preset exact path는 fixed `AnswerResponse` fixture를 사용하고 `/api/v1/answer`를 호출하지 않음
+  - preset modified path는 live `/api/v1/answer`를 `recommendedTopK`, `ef_search=100`으로 호출
+  - free input path는 live `/api/v1/answer`를 `top_k=5`, `ef_search=100`으로 호출
+  - `SCN-001-BRIDGE-DEMO`는 eval `SCN-001-Q3`이 아닌 Before/Bridge 발표 연결용 query를 쓰며 fixed/live 여부와 관계없이 answer-only
+  - `SCN-004-DEMO-FREEZE`는 eval `SCN-004-Q1`이 아닌 document draft freeze query를 쓰며 fixed/live 여부와 관계없이 기존 SCN-004 draft eligibility 적용
+  - SCN-005는 현재 UI preset에서 제외하고 후속 확장 후보로만 유지
 
 보류:
 
@@ -110,10 +117,11 @@ Response:
 
 | 상황 | top_k | ef_search |
 |---|---|---|
-| SCN demo preset (프리셋 버튼 사용 시) | 10 | 100 |
+| preset exact (textarea 값이 preset query와 동일) | fixed fixture, API 호출 없음 | API 호출 없음 |
+| preset modified (프리셋 버튼 사용 후 문장 수정) | preset `recommendedTopK` (`10`) | 100 |
 | 일반 자유 입력 | 5 | 100 |
 
-ef_search는 항상 100. top_k만 분기.
+live `/api/v1/answer` 호출 시 `ef_search`는 항상 100. preset exact path는 fixed `AnswerResponse` fixture를 사용한다.
 
 ### Backend 실행 주소
 
@@ -158,12 +166,14 @@ ef_search는 항상 100. top_k만 분기.
 ```
 Step 1: /after
   사용자가 상황을 한국어로 자유 진술 입력
-  또는 SCN-004 프리셋 버튼 클릭 (자동 입력 + top_k=10)
-  "법 조문 찾기" 클릭 → POST /api/v1/answer
+  또는 SCN-001-BRIDGE-DEMO / SCN-004-DEMO-FREEZE 프리셋 버튼 클릭
+  preset exact → fixed AnswerResponse fixture
+  preset modified/free input → POST /api/v1/answer
 
 Step 2: /after/result
   answer, key_points, cautions, cited_articles 표시
-  2개 문서 타입 중 1개 선택 (radio tile)
+  SCN-004 draft 지원 상태면 2개 문서 타입 중 1개 선택 (radio tile)
+  SCN-001-BRIDGE-DEMO preset은 answer-only 안내 표시
   "사건 정보 입력하기" 클릭
 
 Step 3: /after/intake
@@ -191,7 +201,9 @@ Step 4: /after/draft
 - 다크 masthead (height: 48px, bg: #161616)
 - 서비스 intro band (Gray 10 surface)
 - 메인 입력 textarea (min-height: 160px, 10자 미만 soft warning)
-- SCN-004 프리셋 버튼 (ghost 스타일, 클릭 시 고정 텍스트 자동 입력 + is_scn_demo_preset = true)
+- 발표용 프리셋 버튼 2개 (ghost 스타일, 클릭 시 고정 텍스트 자동 입력 + is_scn_demo_preset = true)
+  - `SCN-001-BRIDGE-DEMO`
+  - `SCN-004-DEMO-FREEZE`
 - "법 조문 찾기" primary CTA (10자 이상일 때 활성)
 - 하단 disclaimer band
 
@@ -364,12 +376,13 @@ Step 4: /after/draft
 ### API Flow
 
 **POST /api/v1/answer**:
-1. FlowContext에 user_statement, is_scn_demo_preset 저장 (React memory only, Web Storage 저장 아님)
-2. top_k 결정: `is_scn_demo_preset ? 10 : 5`
-3. payload: `{ query: user_statement, top_k, ef_search: 100 }`
-4. 성공: `answer_response`를 FlowContext에 저장한다. 개인정보 최소 수집 원칙상 Phase 1에서는 sessionStorage에 원문 진술이나 응답을 저장하지 않는다.
-5. 실패 503: "잠시 후 다시 시도해주세요" + retry 버튼
-6. 실패 4xx: "입력 내용을 확인해주세요" + 이전으로 돌아가기
+1. FlowContext에 `user_statement`, `is_scn_demo_preset`, `selected_preset_id` 저장 (React memory only, Web Storage 저장 아님)
+2. selected preset이 있고 textarea 값이 preset `query`와 정확히 같으면 fixed `AnswerResponse` fixture를 `answer_response`에 저장한다.
+3. selected preset이 있고 textarea 값이 preset `query`와 다르면 `{ query, top_k: preset.recommendedTopK, ef_search: 100 }`으로 live `/api/v1/answer`를 호출한다.
+4. selected preset이 없으면 `{ query, top_k: 5, ef_search: 100 }`으로 live `/api/v1/answer`를 호출한다.
+5. 성공: `answer_response`를 FlowContext에 저장한다. 개인정보 최소 수집 원칙상 Phase 1에서는 sessionStorage에 원문 진술이나 응답을 저장하지 않는다.
+6. 실패 503: "잠시 후 다시 시도해주세요" + retry 버튼
+7. 실패 4xx: "입력 내용을 확인해주세요" + 이전으로 돌아가기
 
 **AnswerResponse → LegalBasisInput 변환**:
 ```
@@ -393,6 +406,8 @@ SCN-004 free-input document eligibility guard:
 - 이때 "현재 문서 초안 지원 범위 밖" 안내를 표시하고 document type 선택과 `/after/intake` 진입을 막는다.
 - eligibility는 frontend helper에서 `query`, `cited_articles`, grounded `retrieved_chunks`의 SCN-004 핵심 조문/키워드로 판단한다.
 - 지원 신호는 해고, 서면통지, 해고예고, 노동위원회, 임금체불, 퇴직금, 금품청산, 14일 및 `근로기준법 제23조·제26조·제27조·제28조·제36조·제37조`, `근로자퇴직급여 보장법 제9조`, `근로기준법 시행규칙 제5조`다.
+- `SCN-001-BRIDGE-DEMO` preset은 fixed/live 여부와 관계없이 `supportsDraft=false`로 answer-only 처리한다.
+- `SCN-004-DEMO-FREEZE` preset과 preset 없는 자유 입력은 기존 SCN-004 eligibility를 적용한다.
 - SCN-005 / SCN-001 문서 타입 추가가 아니며 backend contract를 변경하지 않는다.
 
 **CaseIntake payload 구성**:
@@ -958,10 +973,12 @@ import type {
   DocumentDraftResponse,
   EvidenceUiStatus,
 } from './api';
+import type { ScenarioPresetId } from '@/lib/scenarioPresets';
 
 export interface KLaborShieldFlowState {
   user_statement: string;
   is_scn_demo_preset: boolean;
+  selected_preset_id: ScenarioPresetId | null;
   answer_response: AnswerResponse | null;
   selected_document_type: DocumentType | null;
   legal_basis: LegalBasisInput | null;
@@ -972,7 +989,14 @@ export interface KLaborShieldFlowState {
 }
 
 export type FlowAction =
-  | { type: 'SET_STATEMENT'; payload: { statement: string; is_preset: boolean } }
+  | {
+      type: 'SET_STATEMENT';
+      payload: {
+        statement: string;
+        is_preset: boolean;
+        selected_preset_id: ScenarioPresetId | null;
+      };
+    }
   | { type: 'SET_ANSWER'; payload: AnswerResponse }
   | { type: 'SET_LEGAL_BASIS'; payload: LegalBasisInput }
   | { type: 'SET_DOCUMENT_TYPE'; payload: DocumentType }
@@ -981,6 +1005,7 @@ export type FlowAction =
   | { type: 'SET_EVIDENCE_STATUS'; payload: { key: string; status: EvidenceUiStatus } }
   | { type: 'SET_DRAFT'; payload: DocumentDraftResponse }
   | { type: 'CLEAR_DRAFT' }
+  | { type: 'CLEAR_DRAFT_AND_CASE_INTAKE' }
   | { type: 'RESET' };
 ```
 

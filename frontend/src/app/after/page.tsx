@@ -10,12 +10,14 @@ import { Notification } from '@/components/ui/Notification';
 import { SkipLink } from '@/components/ui/SkipLink';
 import { useFlow } from '@/context/FlowContext';
 import { ApiError, fetchAnswer } from '@/lib/api';
+import {
+  SCENARIO_PRESETS,
+  getScenarioPreset,
+  type ScenarioPresetId,
+} from '@/lib/scenarioPresets';
 import type { AnswerRequest } from '@/types/api';
 
 import styles from './page.module.css';
-
-const SCN_004_PRESET =
-  '해고를 당했는데 서면통지는 없고 30일 전에 예고도 못 받았습니다. 퇴사 후 마지막 임금과 퇴직금도 14일 넘게 지급받지 못했습니다.';
 
 interface AnswerErrorState {
   message: string;
@@ -30,7 +32,9 @@ export default function AfterPage() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const answerSubmittingRef = useRef(false);
   const [statement, setStatement] = useState(state.user_statement);
-  const [isPreset, setIsPreset] = useState(state.is_scn_demo_preset);
+  const [selectedPresetId, setSelectedPresetId] = useState<ScenarioPresetId | null>(
+    state.selected_preset_id,
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [errorState, setErrorState] = useState<AnswerErrorState | null>(null);
 
@@ -38,7 +42,8 @@ export default function AfterPage() {
   const characterCount = trimmedStatement.length;
   const isShort = characterCount > 0 && characterCount < 10;
   const canSubmit = characterCount >= 10 && !isLoading;
-  const isPresetTextUnchanged = statement === SCN_004_PRESET;
+  const selectedPreset = getScenarioPreset(selectedPresetId);
+  const isPresetTextUnchanged = selectedPreset !== null && statement === selectedPreset.query;
 
   useEffect(() => {
     const frameId = window.requestAnimationFrame(() => {
@@ -54,23 +59,25 @@ export default function AfterPage() {
       return '상황을 10자 이상 입력하면 법 조문 찾기를 시작할 수 있습니다.';
     }
 
-    if (isPreset) {
+    if (selectedPreset) {
       return isPresetTextUnchanged
-        ? 'SCN-004 데모 프리셋이 입력되었습니다.'
-        : 'SCN-004 데모 프리셋을 바탕으로 수정 중입니다.';
+        ? `${selectedPreset.label} 프리셋이 입력되었습니다.`
+        : `${selectedPreset.label} 프리셋을 바탕으로 수정 중입니다.`;
     }
 
-    return '해고, 임금, 퇴직금, 통지 방식처럼 핵심 사실을 함께 적어주세요.';
-  }, [isPreset, isPresetTextUnchanged, isShort]);
+    return '해고, 임금, 퇴직금, 사업장 변경, 육아휴직처럼 핵심 사실을 함께 적어주세요.';
+  }, [isPresetTextUnchanged, isShort, selectedPreset]);
 
   function buildAnswerPayload(): AnswerRequest | null {
     if (trimmedStatement.length < 10) {
       return null;
     }
 
+    const preset = getScenarioPreset(selectedPresetId);
+
     return {
       query: trimmedStatement,
-      top_k: isPreset ? 10 : 5,
+      top_k: preset ? preset.recommendedTopK : 5,
       ef_search: 100,
     };
   }
@@ -83,13 +90,21 @@ export default function AfterPage() {
     answerSubmittingRef.current = true;
     setIsLoading(true);
     setErrorState(null);
+    const preset = getScenarioPreset(selectedPresetId);
     dispatch({
       type: 'SET_STATEMENT',
-      payload: { statement: payload.query, is_preset: payload.top_k === 10 },
+      payload: {
+        statement: payload.query,
+        is_preset: preset !== null,
+        selected_preset_id: preset?.id ?? null,
+      },
     });
 
     try {
-      const answer = await fetchAnswer(payload);
+      const answer =
+        preset && statement === preset.query && payload.query === preset.query
+          ? preset.fixedAnswer
+          : await fetchAnswer(payload);
 
       dispatch({ type: 'SET_ANSWER', payload: answer });
       router.push('/after/result');
@@ -114,19 +129,26 @@ export default function AfterPage() {
 
   function handleStatementChange(value: string) {
     setStatement(value);
-    setIsPreset((currentIsPreset) =>
-      currentIsPreset && value.trim().length > 0,
-    );
     setErrorState(null);
   }
 
-  function handlePresetClick() {
-    setStatement(SCN_004_PRESET);
-    setIsPreset(true);
+  function handlePresetClick(presetId: ScenarioPresetId) {
+    const preset = getScenarioPreset(presetId);
+
+    if (!preset) {
+      return;
+    }
+
+    setStatement(preset.query);
+    setSelectedPresetId(preset.id);
     setErrorState(null);
     dispatch({
       type: 'SET_STATEMENT',
-      payload: { statement: SCN_004_PRESET, is_preset: true },
+      payload: {
+        statement: preset.query,
+        is_preset: true,
+        selected_preset_id: preset.id,
+      },
     });
   }
 
@@ -137,9 +159,9 @@ export default function AfterPage() {
       <main id="main-content" ref={mainRef} tabIndex={-1} className={styles.main}>
         <section className={styles.intro} aria-labelledby="after-title">
           <div className={styles.introInner}>
-            <p className={styles.eyebrow}>After flow · SCN-004</p>
+            <p className={styles.eyebrow}>After flow · Scenario presets</p>
             <h1 id="after-title" className={styles.title}>
-              해고와 미지급 임금 상황에 맞는 법 조문 찾기
+              상황에 맞는 노동권 조문 찾기
             </h1>
             <p className={styles.lead}>
               현재 상황을 적으면 관련 조문과 주의사항을 먼저 확인합니다.
@@ -174,7 +196,7 @@ export default function AfterPage() {
                 value={statement}
                 onChange={(event) => handleStatementChange(event.target.value)}
                 disabled={isLoading}
-                aria-label="해고와 임금 상황 진술"
+                aria-label="노동권 상황 진술"
                 aria-describedby="statement-helper"
                 placeholder="예: 회사에서 갑자기 그만 나오라고 했고 서면통지는 받지 못했습니다. 마지막 임금과 퇴직금도 아직 받지 못했습니다."
               />
@@ -186,14 +208,18 @@ export default function AfterPage() {
               </p>
 
               <div className={styles.presetRow}>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={handlePresetClick}
-                  disabled={isLoading}
-                >
-                  SCN-004 프리셋 입력
-                </Button>
+                {SCENARIO_PRESETS.map((preset) => (
+                  <Button
+                    key={preset.id}
+                    type="button"
+                    variant={selectedPresetId === preset.id ? 'secondary' : 'ghost'}
+                    onClick={() => handlePresetClick(preset.id)}
+                    disabled={isLoading}
+                    aria-pressed={selectedPresetId === preset.id}
+                  >
+                    {preset.label}
+                  </Button>
+                ))}
               </div>
 
               {errorState ? (

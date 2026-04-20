@@ -7,10 +7,12 @@ import type {
   EvidenceUiStatus,
   LegalBasisInput,
 } from './api';
+import type { ScenarioPresetId } from '@/lib/scenarioPresets';
 
 export interface KLaborShieldFlowState {
   user_statement: string;
   is_scn_demo_preset: boolean;
+  selected_preset_id: ScenarioPresetId | null;
   answer_response: AnswerResponse | null;
   selected_document_type: DocumentType | null;
   legal_basis: LegalBasisInput | null;
@@ -21,7 +23,14 @@ export interface KLaborShieldFlowState {
 }
 
 export type FlowAction =
-  | { type: 'SET_STATEMENT'; payload: { statement: string; is_preset: boolean } }
+  | {
+      type: 'SET_STATEMENT';
+      payload: {
+        statement: string;
+        is_preset: boolean;
+        selected_preset_id: ScenarioPresetId | null;
+      };
+    }
   | { type: 'SET_ANSWER'; payload: AnswerResponse }
   | { type: 'SET_LEGAL_BASIS'; payload: LegalBasisInput }
   | { type: 'SET_DOCUMENT_TYPE'; payload: DocumentType }

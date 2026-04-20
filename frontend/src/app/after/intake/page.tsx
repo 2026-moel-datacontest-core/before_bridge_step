@@ -26,6 +26,7 @@ import {
   hasDraftGrounding,
 } from '@/lib/api';
 import { getScn004DraftEligibility } from '@/lib/scn004DraftEligibility';
+import { getScenarioPreset } from '@/lib/scenarioPresets';
 import type { CaseIntakeFormValues, DocumentType } from '@/types/api';
 
 import styles from './page.module.css';
@@ -47,13 +48,15 @@ export default function AfterIntakePage() {
   const { state, dispatch } = useFlow();
   const answer = state.answer_response;
   const selectedDocumentType = state.selected_document_type;
+  const activePreset = getScenarioPreset(state.selected_preset_id);
+  const supportsDraft = activePreset?.supportsDraft ?? true;
   const hasGrounding = answer ? hasDraftGrounding(answer) : false;
-  const eligibility = answer ? getScn004DraftEligibility(answer) : null;
+  const eligibility = answer && supportsDraft ? getScn004DraftEligibility(answer) : null;
   const selectedDocumentTypeIsEligible =
-    selectedDocumentType !== null && eligibility !== null
+    supportsDraft && selectedDocumentType !== null && eligibility !== null
       ? eligibility.documentTypes[selectedDocumentType]
       : false;
-  const canUseDraftFlow = hasGrounding && selectedDocumentTypeIsEligible;
+  const canUseDraftFlow = supportsDraft && hasGrounding && selectedDocumentTypeIsEligible;
   const [formValues, setFormValues] = useState<CaseIntakeFormValues>(
     () => state.case_intake_form ?? {},
   );
@@ -88,6 +91,7 @@ export default function AfterIntakePage() {
     router,
     selectedDocumentType,
     selectedDocumentTypeIsEligible,
+    supportsDraft,
   ]);
 
   useEffect(() => {
@@ -123,6 +127,14 @@ export default function AfterIntakePage() {
       setErrorState({
         message:
           '인용된 법 조문 또는 근거 컨텍스트가 확인되지 않아 문서 초안을 만들 수 없습니다.',
+        retryable: false,
+      });
+      return;
+    }
+
+    if (!supportsDraft) {
+      setErrorState({
+        message: '이 프리셋은 현재 답변 확인 전용이라 문서 초안을 만들 수 없습니다.',
         retryable: false,
       });
       return;
