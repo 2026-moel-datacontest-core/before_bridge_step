@@ -6,7 +6,7 @@
 /home/jongwon/personal_project/law_main_road 에서 작업해주세요.
 
 현재 상태:
-- 기준일은 2026-04-17입니다.
+- 기준일은 2026-04-20입니다.
 - RAG refinement landing 완료
 - SCN-004 document draft backend 완료
 - SCN-004 After frontend 4-route flow 완료
