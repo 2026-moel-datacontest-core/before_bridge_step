@@ -3,7 +3,9 @@ Based on IBM Carbon-inspired structure, adapted for legal aid, migrant worker su
 
 Implementation note: this document uses Carbon `--cds-*` names as design-system references. SCN-004 frontend implementation uses the canonical `--kl-*` variables defined in `docs/planning/14_frontend_implementation_handoff.md`; do not mix both prefixes in component CSS.
 
-Current status note (2026-04-17): the SCN-004 After frontend flow is implemented through Phase 3B. Design work before QA should stay limited to regression-free fixes for the existing `/after` routes, not new Before/Bridge/Recovery screens.
+Current status note (2026-04-20): the SCN-004 After frontend flow is implemented through Phase 3B, draft navigation stabilization, free-input document eligibility guard, presentation-local presets, and final browser/preflight QA. Design work before submission should stay limited to regression-free polish for the existing `/after` routes and must not introduce new Before/Bridge/Recovery screens without a confirmed contract.
+
+Evolution note: the 2026-04-17 design freeze point was Phase 3B completion and manual rehearsal. The later 2026-04-20 additions were operational stability and demo reproducibility work, not a redesign.
 
 ## 1. Visual Theme & Atmosphere
 

@@ -2,6 +2,8 @@
 
 작성일: `2026-04-17`
 
+업데이트 메모: 이 문서는 2026-04-17 팀 역할 설명 초안으로 보존한다. 2026-04-20 기준 After 쪽은 SCN-004-DEMO-FREEZE main path와 SCN-001-BRIDGE-DEMO answer-only handoff까지 준비됐고, 실제 Before/Bridge 연결은 팀원 Before-begin contract 확인 후 진행한다.
+
 ## 문서 목적
 
 - 2인 팀 기준으로 실제 역할 분담을 강사님께 명확하게 설명하기 위한 문서

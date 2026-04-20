@@ -78,7 +78,7 @@
 
 ## Current Status
 
-기준일: `2026-04-17`
+기준일: `2026-04-20`
 
 - legalize-kr submodule 연결 완료
 - 청킹 Step 1~10 완료
@@ -115,12 +115,20 @@
   - `gold_citation_hit = 60/60`
   - `expected_point_strict_coverage = 137/153`
   - `failures_or_partial_coverage = 16`
+- full 60 answer evidence report 기준:
+  - `PASS = 44`
+  - `PARTIAL = 16`
+  - `FAIL = 0`
+  - `expected point coverage = 135/153`
+  - `citation grounding violation = 0`
+  - `invalid raw / grounded context id = 0`
+  - MVP 기준 acceptable, 후속 answer quality tuning 후보는 PARTIAL 16건
 - scenario expansion / demo coverage 기준:
   - `SCN-001`: covered, `top_k=10` demo path stable
   - `SCN-002`: partial, extra source / structured data 필요
   - `SCN-003`: covered after minimal data addition (`+9 chunks`)
-  - `SCN-004`: covered, frontend demo implemented
-  - `SCN-005`: covered, demo ready
+  - `SCN-004`: covered, frontend demo implemented, `SCN-004-DEMO-FREEZE` main path
+  - `SCN-005`: covered for answer smoke, frontend UI preset에서는 제외하고 후속 확장 후보로 유지
 - RAG refinement landing 완료:
   - Step 1 phrasing normalization 적용
   - Step 2 answer-side deterministic hardening 적용
@@ -137,11 +145,21 @@
   - 실제 `/api/v1/answer`, `/api/v1/documents/draft` 연동
   - loading/error/a11y/route guard 및 copy/print 구현
   - Phase 3C 이후 확장 작업은 보류
+- presentation-local preset 완료:
+  - `SCN-001-BRIDGE-DEMO`: Before/Bridge handoff 설명용 answer-only
+  - `SCN-004-DEMO-FREEZE`: main demo / document draft freeze용
+- SCN-004 free input document eligibility guard 완료
+- demo preflight script 추가 및 final pass 확인 완료
 - SCN-004 QA/content/frontend rehearsal 완료:
   - preset answer `cited_articles=6`, `grounded_context_ids=[1, 2, 3, 5, 10, 4]`
   - answer key points에 노동위원회와 3개월 이내 구제신청 표시
   - answer-derived document draft 2종 모두 `missing_legal_basis=[]`
   - manual browser rehearsal에서 `/after -> /after/result -> /after/intake -> /after/draft`, copy, print, direct URL guard 확인
+
+Evolution note:
+
+- 2026-04-17 기준으로 RAG refinement, SCN-004 document draft backend, SCN-004 After frontend Phase 3A/B, content QA, manual browser rehearsal까지 완료됐다.
+- 2026-04-20 기준으로 위 demo freeze를 유지하면서 fixed preset, free-input guard, preflight, item-level eval evidence가 추가됐다.
 
 ---
 
@@ -153,10 +171,13 @@
 
 - 현재 RAG 기준선을 고정한다.
   - retrieval full 60: `hit@5 = 60/60`
-  - answer full 60: `citation_grounding_clean = 60/60`, `gold_citation_hit = 60/60`, `expected_point_strict_coverage = 137/153`
+- answer full 60: `citation_grounding_clean = 60/60`, `gold_citation_hit = 60/60`, `expected_point_strict_coverage = 137/153`
+- answer evidence full 60: `PASS=44`, `PARTIAL=16`, `FAIL=0`; PARTIAL은 expected point 일부 누락이며 MVP blocker가 아님
 - 일반 API 기본값은 `top_k=5`, `ef_search=100`으로 유지한다.
 - SCN demo preset은 `top_k=10`, `ef_search=100`을 명시한다.
 - `SCN-004` After document draft flow를 제출 전 핵심 demo path로 관리한다.
+- `SCN-004-DEMO-FREEZE` exact preset path는 fixed answer fixture를 사용한다.
+- `SCN-001-BRIDGE-DEMO`는 answer-only Bridge handoff 설명용으로 유지한다.
 - 이후 RAG 수정은 QA에서 regression이 확인되거나 필수 근거 누락이 재현될 때만 좁게 진행한다.
 
 ### Step 1. Backend contract 재확인

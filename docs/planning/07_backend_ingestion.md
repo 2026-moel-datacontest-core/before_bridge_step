@@ -86,3 +86,6 @@ python3 scripts/ingest_chunks.py --dry-run
   - SCN-004 document draft API 완료
   - SCN-004 frontend demo flow 완료
   - ingestion 재실행은 현재 QA 범위가 아님
+- Current status (2026-04-20):
+  - SCN-004 demo freeze, presentation-local preset, demo preflight, full 60 answer evidence report 완료
+  - ingestion 재실행은 여전히 현재 범위가 아니며, `backend/data/law_chunks/all_chunks.json` / DB `1722` 기준을 유지

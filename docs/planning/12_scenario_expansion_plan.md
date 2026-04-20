@@ -1,12 +1,13 @@
 # Scenario Expansion Plan
 
-기준일: `2026-04-17`
+기준일: `2026-04-20`
 
 ## 목적
 
 - 데모용 시나리오를 현재 corpus 기준으로 분류
 - 현재 데이터로 바로 가능한 시나리오와 데이터 확장이 필요한 시나리오를 구분
 - 다음 세션에서 source update / ingestion / embedding 재실행이 필요한지 빠르게 판단할 수 있게 정리
+- 2026-04-17 검증 기록은 보존하되, 2026-04-20 presentation-local preset 운영 정책을 현재 기준으로 둔다.
 
 관련 기준 문서:
 
@@ -62,7 +63,7 @@
 | `SCN-002` | `Before` | 알바/생활밀착형: 최저임금 미달 및 수습 꼼수 적발 | 실검증 완료 | `Partial` | 즉시 데이터 수정 없음 | 현재는 설명형 Before 데모 범위로 사용, 자동 숫자 판정은 범위 밖 |
 | `SCN-003` | `Before` | 장애인 특화: 일반 계약서 분석 및 맞춤형 지원 제도 안내 | 실검증 완료 | `Yes` | 장애인 관련 조문 9개 최소 보강 및 재임베딩 완료 | 편의 제공 + 근로지원인 + 공학기기 지원까지 grounded answer 가능 |
 | `SCN-004` | `After` | 부당해고/사후대응: 카톡 즉시 해고 및 금품 체불 | frontend demo 구현 완료 | `Yes` | 즉시 데이터 추가 불필요 | 현재 main demo path. `/after` 4-route flow와 문서 초안 2종 구현 완료 |
-| `SCN-005` | `After` | 출산·육아/사후대응: 육아휴직 및 가족돌봄휴가 부당 거절 | 실검증 완료 | `Yes` | 즉시 데이터 추가 불필요 | `selected_as_of=2026-04-11` corpus는 이미 커버, 현재 raw source HEAD는 더 최신이어서 직접 역반영 금지 |
+| `SCN-005` | `After` | 출산·육아/사후대응: 육아휴직 및 가족돌봄휴가 부당 거절 | 실검증 완료 | `Yes` | 즉시 데이터 추가 불필요 | answer smoke 후보로 유지하되 현재 frontend UI preset에서는 제외. 문서 타입은 SCN-004 freeze 기준 유지 후 별도 확장 |
 
 ### 유형 정의
 
@@ -675,7 +676,7 @@
 
 #### 2026-04-17 content QA 갱신
 
-- SCN-004 preset answer smoke:
+- SCN-004 answer smoke:
   - `top_k=10`, `ef_search=100`
   - `cited_articles=6`
   - `grounded_context_ids=[1, 2, 3, 5, 10, 4]`

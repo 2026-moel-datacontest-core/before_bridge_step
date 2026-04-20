@@ -11,18 +11,29 @@
 
 ## Current Phase
 
-기준일: `2026-04-17`
+기준일: `2026-04-20`
 
 - RAG refinement landing 완료
 - SCN-004 document draft backend 완료
 - SCN-004 After frontend 4-route flow 완료
 - Phase 3A/B 완료: rendered_text copy, browser print, print disclaimer
 - SCN-004 QA 정합성 검증, content output 확인, manual browser rehearsal 통과
+- SCN-004 draft navigation race 수정 완료
+- SCN-004 free input document eligibility guard 완료
+- SCN-001/004 presentation-local fixed answer preset architecture 완료
+- demo preflight script와 full 60 answer evidence report 추가 완료
 - 현재 작업 중심은 **SCN-004 demo freeze 유지와 제출 전 재현성 확인**
-- 다음 확장 후보는 **SCN-005 After frontend / 문서 타입**이나, 별도 패치로만 진행
+- `SCN-001-BRIDGE-DEMO`는 Before/Bridge handoff 설명용 answer-only preset
+- `SCN-004-DEMO-FREEZE`는 main demo / document draft freeze용 preset
+- SCN-005는 현재 frontend preset UI에서 제외하고 후속 확장 후보로만 유지
 - SCN-001 frontend 확장은 팀원 Before / Bridge 코드와 contract 확인 후 진행
 - 현재 source of truth는 `backend/data/law_chunks/all_chunks.json`
 - current live corpus: `1722` chunks, `selected_as_of = 2026-04-11`
+
+Evolution note:
+
+- 2026-04-17 기준 상태는 RAG refinement, SCN-004 document draft backend, SCN-004 After frontend Phase 3A/B, content QA, manual browser rehearsal 완료였다.
+- 2026-04-20에는 위 상태를 흔들지 않고 presentation-local preset, preflight, free-input guard, eval evidence report를 추가해 MVP 제출 기준을 보강했다.
 
 ## Structure
 
@@ -132,7 +143,10 @@
 - SCN-005 After frontend / 문서 타입 확장은 SCN-004 freeze 기준을 유지한 별도 패치에서 진행 가능
 - SCN-001 `Before -> Bridge -> After` frontend 확장은 팀원 Before / Bridge 코드와 contract 확인 후 별도 단계에서 검토
 - raw `user_statement`, `answer_response`, `case_intake`, `draft_response`는 Web Storage에 저장하지 않음
-- SCN-004 preset은 `top_k=10`, 자유 입력은 `top_k=5`, 항상 `ef_search=100`
+- presentation preset exact path는 fixed answer fixture를 사용하고 `/api/v1/answer`를 호출하지 않음
+- presentation preset modified path는 `top_k=10`, 자유 입력은 `top_k=5`, 항상 `ef_search=100`
+- `SCN-001-BRIDGE-DEMO`는 fixed/live 여부와 관계없이 answer-only
+- `SCN-004-DEMO-FREEZE`와 SCN-004 free input만 document eligibility guard 통과 시 draft flow 허용
 
 ## Do Not
 
@@ -150,4 +164,5 @@
 - root `CLAUDE.md`는 전역 요약본
 - 상세 규칙은 하위 `CLAUDE.md`와 `docs/planning/*` 참조
 - 현재 목표는 “완벽한 구조”가 아니라 “안정적으로 제출 가능한 결과물”
-- 2026-04-17 기준 RAG refinement, SCN-004 document draft backend, SCN-004 After frontend Phase 3A/B, SCN-004 content QA, manual browser rehearsal까지 완료됨. 다음 실질 작업은 SCN-004 demo freeze 유지이며, 이후 후보는 SCN-005 After frontend / 문서 타입 확장
+- 2026-04-17 기준 RAG refinement, SCN-004 document draft backend, SCN-004 After frontend Phase 3A/B, SCN-004 content QA, manual browser rehearsal까지 완료됨.
+- 2026-04-20 기준 presentation-local preset, SCN-004 free-input guard, demo preflight, full 60 answer evidence report까지 완료됨. 다음 실질 작업은 SCN-004 demo freeze 유지 또는 팀원 Before / Bridge contract 확인 후 SCN-001 연결 검토다.

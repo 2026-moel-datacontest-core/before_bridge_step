@@ -1,6 +1,6 @@
 # WSL Conda Setup
 
-기준일: `2026-04-17`
+기준일: `2026-04-20`
 
 ## Environment
 
@@ -68,3 +68,11 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
 - `/after` 4-route frontend flow
 - copy / print
 - direct URL guard
+
+발표 전 기본 확인은 repo root에서 아래 script를 우선 사용한다.
+
+```bash
+bash scripts/demo_preflight.sh
+```
+
+이 script는 DB를 start/stop하지 않고 readiness만 확인하며, backend/frontend dev server도 자동 실행하지 않는다. WSL browser QA는 `frontend`의 Playwright Chromium을 우선 사용한다.

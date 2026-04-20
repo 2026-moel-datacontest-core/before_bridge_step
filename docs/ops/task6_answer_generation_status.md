@@ -1,6 +1,6 @@
 # Task 6 Answer Generation Status
 
-기준일: `2026-04-17`
+기준일: `2026-04-20`
 
 ## 목적
 
@@ -8,6 +8,7 @@
 - 실제 검증 결과와 남은 약점을 한 문서에 정리
 - 이후 RAG 수정 세션에서 재사용할 기준선을 남김
 - 현재는 RAG refinement 이후 QA 기준선으로 사용
+- 2026-04-17 RAG refinement landing 기록을 보존하고, 2026-04-20 item-level answer evidence 결과를 최신 QA 해석으로 추가
 
 ---
 
@@ -158,6 +159,20 @@ full 60 live eval 기준:
 - `expected_point_strict_coverage = 137/153`
 - `failures_or_partial_coverage = 16`
 
+### Answer Evidence 최신 기준선 (2026-04-20)
+
+full 60 item-level evidence report 기준:
+
+- `PASS = 44`
+- `PARTIAL = 16`
+- `FAIL = 0`
+- `expected point coverage = 135/153`
+- `citation grounding violation = 0`
+- `invalid raw / grounded context id = 0`
+- `timeout / provider / schema error = 0`
+
+MVP 기준으로 acceptable이다. 남은 PARTIAL은 retrieval miss나 citation grounding 문제가 아니라 expected point 일부 누락이다.
+
 coverage 개선 경과:
 
 - full 60 strict coverage: `84/153 -> 107/153 -> 117/153 -> 122/153 -> 124/153 -> 126/153 -> 137/153`
@@ -273,7 +288,7 @@ landing verification:
 
 현재 RAG landing은 완료 상태다. 즉시 필요한 answer/retrieval 구조 수정 세션은 없다.
 
-SCN-004 frontend/backend QA 정합성 검증과 demo rehearsal은 통과 상태다. 현재 실질 작업은 SCN-004 demo freeze 유지이며, 제품 확장 후보는 SCN-005 After frontend / 문서 타입이다. RAG 후속 작업이 필요할 때만 아래 순서로 다시 보는 것이 합리적이다.
+SCN-004 frontend/backend QA 정합성 검증과 demo rehearsal, 2026-04-20 final preflight / dry-run은 통과 상태다. 현재 실질 작업은 SCN-004 demo freeze 유지 또는 팀원 Before / Bridge contract 확인 후 SCN-001 연결 검토다. SCN-005 After frontend / 문서 타입은 현재 UI preset에서 제외된 후속 후보로 유지한다. RAG 후속 작업이 필요할 때만 아래 순서로 다시 보는 것이 합리적이다.
 
 1. 남은 `16` partial에 대한 answer-side surface / completeness 보강
 2. low-signal key point noise 정리

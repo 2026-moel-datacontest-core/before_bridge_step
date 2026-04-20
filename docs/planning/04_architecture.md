@@ -2,7 +2,7 @@
 
 ## Current MVP Architecture
 
-기준일: `2026-04-17`
+기준일: `2026-04-20`
 
 - data source: `data/legalize-kr/`
 - processed data: `backend/data/law_chunks/all_chunks.json`
@@ -28,6 +28,9 @@
   - SCN-004 document draft backend 완료
   - SCN-004 After frontend flow 완료
   - SCN-004 QA/content/frontend rehearsal 통과
+  - SCN-004 free-input document eligibility guard 완료
+  - SCN-001/004 presentation-local fixed answer preset architecture 완료
+  - demo preflight script와 full 60 answer evidence report 추가 완료
   - demo freeze 유지 및 제출 전 재현성 확인
 
 ---
@@ -45,7 +48,10 @@
 - citation grounding validation
 - document draft generation from answer legal basis + case intake
 - frontend SCN-004 4-route fixed flow
+- frontend presentation-local preset fixed path
+- free-input document eligibility guard
 - bounded answer / document draft / frontend build verification
+- item-level answer evidence report
 
 ---
 
@@ -55,4 +61,4 @@
 - later consider GCP + Ollama Local LLM
 - reranker / critic are post-MVP items
 - query decomposition is already limited to `SCN-001 Full` demo path under `top_k >= 8`
-- next practical step is demo freeze 유지, not model swap or broad feature expansion
+- next practical step is demo freeze 유지 or 팀원 Before / Bridge contract 확인, not model swap or broad feature expansion

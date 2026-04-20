@@ -68,6 +68,7 @@
 - grounded answer generation 및 citation grounding 구조 구현 완료
 - RAG refinement landing 완료
 - SCN-004 document draft backend 및 frontend demo flow 구현 완료
+- SCN-004 demo freeze, presentation-local preset, demo preflight, full 60 answer evidence report 완료
 - default answer model은 `gemini-2.5-flash` 유지
 - default embedding model은 `gemini-embedding-001` 유지
 

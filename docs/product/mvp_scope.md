@@ -22,7 +22,12 @@
 
 ## 포함 범위
 
-현재 구현 기준일: `2026-04-17`
+현재 구현 기준일: `2026-04-20`
+
+진화 기록:
+
+- 2026-04-17에는 SCN-004 After 4-route flow, document draft backend, copy/print, manual rehearsal 완료가 기준이었다.
+- 2026-04-20에는 이 기준 위에 presentation-local preset, free-input eligibility guard, demo preflight, full 60 answer evidence report가 추가됐다.
 
 ### 현재 구현된 demo scope
 
@@ -34,6 +39,12 @@
 - `/api/v1/documents/draft` 기반 문서 초안 생성
 - `rendered_text`, `missing_fields`, `cautions`, `evidence_checklist`, `cited_articles` 표시
 - 초안 복사 / 인쇄
+- presentation-local preset:
+  - `SCN-001-BRIDGE-DEMO`: answer-only bridge handoff 설명용
+  - `SCN-004-DEMO-FREEZE`: main demo / document draft freeze용
+- SCN-004 free input document eligibility guard
+- demo preflight script
+- full 60 answer evidence report
 
 아래 Before / Bridge는 제품 구조상 MVP 범위다. 다만 현재 frontend 구현은 SCN-004 After flow에만 맞춰져 있으므로, Before / Bridge frontend 확장은 팀원이 작성한 Before / Bridge 코드와 contract를 확인한 뒤 별도 단계에서 진행한다.
 
@@ -94,7 +105,7 @@
 - deterministic document draft service
 - Next.js SCN-004 demo frontend
 - 후속 frontend 확장 대상:
-  - SCN-005 After demo
+  - SCN-005 After demo / 문서 타입은 후속 후보로만 유지
   - SCN-001 `Before -> Bridge -> After` demo
   - 팀원 Before / Bridge 코드 확인 후 연결되는 route와 payload adapter
 
@@ -103,7 +114,7 @@
 - JSON 응답 구조 고정
 - cited_articles 검증
 - frontend QA에서 필요한 최소 polish
-- SCN-005 After frontend / 문서 타입 route 확장
+- SCN-005 After frontend / 문서 타입 route 확장은 SCN-004 freeze 기준 유지 후 별도 패치에서만 검토
 - Before / Bridge contract 확인 후 SCN-001 frontend route 확장
 
 ### 후순위
@@ -150,9 +161,12 @@
 - copy / print 동작 확인
 - direct URL guard 확인
 - QA에서 backend/frontend schema mismatch 없음
-- SCN-004 preset answer가 기대 조문 6개와 `grounded_context_ids=[1, 2, 3, 5, 10, 4]`를 유지
+- SCN-004-DEMO-FREEZE fixed answer가 기대 조문 6개와 `grounded_context_ids=[1, 2, 3, 5, 10, 4]`를 유지
 - answer-derived document draft 2종이 `missing_legal_basis=[]` 유지
 - 데모 중단 없이 SCN-004 시연 가능
+- `SCN-004-DEMO-FREEZE` exact preset path는 fixed answer fixture를 사용해 `/api/v1/answer` 호출 없이 재현 가능
+- `SCN-001-BRIDGE-DEMO`는 answer-only로 동작하며 SCN-004 문서 초안 UI를 열지 않음
+- full 60 answer evidence 기준 `FAIL=0`, citation grounding / context id clean
 
 ### 최종 demo 확장 성공 기준
 
@@ -198,6 +212,6 @@
 5. SCN-004 frontend demo
 6. QA 정합성 검증 완료 상태 유지
 7. 데모 freeze 유지
-8. SCN-005 After demo / 문서 타입 확장
+8. SCN-005 After demo / 문서 타입 확장 여부 결정
 9. 팀원 Before / Bridge 코드와 contract 확인
 10. SCN-001 `Before -> Bridge -> After` frontend 확장

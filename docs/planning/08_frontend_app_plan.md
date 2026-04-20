@@ -5,7 +5,8 @@
 - MVP 앱 구현 범위 고정
 - 웹앱 기준 화면/상태/API 전제 정리
 - 데모 우선 구현 순서 명확화
-- 2026-04-17 기준 실제 frontend 구현 상태와 다음 QA 범위 정리
+- 2026-04-20 기준 실제 frontend 구현 상태와 다음 QA 범위 정리
+- 2026-04-17 상태는 evolution note로 남겨 구현 발전 흐름을 보존
 
 ---
 
@@ -40,14 +41,25 @@
   - Phase 1 API-connected happy path
   - Phase 2 error / loading / a11y / route guard
   - Phase 3 A/B: copy, print, evidence checklist local status
+  - SCN-004 draft navigation race fix
+  - SCN-004 free input document eligibility guard
+  - presentation-local preset architecture:
+    - `SCN-001-BRIDGE-DEMO`: answer-only
+    - `SCN-004-DEMO-FREEZE`: main demo / document draft freeze
 - 보류 범위:
   - Phase 3C 이후 확장 작업
   - sessionStorage backup/restore
   - transition animation
   - `/before`, `/bridge`, Recovery 본 구현
 - SCN-004 QA 정합성 검증, content display 확인, manual browser rehearsal은 통과 상태다.
-- 다음 단계는 SCN-004 demo freeze 유지와 제출 전 재현성 확인이다.
+- 2026-04-20 기준 demo preflight와 browser dry-run도 통과 상태다.
+- 다음 단계는 SCN-004 demo freeze 유지 또는 팀원 Before / Bridge contract 확인 후 SCN-001 연결 검토다.
 - SCN-005 After frontend / 문서 타입 확장은 SCN-004 freeze 기준을 유지한 별도 패치에서 진행한다.
+
+Evolution note:
+
+- 2026-04-17에는 SCN-004 After flow, copy/print, manual rehearsal 완료가 기준이었다.
+- 2026-04-20에는 fixed preset, free-input guard, WSL Playwright QA, preflight script가 추가됐다.
 
 ---
 
@@ -137,7 +149,8 @@
 ## 후속 Bridge 저장 원칙
 
 - 현재 SCN-004 frontend demo는 Bridge 저장을 구현하지 않는다.
-- 후속 Bridge 구현 시에는 브라우저 로컬 저장을 우선 검토한다.
+- 후속 Bridge 구현 시 저장 위치는 팀원 Before / Bridge contract 확인 후 결정한다.
+- `docs/product/bridge_flow.md`의 개인정보 최소 수집 원칙과 저장 금지 원칙을 우선한다.
 - 저장 대상은 최소 필드만 허용
 - 원문 전체 저장은 기본 비활성
 
@@ -149,12 +162,14 @@
 - 위험 태그
 - 주요 추출 항목
 - cited_articles
+- scenario_id
+- source_scenario 또는 preset_id
 
 이유:
 
-- 로그인 없이도 Bridge 연결 가능
+- Before / Bridge / After 연결에 필요한 최소 정보만 전달 가능
 - 개인정보 저장 범위 최소화 가능
-- 데모 준비와 복구가 단순함
+- presentation-local preset과 실제 Before output을 구분 가능
 
 ---
 

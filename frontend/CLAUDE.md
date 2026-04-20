@@ -33,6 +33,12 @@
   - rendered_text clipboard copy
   - browser print + print disclaimer
   - 증거 체크리스트 화면 내 로컬 상태
+- SCN-004 draft navigation race 수정 완료
+- SCN-004 free input document eligibility guard 완료
+- SCN-001/004 presentation-local preset architecture 완료:
+  - `SCN-001-BRIDGE-DEMO`: fixed/live 여부와 관계없이 answer-only
+  - `SCN-004-DEMO-FREEZE`: main demo / document draft freeze path
+  - SCN-005는 현재 UI preset에서 제외하고 후속 확장 후보로 유지
 - Phase 3C 이후 확장 작업은 보류:
   - sessionStorage backup/restore
   - page transition animation
@@ -66,7 +72,9 @@
 - 실제 연동은 확정 API 기준으로 연결
 - `cited_articles` 없는 법률 답변은 결과 화면에 노출 금지
 - 검색되지 않은 조문 인용 금지
-- `/api/v1/answer`는 SCN preset에서 `top_k=10`, 일반 자유 입력에서 `top_k=5`, 항상 `ef_search=100`
+- presentation preset exact path는 fixed answer fixture를 사용하므로 `/api/v1/answer`를 호출하지 않음
+- presentation preset modified path는 `top_k=10`, 일반 자유 입력은 `top_k=5`, 항상 `ef_search=100`
+- SCN-004 범위 밖 자유 입력은 answer-only로 처리하고 document draft UI를 열지 않음
 - `/api/v1/documents/draft`에는 `buildCaseIntake()`와 `buildLegalBasis()` 결과만 보냄
 
 ## 구현 우선순위

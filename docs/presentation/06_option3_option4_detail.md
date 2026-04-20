@@ -2,6 +2,8 @@
 
 작성일: `2026-04-17`
 
+업데이트 메모: 이 문서는 2026-04-17 option 3/4 상세 설명 초안으로 보존한다. 2026-04-20 기준 기능/QA 최신 상태는 `docs/demo/demo_scenario.md`, `docs/ops/runbook.md`, `eval/reports/answer_evidence_2026-04-20.summary.md`를 우선한다.
+
 ## 문서 목적
 
 - `05_architecture_options.md`에서 비교한 4가지 안 중, 실제 선택 가능성이 높은 `3안`과 `4안`을 별도로 자세히 설명하기 위한 문서

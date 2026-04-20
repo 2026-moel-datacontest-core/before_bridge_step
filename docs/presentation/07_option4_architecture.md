@@ -4,6 +4,8 @@
 
 상태 메모: 현재 구현 완료 범위는 로컬 SCN-004 frontend/backend demo이며, 이 문서는 option 4를 적용할 경우의 후속 클라우드 아키텍처 초안이다.
 
+업데이트 메모: 2026-04-20 기준 로컬 MVP는 SCN-004-DEMO-FREEZE, SCN-001-BRIDGE-DEMO answer-only, preflight, full 60 answer evidence report까지 정리됐다. 이 문서는 후속 클라우드 아키텍처 초안으로 유지한다.
+
 ## 문서 목적
 
 - `4안: 모듈화된 모놀리스 + serverless-first + LLM 서버 분리` 구조를 강사님께 한눈에 설명하기 위한 아키텍처 초안

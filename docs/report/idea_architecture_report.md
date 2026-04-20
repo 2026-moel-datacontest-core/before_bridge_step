@@ -2,11 +2,13 @@
 
 작성일: `2026-04-17`
 
+업데이트 메모: 이 보고서는 2026-04-17 아이디어/아키텍처 보고서 초안으로 보존한다. 2026-04-20 기준 최신 MVP 상태는 SCN-004-DEMO-FREEZE main path, SCN-001-BRIDGE-DEMO answer-only handoff, demo preflight pass, full 60 answer evidence `PASS=44 / PARTIAL=16 / FAIL=0`까지 반영된 상태다. 최신 운영 기준은 `docs/ops/runbook.md`, 최신 발표 script는 `docs/demo/demo_scenario.md`, 최신 eval 근거는 `eval/reports/answer_evidence_2026-04-20.summary.md`를 우선한다.
+
 기준선:
 
 - 서비스 corpus 기준일: `selected_as_of = 2026-04-11`
-- RAG 및 시나리오 상태 기준일: `2026-04-17`
-- frontend 구현 상태 기준일: `2026-04-17`
+- RAG 및 시나리오 상태 기준일: `2026-04-17` (초안 작성 당시)
+- frontend 구현 상태 기준일: `2026-04-17` (초안 작성 당시)
 - 문서 작성일: `2026-04-17`
 
 ## 1. 프로젝트 개요

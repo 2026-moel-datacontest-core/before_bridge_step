@@ -18,5 +18,6 @@
 ## Current Role
 
 - chunking 파이프라인은 현재 frozen 상태
-- RAG refinement와 SCN-004 frontend/backend QA 정합성 검증은 완료 상태이며 다음 단계는 SCN-004 demo freeze 유지
+- RAG refinement와 SCN-004 frontend/backend QA 정합성 검증은 완료 상태이며 2026-04-20 기준 demo preflight와 full 60 answer evidence report도 완료
+- 다음 단계는 SCN-004 demo freeze 유지 또는 팀원 Before / Bridge contract 확인 후 SCN-001 연결 검토
 - 이후 수정 세션에서도 기본 입력은 계속 `all_chunks.json`을 source of truth로 유지

@@ -19,6 +19,7 @@
 - 원래 Task 4 baseline은 `1713 / 1713` 완료 상태였다.
 - 이후 `SCN-003` 대응으로 장애인 관련 조문 9개를 최소 범위로 추가했고, 신규 9건만 추가 임베딩하여 현재 live 상태는 `1722 / 1722`다.
 - 2026-04-17 기준 RAG refinement, SCN-004 document draft API, frontend demo flow, SCN-004 QA/content rehearsal까지 완료됐으며 embedding 재실행은 현재 freeze 범위가 아니다.
+- 2026-04-20 기준 presentation-local preset, demo preflight, full 60 answer evidence report까지 완료됐으며 embedding 재실행은 여전히 현재 범위가 아니다.
 
 ---
 

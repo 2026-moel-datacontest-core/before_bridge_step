@@ -45,6 +45,8 @@ FastAPI 애플리케이션, RAG 엔진, PostgreSQL/pgvector DB 연결, 임베딩
 - `POST /api/v1/documents/draft` 구현 완료
 - RAG refinement landing 완료
 - SCN-004 answer completeness 보강과 document draft smoke 통과
+- SCN-004 demo freeze와 presentation-local fixed answer frontend path 확인 완료
+- full 60 answer evidence report 기준 `FAIL=0`, citation grounding / context id clean 확인 완료
 - 다음 backend 작업은 기능 확장이 아니라 SCN-004 demo freeze 유지와 regression 발생 시 좁은 수정
 
 ## Document Draft 규칙
@@ -54,6 +56,7 @@ FastAPI 애플리케이션, RAG 엔진, PostgreSQL/pgvector DB 연결, 임베딩
 - 사용자가 입력하지 않은 사실은 단정하지 않고 placeholder 또는 `missing_fields`로 남김
 - `SCN-005` 문서 타입 확장은 SCN-004 freeze 기준을 유지한 별도 패치에서 진행 가능
 - `SCN-001` 문서 타입 확장은 팀원 Before / Bridge code / contract 확인 전 추가하지 않음
+- presentation fixed answer fixture는 frontend code에 있으며 backend API contract를 변경하지 않는다.
 
 ## 환경변수
 

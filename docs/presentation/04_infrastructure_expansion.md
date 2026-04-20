@@ -4,6 +4,8 @@
 
 상태 메모: 2026-04-17 기준 현재 구현은 로컬 WSL/conda 기반 SCN-004 frontend/backend demo까지 완료됐다. 이 문서는 배포 완료 상태가 아니라 이후 GCP 확장 방향을 설명하는 자료다.
 
+업데이트 메모: 2026-04-20 기준 로컬 demo preflight script와 SCN-004-DEMO-FREEZE browser dry-run까지 통과했다. 이 문서의 인프라 방향은 유지하되, 최신 로컬 재현성 절차는 `docs/ops/runbook.md`를 우선한다.
+
 ## 문서 목적
 
 - 현재 MVP를 클라우드 교육과정 프로젝트로 확장할 때 어떤 인프라 방향이 적절한지 정리

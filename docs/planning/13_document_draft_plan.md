@@ -1,6 +1,6 @@
 # Document Draft Plan
 
-기준일: `2026-04-17`
+기준일: `2026-04-20`
 
 ## 목적
 
@@ -8,6 +8,7 @@
 - `SCN-004`를 1순위 MVP로 두고, 노동청 진정서 / 노동위원회 이유서 초안에 필요한 `case intake`와 `document draft` schema를 정의한다.
 - 기존 `/api/v1/answer` contract와 retrieval / answer generation service를 변경하지 않고, 사건 사실관계 구조화 레이어를 별도로 둔다.
 - 현재 구현 완료 상태를 기준으로 frontend QA에서 확인해야 할 contract를 고정한다.
+- 2026-04-17 초기 document draft 구현/QA 기록은 아래에 보존하고, 2026-04-20 presentation fixed path와 preflight 기준을 운영 기준으로 추가한다.
 
 관련 기준 문서:
 
@@ -67,6 +68,18 @@
 - `/after/draft`는 `rendered_text`, `missing_fields`, `cautions`, `evidence_checklist`, `cited_articles`, `source_context_ids`, `missing_legal_basis`를 표시한다.
 - copy/print는 구현 완료. 저장/복구 기능은 구현하지 않는다.
 
+### 2026-04-20 presentation / free-input 연결 상태
+
+- `SCN-004-DEMO-FREEZE` exact preset path는 frontend fixed `AnswerResponse` fixture를 사용하므로 `/api/v1/answer`를 호출하지 않는다.
+- fixed answer 기준은 `cited_articles=6`, `grounded_context_ids=[1, 2, 3, 5, 10, 4]`, `retrieval_total=10`, `model_name=gemini-2.5-flash`다.
+- browser dry-run 기준 draft output:
+  - 임금체불 진정서: `source_context_ids=[5, 10]`, `cited_articles=2`, `missing_legal_basis=[]`
+  - 부당해고 이유서: `source_context_ids=[1, 2, 3, 4]`, `cited_articles=4`, `missing_legal_basis=[]`
+- `check_document_draft.py`는 backend verify fixture 기준 smoke이므로 answer-derived fixture 숫자가 presentation fixed preset browser dry-run 값과 다를 수 있다. 이 차이는 정상이며 발표 demo freeze 기준은 browser dry-run fixed preset path 값으로 확인한다.
+- SCN-004 free input은 answer 근거에 맞는 문서 타입만 표시한다. SCN-004 범위 밖 자유 입력, `SCN-001-BRIDGE-DEMO`, SCN-005 계열 질문은 answer-only로 처리한다.
+- `SCN-001-BRIDGE-DEMO`는 Before/Bridge handoff 설명용 answer-only preset이며 SCN-001 문서 타입 구현이 아니다.
+- SCN-005 문서 타입은 현재 구현하지 않고 후속 확장 후보로만 유지한다.
+
 ### Answer-derived legal basis fixture 재캡처
 
 answer/model output drift로 `SCN-004` answer-derived legal basis fixture를 갱신해야 할 때는 전용 verify script만 사용한다.
@@ -121,6 +134,13 @@ python backend/verify/check_document_draft.py
   - `timeout = 0`
   - `expected_point_strict_coverage = 137/153`
   - `failures_or_partial_coverage = 16`
+- answer evidence full 60:
+  - `PASS = 44`
+  - `PARTIAL = 16`
+  - `FAIL = 0`
+  - `expected point coverage = 135/153`
+  - citation grounding / context id / provider checks clean
+  - MVP 기준 acceptable, PARTIAL은 후속 answer quality tuning 후보
 
 운영 기준:
 

@@ -14,6 +14,8 @@
 - eval dataset file: `eval/mvp_in_scope_eval_v1.json`
 - current item count: `60`
 - document draft smoke: `backend/verify/check_document_draft.py`
+- item-level evidence runner: `eval/run_answer_evidence_report.py`
+- current evidence summary: `eval/reports/answer_evidence_2026-04-20.summary.md`
 
 현재 eval 셋은 아래 8개 법령군만 대상으로 한다.
 
@@ -32,6 +34,7 @@
 - 그러나 현재 `eval/mvp_in_scope_eval_v1.json`은 여전히 기존 8개 법령군, 60문항 baseline을 기준으로 유지한다.
 - `SCN-001`~`SCN-005` 시나리오 검증은 이 eval 셋과 별도의 scenario smoke 검증으로 관리한다.
 - SCN-004 문서 초안 검증은 answer eval이 아니라 별도 fixture smoke로 관리한다.
+- presentation fixed fixture와 live eval evidence report는 목적이 다르다. fixed fixture는 데모 재현성용이고, eval evidence는 live retrieval/answer가 왜 OK/PARTIAL/FAIL인지 남기는 QA 산출물이다.
 
 중요:
 
@@ -217,6 +220,28 @@ full 60 live answer eval 기준:
 - partial bucket: `36 -> 30 -> 26 -> 24 -> 23 -> 16`
 
 현재 잔존 약점은 retrieval miss보다 answer-side coverage다. 특히 숫자/기간/예외/범위 열거형 질문과 긴 조문 / subchunk 조합에서 누락이 남는다.
+
+## Current Answer Evidence Report (2026-04-20)
+
+full 60 live answer evidence 기준:
+
+- `PASS = 44`
+- `PARTIAL = 16`
+- `FAIL = 0`
+- `expected point coverage = 135/153`
+- `citation grounding violation = 0`
+- `invalid raw / grounded context id = 0`
+- `timeout / provider / schema error = 0`
+
+이 결과는 MVP 기준 acceptable로 본다. 모든 PARTIAL은 citation/retrieval/grounding failure가 아니라 expected point 일부 누락이다. 후속 튜닝은 PARTIAL 16건을 법정 예외, 숫자/기간/상한, 보조 절차 의무, 복수 쟁점 답변 누락 등으로 분류한 뒤 answer-side completeness를 좁게 개선하는 방식으로 진행한다.
+
+실행 명령:
+
+```bash
+python eval/run_answer_evidence_report.py --top-k 5 --ef-search 100 --limit 60 --output eval/reports/answer_evidence_2026-04-20.jsonl
+```
+
+이 runner는 live LLM/API를 호출하므로 발표 직전 기본 preflight에는 포함하지 않는다.
 
 ## Minimal Success Criteria For MVP
 

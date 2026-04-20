@@ -2,9 +2,11 @@
 
 작성일: `2026-04-17`
 
+업데이트 메모: 이 문서는 2026-04-17 강사 검토용 초안으로 보존한다. 2026-04-20 기준 최신 구현은 SCN-004-DEMO-FREEZE main path, SCN-001-BRIDGE-DEMO answer-only handoff, demo preflight pass, full 60 answer evidence `PASS=44 / PARTIAL=16 / FAIL=0`까지 반영된 상태다. 최신 운영 기준은 `docs/demo/demo_scenario.md`, `docs/ops/runbook.md`, `eval/README.md`를 우선한다.
+
 기준 스냅샷:
 
-- 프로젝트 기준 문서 반영일: `2026-04-17`
+- 프로젝트 기준 문서 반영일: `2026-04-17` (초안 작성 당시)
 - 서비스 corpus 기준일: `selected_as_of = 2026-04-11`
 
 ## 문서 목적

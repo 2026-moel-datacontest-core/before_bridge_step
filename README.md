@@ -1,14 +1,14 @@
 # K-Labor Shield
 
 외국인 근로자를 포함한 취약 노동자를 위한 노동권 보호 통합 AI MVP입니다.  
-현재 저장소 기준으로는 `retrieval + grounded answer generation + RAG refinement + SCN-004 문서 초안 backend + SCN-004 After frontend demo flow`까지 구현된 상태입니다.
-`SCN-004` QA 정합성 검증, content output 확인, manual browser rehearsal까지 통과한 상태입니다.
-다음 확장 후보는 `SCN-005` After frontend / 문서 타입이지만, 현재 SCN-004 demo freeze 기준과 별도 패치로만 진행합니다.
-`SCN-001` frontend 확장은 팀원 Before / Bridge 코드와 contract 확인 후 진행합니다.
+현재 저장소 기준으로는 `retrieval + grounded answer generation + RAG refinement + SCN-004 문서 초안 backend + SCN-004 After frontend demo flow + presentation-local fixed answer preset + demo preflight + item-level eval evidence`까지 구현된 상태입니다.
+`SCN-004` QA 정합성 검증, content output 확인, browser rehearsal, final demo preflight까지 통과한 상태입니다.
+`SCN-001-BRIDGE-DEMO`는 Before/Bridge handoff 설명용 answer-only preset으로 준비되어 있고, 실제 SCN-001 frontend 확장은 팀원 Before / Bridge 코드와 contract 확인 후 진행합니다.
+`SCN-005`는 현재 frontend preset UI에서 제외되어 있으며, 후속 확장 후보로만 유지합니다.
 
 ## 현재 상태
 
-기준일: `2026-04-17`
+기준일: `2026-04-20`
 
 - source of truth: `backend/data/law_chunks/all_chunks.json`
 - `selected_as_of = 2026-04-11`
@@ -21,7 +21,7 @@
 - answer model: `gemini-2.5-flash`
 - embedding model: `gemini-embedding-001`
 - frontend: Next.js `16.2.4`, React `19.2.5`
-- current phase: SCN-004 QA/content/frontend rehearsal pass, demo freeze 유지
+- current phase: SCN-004 demo freeze 유지, 제출 전 재현성 확인, 팀원 Before/Bridge contract 확인 대기
 
 핵심 상태:
 
@@ -31,10 +31,20 @@
 - answer grounding 검증, hard timeout, eval 안정화 완료
 - scenario expansion 검증 완료
 - RAG refinement landing 완료 (`expected_point_strict_coverage = 137/153`, `16` partial)
+- full 60 answer evidence report 완료 (`PASS=44`, `PARTIAL=16`, `FAIL=0`, expected point coverage `135/153`)
 - `POST /api/v1/documents/draft` SCN-004 deterministic draft MVP 완료
 - frontend `/after -> /after/result -> /after/intake -> /after/draft` API-connected flow 구현 완료
 - frontend Phase 3 A/B(copy/print)까지 반영. Phase 3C 이후 확장성 작업은 데모 리스크 때문에 보류
-- SCN-004 preset answer와 2종 document draft output 정합성 확인 완료
+- SCN-004 draft navigation race 수정 완료
+- SCN-004 free input document eligibility guard 완료
+- SCN-001/004 presentation-local fixed answer preset architecture 완료
+- `scripts/demo_preflight.sh` 추가 및 final pass 확인 완료
+- SCN-004-DEMO-FREEZE fixed answer와 2종 document draft output 정합성 확인 완료
+
+진화 기록:
+
+- 2026-04-17 기준으로 RAG refinement, SCN-004 document draft backend, SCN-004 After frontend Phase 3A/B, content QA, manual browser rehearsal까지 완료됐다.
+- 2026-04-20에는 위 기준을 유지하면서 presentation-local preset, free-input guard, preflight script, item-level answer evidence report를 추가해 MVP 제출 근거를 보강했다.
 
 ## 지금까지 완료된 것
 
@@ -75,6 +85,18 @@
 - `expected_point_strict_coverage = 137/153`
 - `failures_or_partial_coverage = 16`
 
+2026-04-20 item-level answer evidence 기준:
+
+- `PASS = 44`
+- `PARTIAL = 16`
+- `FAIL = 0`
+- `expected point coverage = 135/153`
+- `citation grounding violation = 0`
+- `invalid raw / grounded context id = 0`
+- `timeout / provider / schema error = 0`
+
+`PARTIAL` 16건은 retrieval / citation / grounding failure가 아니라 expected point 일부 누락이다. MVP 기준으로는 acceptable이며, 후속 answer quality tuning 후보로 분리한다.
+
 ### 4. Document Draft
 
 - `POST /api/v1/documents/draft` 구현 완료
@@ -109,6 +131,7 @@
 - `SCN-001`: covered
   - 외국인 근로자 계약/기숙사/차별/사업장 변경
   - Full 단일 질의는 `top_k=10`, `ef_search=100` demo path에서 운영
+  - 현재 frontend에서는 `SCN-001-BRIDGE-DEMO` answer-only preset으로 Before/Bridge handoff 설명만 제공
 - `SCN-002`: partial
   - 최저임금/수습 꼼수 설명형은 가능
   - 현재는 설명형 Before 데모 범위로 고정
@@ -118,7 +141,8 @@
   - 카톡 해고/임금·퇴직금 체불 After frontend demo 구현 완료
 - `SCN-005`: covered
   - 육아휴직/가족돌봄휴가 부당 거절 answer smoke 가능
-  - After frontend / 문서 타입 확장은 SCN-004 freeze 기준을 유지한 별도 패치에서 진행 가능
+  - 현재 frontend preset UI에서는 제외
+  - After frontend / 문서 타입 확장은 SCN-004 freeze 기준을 유지한 별도 패치에서만 진행 가능
 
 ## 현재 데모 자산
 
@@ -129,10 +153,16 @@
 
 주요 흐름:
 
-1. `/after`에서 상황 진술 입력 또는 SCN-004 preset 사용
+1. `/after`에서 상황 진술 입력 또는 presentation-local preset 사용
 2. `/after/result`에서 grounded answer와 인용 조문 확인
 3. 문서 타입 선택 후 `/after/intake`에서 선택적 사건 정보 입력
 4. `/after/draft`에서 진정서 또는 이유서 초안 확인, 복사, 인쇄
+
+현재 preset:
+
+- `SCN-001-BRIDGE-DEMO`: Before/Bridge handoff 설명용 answer-only preset
+- `SCN-004-DEMO-FREEZE`: main demo / document draft freeze용 preset
+- SCN-005 preset은 현재 UI에서 제외
 
 ### 시나리오 문서
 
@@ -158,23 +188,25 @@
 
 - backend response schema와 frontend type/interface 정합성은 통과 상태로 유지
 - `/api/v1/answer -> /api/v1/documents/draft` legal basis 전달 경로는 통과 상태로 유지
-- SCN-004 preset answer는 `cited_articles=6`, `grounded_context_ids=[1, 2, 3, 5, 10, 4]` 기준으로 유지
+- SCN-004-DEMO-FREEZE fixed answer는 `cited_articles=6`, `grounded_context_ids=[1, 2, 3, 5, 10, 4]` 기준으로 유지
 - document draft 2종은 `missing_legal_basis=[]` 기준으로 유지
 - 제출 전 직접 URL 접근, API 실패, 빈 필드, citation 없음 상태, desktop/mobile 기본 레이아웃만 재확인
 
 ### 2. 데모 운영 고정
 
-- 발표용 main path는 SCN-004 After document draft demo로 고정
-- `top_k=10`, `ef_search=100`은 SCN demo preset 경로에 명시
+- 발표용 main path는 `SCN-004-DEMO-FREEZE` After document draft demo로 고정
+- exact preset path는 fixed answer fixture를 사용해 `/api/v1/answer`를 호출하지 않음
+- preset modified path는 `top_k=10`, `ef_search=100`으로 live `/api/v1/answer` 호출
 - 일반 자유 입력은 `top_k=5`, `ef_search=100` 유지
+- SCN-004 범위 밖 자유 입력은 answer-only로 처리
 - `/before`, `/bridge`, Recovery는 이번 frontend demo 범위에서 확장하지 않음
 
 ### 3. 선택적 후속
 
-- 남은 `16` partial에 대한 answer-side surface / completeness 보강
+- full 60 answer evidence `PARTIAL` 16건에 대한 answer-side surface / completeness 보강
 - `SCN-001 Full`은 `top_k=10`, `ef_search=100` demo path로만 운영
 - `SCN-002`는 설명형 Before 데모 범위 유지
-- `SCN-005` After frontend / 문서 타입 확장은 SCN-004 freeze 기준을 유지한 별도 패치에서 진행 가능
+- `SCN-005` After frontend / 문서 타입 확장은 SCN-004 freeze 기준을 유지한 별도 패치에서만 진행 가능
 - `SCN-001` 문서 타입과 `Before -> Bridge -> After` frontend 확장은 팀원 Before / Bridge 코드와 contract 확인 후 검토
 
 ## 저장소 구조
@@ -205,6 +237,14 @@
 ## Freeze QA 순서
 
 문서/QA 작업의 기본 검증 순서는 아래로 고정합니다.
+
+발표 직전 기본 preflight:
+
+```bash
+bash scripts/demo_preflight.sh
+```
+
+이 script는 `main == origin/main`, PostgreSQL readiness, conda env activation, backend import, document draft smoke, frontend build, WSL Playwright Chromium smoke를 확인한다. DB / dev server를 자동 실행하거나 full 60 eval을 실행하지 않는다.
 
 ### 1. backend import
 
@@ -240,7 +280,22 @@ full 60 retrieval / answer eval은 `backend/app/services/retrieval.py`, `backend
 
 ## SCN-004 QA 기록
 
-2026-04-17 기준 SCN-004 QA/rehearsal에서 확인한 범위:
+2026-04-20 final demo preflight / dry-run에서 확인한 범위:
+
+- `bash scripts/demo_preflight.sh` 통과, exit code `0`
+- PostgreSQL readiness, backend import, document draft smoke, frontend build, WSL Playwright Chromium smoke 통과
+- `http://localhost:3000/after` 기준 browser dry-run 통과
+- `SCN-004-DEMO-FREEZE` fixed path는 `/api/v1/answer` 호출 0회
+- `/after/result`: `cited_articles=6`, `grounded_context_ids=[1, 2, 3, 5, 10, 4]`, 문서 타입 2개 표시
+- 임금체불 진정서 draft: `source_context_ids=[5, 10]`, `cited_articles=2`, `missing_legal_basis=[]`
+- 부당해고 이유서 draft: `source_context_ids=[1, 2, 3, 4]`, `cited_articles=4`, `missing_legal_basis=[]`
+- copy 성공, headless browser에서 `window.print()` 호출 확인
+- `다른 문서 타입으로 생성하기` -> `/after/result` 복귀와 answer state 유지 확인
+- `SCN-001-BRIDGE-DEMO`: fixed answer-only, `/api/v1/answer` 호출 0회, 문서 선택 UI 없음
+- direct URL guard: `/after/result`, `/after/intake`, `/after/draft` state 없음 -> `/after`
+- Web Storage: `localStorage.length=0`, `sessionStorage.length=0`
+
+2026-04-17 기준 SCN-004 QA/rehearsal에서 확인한 초기 범위:
 
 - backend import smoke 통과: `import_ok`
 - `python backend/verify/check_document_draft.py` 통과
@@ -274,9 +329,10 @@ full 60 retrieval / answer eval은 `backend/app/services/retrieval.py`, `backend
 
 제한 사항:
 
-- Playwright / Cypress / Puppeteer 및 Chrome / Chromium 기반 자동 DOM click smoke는 미수행
-- direct URL guard는 manual browser runtime에서 확인했으며, HTTP GET만으로는 redirect를 검증할 수 없음
-- 필요 시 Playwright/Chromium 설치 후 자동화 click smoke를 별도 실행 가능
+- 2026-04-17에는 Playwright / Cypress / Puppeteer 및 Chrome / Chromium 기반 자동 DOM click smoke를 미수행했다.
+- 2026-04-20 이후 WSL Playwright Chromium 기반 smoke와 browser dry-run을 통과했다.
+- headless Playwright에서는 실제 OS print dialog가 아니라 `window.print()` 호출만 확인한다. 발표 브라우저에서 실제 dialog는 육안 확인한다.
+- direct URL guard는 client-side `router.replace` 방식이라 HTTP GET만으로는 redirect를 검증하지 않는다.
 
 ## 실행 예시
 

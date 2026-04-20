@@ -301,7 +301,7 @@ npm run dev
 - `근로자퇴직급여 보장법 제9조 (퇴직금의 지급 등)`
 - 필요 시 `근로기준법 제37조 (미지급 임금에 대한 지연이자)`
 
-현재 SCN-004 preset answer와 answer-derived draft output은 위 기대 근거를 충족한다. 부당해고 이유서 draft는 `근로기준법 제23조`, `제26조`, `제27조`, `제28조`를 포함하고, 임금체불 진정서 draft는 `근로기준법 제36조`, `근로자퇴직급여 보장법 제9조`를 포함한다.
+현재 `SCN-004-DEMO-FREEZE` fixed answer와 answer-derived draft output은 위 기대 근거를 충족한다. 부당해고 이유서 draft는 `근로기준법 제23조`, `제26조`, `제27조`, `제28조`를 포함하고, 임금체불 진정서 draft는 `근로기준법 제36조`, `근로자퇴직급여 보장법 제9조`를 포함한다.
 
 ## Fallback Script
 

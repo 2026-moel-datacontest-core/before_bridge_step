@@ -1,12 +1,13 @@
 # RAG Strategy
 
-기준일: `2026-04-17`
+기준일: `2026-04-20`
 
 ## 목적
 
 - 현재 live corpus / retrieval / answer baseline을 기준으로 다음 RAG 개선 방향을 고정
 - 어떤 문제를 retrieval 구조 개선으로 풀고, 어떤 문제를 answer-side 보강으로 풀고, 어떤 문제를 현재 범위 밖으로 둘지 구분
 - RAG refinement landing 이후에는 broad refactor 없이 현재 baseline을 QA 기준선으로 유지
+- 2026-04-17 RAG refinement landing 기준은 보존하고, 2026-04-20 full 60 item-level evidence report를 추가 QA 기준으로 둔다.
 
 ## 전략 전환 요약 (2026-04-15)
 
@@ -52,6 +53,17 @@
   - `gold_citation_hit = 60/60`
   - `expected_point_strict_coverage = 137/153`
   - `failures_or_partial_coverage = 16`
+
+2026-04-20 item-level answer evidence 기준:
+
+- `PASS = 44`
+- `PARTIAL = 16`
+- `FAIL = 0`
+- `expected point coverage = 135/153`
+- citation grounding violation `0`
+- invalid raw / grounded context id `0`
+- timeout / provider / schema error `0`
+- MVP 기준 acceptable. 남은 PARTIAL은 retrieval/citation/grounding 문제가 아니라 answer-side expected point 일부 누락이므로 후속 tuning 후보로 분리한다.
 
 관련 기준 문서:
 

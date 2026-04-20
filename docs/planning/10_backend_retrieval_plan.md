@@ -30,7 +30,8 @@ Task 4 embedding 완료 상태를 바탕으로 시작한 retrieval MVP의 구현
 현재 backend에는 retrieval app / service / verification / eval runner까지 구현되어 있다.
 이후 grounded answer generation과 후속 안정화도 완료되었다. 최신 end-to-end 상태는 `docs/ops/task6_answer_generation_status.md`를 함께 본다.
 시나리오 기준 현재 상태는 `docs/planning/12_scenario_expansion_plan.md`를 함께 본다.
-2026-04-17 기준 RAG refinement, SCN-004 document draft API, SCN-004 frontend flow, SCN-004 QA/content rehearsal도 완료되었으며 retrieval 구조 변경은 현재 freeze 범위가 아니다.
+2026-04-17 기준 RAG refinement, SCN-004 document draft API, SCN-004 frontend flow, SCN-004 QA/content rehearsal도 완료되었다.
+2026-04-20 기준 presentation-local preset, SCN-004 free-input guard, demo preflight, full 60 answer evidence report까지 완료되었으며 retrieval 구조 변경은 현재 freeze 범위가 아니다.
 
 ---
 

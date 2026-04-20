@@ -18,6 +18,10 @@
 > Update (2026-04-17):
 > - RAG refinement, SCN-004 document draft API, and SCN-004 frontend demo flow are complete
 > - next practical step is QA consistency, not DB schema work
+>
+> Update (2026-04-20):
+> - SCN-004 demo freeze, presentation-local preset, demo preflight, and full 60 answer evidence report are complete
+> - DB schema remains unchanged; current DB work is readiness verification only
 
 ## Goal
 
