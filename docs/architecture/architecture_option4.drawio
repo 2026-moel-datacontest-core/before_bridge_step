@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-04-20T00:00:00.000Z" agent="Claude" version="21.0.0" type="device">
+  <diagram id="architecture-option4" name="Option 4 — Target Deployment Architecture">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="1360" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ===== GCP OUTER BOX ===== -->
+        <mxCell id="2"
+          value="&lt;b style=&quot;font-size:15px;color:#4285F4;&quot;&gt;Google Cloud Platform&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:11px;font-weight:normal;color:#4285F4;&quot;&gt;Region: asia-northeast3 (Seoul)&lt;/span&gt;"
+          style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EBF3FB;strokeColor=#4285F4;strokeWidth=2;align=left;verticalAlign=top;spacingTop=12;spacingLeft=50;"
+          vertex="1" parent="1">
+          <mxGeometry x="10" y="10" width="1880" height="1330" as="geometry" />
+        </mxCell>
+
+        <!-- ===== CLIENT GROUP BACKGROUND ===== -->
+        <mxCell id="4"
+          value="&lt;b&gt;Client&lt;/b&gt;"
+          style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#9E9E9E;strokeWidth=2;fontSize=12;fontStyle=1;align=left;verticalAlign=top;spacingTop=10;spacingLeft=14;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="45" width="1840" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- User / Browser -->
+        <mxCell id="3"
+          value="&lt;b&gt;User / Browser&lt;/b&gt;"
+          style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#555555;strokeWidth=2;fontSize=13;fontStyle=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="820" y="65" width="260" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- ===== APPLICATION GROUP BACKGROUND ===== -->
+        <mxCell id="10"
+          value="&lt;b&gt;Application&lt;/b&gt;"
+          style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F0EDFF;strokeColor=#7B5EA7;strokeWidth=2;fontSize=12;fontStyle=1;align=left;verticalAlign=top;spacingTop=10;spacingLeft=14;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="215" width="1840" height="445" as="geometry" />
+        </mxCell>
+
+        <!-- Frontend -->
+        <mxCell id="11"
+          value="&lt;span style=&quot;background:#4285F4;color:#fff;padding:1px 7px;border-radius:3px;font-size:9px;font-weight:bold;&quot;&gt;Cloud Run&lt;/span&gt;&lt;br&gt;&lt;b&gt;Frontend&lt;/b&gt;&lt;br&gt;사용자 입력 · 결과 화면&lt;br&gt;데모 시나리오 UI"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7B5EA7;strokeWidth=2;fontSize=11;arcSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="730" y="248" width="380" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- Backend API (emphasized, 4-line label) -->
+        <mxCell id="12"
+          value="&lt;span style=&quot;background:#2874A6;color:#fff;padding:1px 7px;border-radius:3px;font-size:9px;font-weight:bold;&quot;&gt;Cloud Run / FastAPI&lt;/span&gt;&lt;br&gt;&lt;b style=&quot;font-size:14px;&quot;&gt;Backend API&lt;/b&gt;&lt;br&gt;Retrieval &amp;nbsp;·&amp;nbsp; Grounded Answer Orchestration &amp;nbsp;·&amp;nbsp; Document Draft&lt;br&gt;Citation Validation &amp;nbsp;·&amp;nbsp; Model Routing"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D6EAF8;strokeColor=#2874A6;strokeWidth=3;fontSize=12;fontStyle=1;arcSize=6;"
+          vertex="1" parent="1">
+          <mxGeometry x="155" y="432" width="1530" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- ===== DATA & AI GROUP BACKGROUND ===== -->
+        <mxCell id="20"
+          value="&lt;b&gt;Data &amp;amp; AI&lt;/b&gt;"
+          style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=2;fontSize=12;fontStyle=1;align=left;verticalAlign=top;spacingTop=10;spacingLeft=14;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="698" width="1840" height="272" as="geometry" />
+        </mxCell>
+
+        <!-- Cloud SQL for PostgreSQL -->
+        <mxCell id="21"
+          value="&lt;span style=&quot;background:#4285F4;color:#fff;padding:1px 7px;border-radius:3px;font-size:9px;font-weight:bold;&quot;&gt;Cloud SQL&lt;/span&gt;&lt;br&gt;&lt;b&gt;PostgreSQL&lt;/b&gt;&lt;br&gt;pgvector&lt;br&gt;law_chunks"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;strokeWidth=2;fontSize=11;arcSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="80" y="735" width="320" height="185" as="geometry" />
+        </mxCell>
+
+        <!-- Vertex AI -->
+        <mxCell id="22"
+          value="&lt;span style=&quot;background:#7B5EA7;color:#fff;padding:1px 7px;border-radius:3px;font-size:9px;font-weight:bold;&quot;&gt;Vertex AI&lt;/span&gt;&lt;br&gt;&lt;b&gt;Managed Model Path&lt;/b&gt;&lt;br&gt;Gemini API"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;strokeWidth=2;fontSize=11;arcSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="790" y="735" width="320" height="185" as="geometry" />
+        </mxCell>
+
+        <!-- Local LLM Server (emphasis box — intentionally distinct, no icon shape) -->
+        <mxCell id="23"
+          value="&lt;span style=&quot;background:#DB4437;color:#fff;padding:1px 7px;border-radius:3px;font-size:9px;font-weight:bold;&quot;&gt;Compute Engine GPU VM&lt;/span&gt;&lt;br&gt;&lt;b&gt;Local LLM Server&lt;/b&gt;&lt;br&gt;Ollama + Qwen&lt;br&gt;Warm State · Self-hosted Inference"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;strokeWidth=3;fontSize=11;fontStyle=1;arcSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="1490" y="723" width="340" height="205" as="geometry" />
+        </mxCell>
+
+        <!-- ===== SUPPORTING SERVICES GROUP BACKGROUND ===== -->
+        <mxCell id="30"
+          value="&lt;b&gt;Supporting Services&lt;/b&gt;"
+          style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF9E6;strokeColor=#B7860B;strokeWidth=2;fontSize=12;fontStyle=1;align=left;verticalAlign=top;spacingTop=10;spacingLeft=14;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="1012" width="1840" height="210" as="geometry" />
+        </mxCell>
+
+        <!-- Secret Manager  [x=90, w=280, gap=80] -->
+        <mxCell id="31"
+          value="&lt;span style=&quot;background:#34A853;color:#fff;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:bold;&quot;&gt;Secret Manager&lt;/span&gt;&lt;br&gt;&lt;b&gt;API Keys&lt;/b&gt;&lt;br&gt;DB Secrets"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#B7860B;strokeWidth=2;fontSize=11;arcSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="90" y="1048" width="280" height="148" as="geometry" />
+        </mxCell>
+
+        <!-- Cloud Storage  [x=450, w=280] -->
+        <mxCell id="32"
+          value="&lt;span style=&quot;background:#F57C00;color:#fff;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:bold;&quot;&gt;Cloud Storage&lt;/span&gt;&lt;br&gt;&lt;b&gt;Files · Outputs&lt;/b&gt;&lt;br&gt;Intermediate Results"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#B7860B;strokeWidth=2;fontSize=11;arcSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="450" y="1048" width="280" height="148" as="geometry" />
+        </mxCell>
+
+        <!-- Cloud Run Jobs  [x=810, w=280] -->
+        <mxCell id="33"
+          value="&lt;span style=&quot;background:#4285F4;color:#fff;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:bold;&quot;&gt;Cloud Run Jobs&lt;/span&gt;&lt;br&gt;&lt;b&gt;Batch Jobs&lt;/b&gt;&lt;br&gt;Scheduled Tasks"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#B7860B;strokeWidth=2;fontSize=11;arcSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="810" y="1048" width="280" height="148" as="geometry" />
+        </mxCell>
+
+        <!-- Workflows  [x=1170, w=280] -->
+        <mxCell id="34"
+          value="&lt;span style=&quot;background:#0097A7;color:#fff;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:bold;&quot;&gt;Workflows&lt;/span&gt;&lt;br&gt;&lt;b&gt;Orchestration&lt;/b&gt;&lt;br&gt;Pipeline Flow"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#B7860B;strokeWidth=2;fontSize=11;arcSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="1170" y="1048" width="280" height="148" as="geometry" />
+        </mxCell>
+
+        <!-- Cloud Logging / Monitoring  [x=1530, w=280] -->
+        <mxCell id="35"
+          value="&lt;span style=&quot;background:#558B2F;color:#fff;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:bold;&quot;&gt;Cloud Logging&lt;/span&gt;&lt;br&gt;&lt;b&gt;Logs · Metrics&lt;/b&gt;&lt;br&gt;Health Check"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#B7860B;strokeWidth=2;fontSize=11;arcSize=10;"
+          vertex="1" parent="1">
+          <mxGeometry x="1530" y="1048" width="280" height="148" as="geometry" />
+        </mxCell>
+
+        <!-- ===== LEGEND BOX ===== -->
+        <mxCell id="40"
+          value="&lt;b&gt;Legend&lt;/b&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; &#x2501;&#x2501;&#x2501; Primary flow (solid) &amp;nbsp;&amp;nbsp;&amp;nbsp; &#x254C;&#x254C;&#x254C; Supporting flow (dashed)"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CCCCCC;strokeWidth=1;fontSize=10;align=center;verticalAlign=middle;"
+          vertex="1" parent="1">
+          <mxGeometry x="630" y="1237" width="640" height="52" as="geometry" />
+        </mxCell>
+
+        <!-- ===== SOLID EDGES (primary flows) ===== -->
+
+        <!-- User → Frontend : HTTPS -->
+        <mxCell id="50" value="HTTPS"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#333333;strokeWidth=2;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="3" target="11" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Frontend → Backend API : API Call / HTTPS -->
+        <mxCell id="51" value="API Call / HTTPS"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#333333;strokeWidth=2;fontSize=10;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+          edge="1" source="11" target="12" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Backend API → Cloud SQL : SQL / Vector Search -->
+        <mxCell id="52" value="SQL / Vector Search"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#2874A6;strokeWidth=2;fontSize=10;"
+          edge="1" source="12" target="21" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Backend API → Vertex AI : Managed Model Path -->
+        <mxCell id="53" value="Managed Model Path"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#2874A6;strokeWidth=2;fontSize=10;"
+          edge="1" source="12" target="22" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Backend API → Local LLM Server : Self-hosted Inference Route -->
+        <mxCell id="54" value="Self-hosted Inference Route"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#E65100;strokeWidth=2;fontSize=10;"
+          edge="1" source="12" target="23" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ===== DASHED EDGES (supporting flows) ===== -->
+
+        <!-- Backend API → Secret Manager -->
+        <mxCell id="55" value="Secrets / Credentials"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;strokeColor=#B7860B;strokeWidth=1;fontSize=9;fontStyle=2;"
+          edge="1" source="12" target="31" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Backend API → Cloud Storage -->
+        <mxCell id="56" value="Files / Artifacts"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;strokeColor=#B7860B;strokeWidth=1;fontSize=9;fontStyle=2;"
+          edge="1" source="12" target="32" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Backend API → Cloud Run Jobs -->
+        <mxCell id="57" value="Batch Trigger"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;strokeColor=#B7860B;strokeWidth=1;fontSize=9;fontStyle=2;"
+          edge="1" source="12" target="33" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Workflows → Backend API : Orchestration -->
+        <mxCell id="58" value="Orchestration"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;strokeColor=#B7860B;strokeWidth=1;fontSize=9;fontStyle=2;"
+          edge="1" source="34" target="12" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Workflows → Cloud Run Jobs : Job Orchestration -->
+        <mxCell id="59" value="Job Orchestration"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;strokeColor=#B7860B;strokeWidth=1;fontSize=9;fontStyle=2;"
+          edge="1" source="34" target="33" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Backend API → Cloud Logging / Monitoring -->
+        <mxCell id="60" value="App Logs / Metrics"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;strokeColor=#B7860B;strokeWidth=1;fontSize=9;fontStyle=2;"
+          edge="1" source="12" target="35" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Local LLM Server → Cloud Logging / Monitoring -->
+        <mxCell id="61" value="Inference Logs / Health"
+          style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;strokeColor=#E65100;strokeWidth=1;fontSize=9;fontStyle=2;"
+          edge="1" source="23" target="35" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

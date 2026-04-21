@@ -1,0 +1,76 @@
+%% K-Labor Shield current project architecture
+%% 기준일: 2026-04-20 / 현재 repo 기준
+%% Self-hosted LLM / Compute Engine GPU VM is intentionally omitted from this current MVP diagram.
+flowchart LR
+
+    subgraph MAIN["Main After/RAG App (frontend/ + backend/)"]
+        direction TB
+        MainUser["User / Browser"]
+        NextFrontend["Next.js Frontend<br/>SCN-004 After flow"]
+        FixedFixture["Fixed Answer Fixture<br/>SCN-004-DEMO-FREEZE<br/>SCN-001-BRIDGE-DEMO"]
+        MainBackend["FastAPI Backend"]
+        RetrieveAPI["Retrieve API<br/>POST /api/v1/retrieve"]
+        AnswerAPI["Answer API<br/>POST /api/v1/answer"]
+        RetrievalService["Shared Retrieval Service / Vector Search"]
+        DraftAPI["Document Draft API<br/>POST /api/v1/documents/draft"]
+        DraftBuilder["Deterministic Draft Builder"]
+        MainDB["PostgreSQL + pgvector"]
+        MainChunks["law_chunks 1722<br/>backend/data/law_chunks/all_chunks.json"]
+        VertexEmbedding["Vertex AI query embedding<br/>gemini-embedding-001"]
+        VertexAnswer["Vertex AI Gemini answer generation<br/>default answer model: gemini-2.5-flash"]
+    end
+
+    subgraph BEFORE["z_before_begin Before/Begin Contract Review App"]
+        direction TB
+        BeforeUser["User / Browser"]
+        ViteFront["Vite React Front"]
+        ApiService["FastAPI api-service"]
+        ReviewJobAPI["Review Job API<br/>POST /api/v1/contract/review/jobs<br/>GET /api/v1/contract/review/jobs/{job_id}"]
+        SyncReviewAPI["Sync Review API<br/>POST /api/v1/contract/review"]
+        ContractPipeline["Contract Review Pipeline"]
+        ArtifactStorage["Artifact Storage<br/>/artifacts mounts TEST_RUNS_DIR.parent<br/>z_before_begin/web/test<br/>runs under test/runs timestamp dirs"]
+        VertexOCR["Vertex AI OCR"]
+        VertexContent["Vertex/LLM Content Check"]
+        BeforeAssets["Standard Map / Minimum Wage / law_chunks assets"]
+        AccessibilityEngine["Accessibility Recommendation Engine"]
+    end
+
+    MainUser --> NextFrontend
+    NextFrontend -->|After exact preset| FixedFixture
+    FixedFixture -->|fixed AnswerResponse, no /answer call| NextFrontend
+    NextFrontend -->|After free/modified input| MainBackend
+    MainBackend --> RetrieveAPI
+    MainBackend --> AnswerAPI
+    RetrieveAPI --> RetrievalService
+    AnswerAPI -->|direct service call, not HTTP /retrieve| RetrievalService
+    RetrievalService -->|query embedding| VertexEmbedding
+    RetrievalService -->|SQL/vector search| MainDB
+    AnswerAPI -->|Gemini answer generation| VertexAnswer
+    MainDB --> MainChunks
+    NextFrontend -->|After intake + legal_basis| DraftAPI
+    DraftAPI --> DraftBuilder
+    DraftBuilder -->|After draft path does not call Vertex AI.| NextFrontend
+
+    BeforeUser --> ViteFront
+    ViteFront -->|upload contract jpg/png/pdf| ApiService
+    ApiService --> ReviewJobAPI
+    ApiService --> SyncReviewAPI
+    ReviewJobAPI --> ContractPipeline
+    SyncReviewAPI --> ContractPipeline
+    ContractPipeline -->|save uploads and outputs| ArtifactStorage
+    ContractPipeline -->|OCR structured/raw_sections| VertexOCR
+    ContractPipeline -->|section compare, rules, law enrichment| BeforeAssets
+    ContractPipeline -->|LLM-based content review| VertexContent
+    ApiService -->|optional recommendation request| AccessibilityEngine
+    ViteFront -->|poll job status/result| ReviewJobAPI
+    ViteFront -->|view /artifacts outputs| ArtifactStorage
+
+    style MAIN fill:#EEF6FF,stroke:#2563EB,stroke-width:2px,color:#0F172A
+    style BEFORE fill:#FFF7ED,stroke:#EA580C,stroke-width:2px,color:#0F172A
+    style FixedFixture fill:#ECFDF5,stroke:#059669,stroke-width:2px,color:#0F172A
+    style DraftBuilder fill:#F8FAFC,stroke:#64748B,stroke-width:2px,color:#0F172A
+    style VertexEmbedding fill:#F5F3FF,stroke:#7C3AED,stroke-width:2px,color:#0F172A
+    style VertexAnswer fill:#F5F3FF,stroke:#7C3AED,stroke-width:2px,color:#0F172A
+    style VertexOCR fill:#F5F3FF,stroke:#7C3AED,stroke-width:2px,color:#0F172A
+    style VertexContent fill:#F5F3FF,stroke:#7C3AED,stroke-width:2px,color:#0F172A
+    style ArtifactStorage fill:#FEF2F2,stroke:#DC2626,stroke-width:2px,color:#0F172A

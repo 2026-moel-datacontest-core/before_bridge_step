@@ -1,0 +1,68 @@
+%%{init: {'theme': 'base', 'themeVariables': {'fontSize': '13px'}}}%%
+flowchart TB
+
+    subgraph GCP["☁️  Google Cloud Platform — Region: asia-northeast3 (Seoul)"]
+
+        subgraph CLIENT["Client"]
+            User(["👤 User / Browser"])
+        end
+
+        subgraph APP["Application"]
+            direction TB
+            Frontend["🔵 Cloud Run\n**Frontend**\n사용자 입력 · 결과 화면 · 데모 시나리오 UI"]
+            BackendAPI["🔵 Cloud Run / FastAPI\n**Backend API**\nRetrieval · Grounded Answer Orchestration · Document Draft\nCitation Validation · Model Routing"]
+        end
+
+        subgraph DATA["Data & AI"]
+            direction LR
+            CloudSQL["🔵 Cloud SQL\n**PostgreSQL**\npgvector · law_chunks"]
+            VertexAI["🟣 Vertex AI\n**Managed Model Path**\nGemini API"]
+            LocalLLM["🔴 Compute Engine GPU VM\n**Local LLM Server**\nOllama + Qwen\nWarm State · Self-hosted Inference"]
+        end
+
+        subgraph SUP["Supporting Services"]
+            direction LR
+            SecretMgr["🟢 Secret Manager\n**API Keys**\nDB Secrets"]
+            CloudStorage["🟠 Cloud Storage\n**Files · Outputs**\nIntermediate Results"]
+            CloudRunJobs["🔵 Cloud Run Jobs\n**Batch Jobs**\nScheduled Tasks"]
+            Workflows["🔵 Workflows\n**Orchestration**\nPipeline Flow"]
+            Logging["🟩 Cloud Logging\n**Logs · Metrics**\nHealth Check"]
+        end
+
+    end
+
+    %% ===== PRIMARY FLOWS (solid lines) =====
+    User       -->|HTTPS|                       Frontend
+    Frontend   -->|API Call / HTTPS|            BackendAPI
+    BackendAPI -->|SQL / Vector Search|         CloudSQL
+    BackendAPI -->|Managed Model Path|          VertexAI
+    BackendAPI -->|Self-hosted Inference Route| LocalLLM
+
+    %% ===== SUPPORTING FLOWS (dashed lines) =====
+    BackendAPI -.->|Secrets / Credentials|   SecretMgr
+    BackendAPI -.->|Files / Artifacts|       CloudStorage
+    BackendAPI -.->|Batch Trigger|           CloudRunJobs
+    Workflows  -.->|Orchestration|           BackendAPI
+    Workflows  -.->|Job Orchestration|       CloudRunJobs
+    BackendAPI -.->|App Logs / Metrics|      Logging
+    LocalLLM   -.->|Inference Logs / Health| Logging
+
+    %% ===== STYLES =====
+    style BackendAPI fill:#D6EAF8,stroke:#2874A6,stroke-width:3px,color:#000000
+    style LocalLLM   fill:#FFF3E0,stroke:#E65100,stroke-width:3px,color:#000000
+
+    style CLIENT fill:#F5F5F5,stroke:#9E9E9E,stroke-width:2px,color:#555555
+    style APP    fill:#F0EDFF,stroke:#7B5EA7,stroke-width:2px,color:#7B5EA7
+    style DATA   fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#2E7D32
+    style SUP    fill:#FFF9E6,stroke:#B7860B,stroke-width:2px,color:#B7860B
+    style GCP    fill:#EBF3FB,stroke:#4285F4,stroke-width:2px,color:#4285F4
+
+    style User         fill:#FFFFFF,stroke:#555555,stroke-width:2px,color:#000000
+    style Frontend     fill:#FFFFFF,stroke:#7B5EA7,stroke-width:2px,color:#000000
+    style CloudSQL     fill:#FFFFFF,stroke:#2E7D32,stroke-width:2px,color:#000000
+    style VertexAI     fill:#FFFFFF,stroke:#2E7D32,stroke-width:2px,color:#000000
+    style SecretMgr    fill:#FFFFFF,stroke:#B7860B,stroke-width:2px,color:#000000
+    style CloudStorage fill:#FFFFFF,stroke:#B7860B,stroke-width:2px,color:#000000
+    style CloudRunJobs fill:#FFFFFF,stroke:#B7860B,stroke-width:2px,color:#000000
+    style Workflows    fill:#FFFFFF,stroke:#B7860B,stroke-width:2px,color:#000000
+    style Logging      fill:#FFFFFF,stroke:#B7860B,stroke-width:2px,color:#000000
