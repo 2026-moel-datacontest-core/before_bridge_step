@@ -67,9 +67,9 @@
 
 관련 기준 문서:
 
-- [Task 6 Answer Generation Status](/home/jongwon/personal_project/law_main_road/docs/ops/task6_answer_generation_status.md)
-- [Scenario Expansion Plan](/home/jongwon/personal_project/law_main_road/docs/planning/12_scenario_expansion_plan.md)
-- [Eval Plan](/home/jongwon/personal_project/law_main_road/docs/planning/05_eval_plan.md)
+- [Ops README](../ops/README.md)
+- [Scenario Expansion Plan](12_scenario_expansion_plan.md)
+- [Eval Plan](05_eval_plan.md)
 
 ---
 

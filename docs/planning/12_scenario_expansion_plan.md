@@ -11,9 +11,9 @@
 
 관련 기준 문서:
 
-- [Task 6 Answer Generation Status](/home/jongwon/personal_project/law_main_road/docs/ops/task6_answer_generation_status.md)
-- [Project Overview](/home/jongwon/personal_project/law_main_road/docs/planning/00_project_overview.md)
-- [RAG Strategy](/home/jongwon/personal_project/law_main_road/docs/planning/02_rag_strategy.md)
+- [Ops README](../ops/README.md)
+- [Project Overview](00_project_overview.md)
+- [RAG Strategy](02_rag_strategy.md)
 
 ---
 

@@ -2,7 +2,7 @@
 
 작성일: `2026-04-17`
 
-업데이트 메모: 이 문서는 2026-04-17 실행 계획 초안으로 보존한다. 2026-04-20 기준으로 SCN-004-DEMO-FREEZE fixed path, SCN-001-BRIDGE-DEMO answer-only preset, demo preflight script, full 60 answer evidence report가 추가 완료됐다. 최신 제출 전 절차는 `docs/ops/runbook.md`와 `docs/demo/demo_scenario.md`를 우선한다.
+업데이트 메모: 이 문서는 2026-04-17 실행 계획 초안으로 보존한다. 2026-04-21 기준으로 SCN-004-DEMO-FREEZE fixed path, SCN-001-BRIDGE-DEMO answer-only preset, demo preflight script, full 60 answer evidence report가 추가 완료됐다. 최신 제출 전 절차는 `docs/ops/README.md`와 `docs/demo/demo_scenario.md`를 우선한다.
 
 기준선:
 
@@ -152,5 +152,5 @@ SCN-005 After 문서 타입 확장은 SCN-004 freeze 기준을 유지한 다음 
 - `docs/planning/05_eval_plan.md`
 - `docs/planning/10_backend_retrieval_plan.md`
 - `docs/planning/12_scenario_expansion_plan.md`
-- `docs/ops/task6_answer_generation_status.md`
+- `docs/ops/README.md`
 - `docs/product/mvp_scope.md`

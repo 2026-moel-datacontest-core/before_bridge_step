@@ -3,7 +3,7 @@
 아래 내용을 다음 새 세션의 첫 프롬프트로 사용한다.
 
 ```text
-/home/jongwon/personal_project/law_main_road 에서 작업해주세요.
+law_main_road repo root에서 작업해주세요.
 
 기준일:
 - 2026-04-20
@@ -159,13 +159,13 @@ npm run dev
 ```
 
 브라우저 기준 URL:
-- http://localhost:3000
-- http://127.0.0.1:3000은 Next dev HMR cross-origin warning 이력이 있어 QA 기준 URL로 쓰지 않음
+- http://localhost:5090
+- http://127.0.0.1:5090은 Next dev HMR cross-origin warning 이력이 있어 QA 기준 URL로 쓰지 않음
 
 먼저 해야 할 일:
 1. git status -sb로 origin/main과 clean/dirty 상태를 확인해주세요.
 2. AGENTS.md, CLAUDE.md, backend/CLAUDE.md, frontend/CLAUDE.md를 읽고 금지 범위를 확인해주세요.
-3. README.md, docs/ops/runbook.md, docs/demo/demo_scenario.md, docs/demo/presentation_notes.md를 읽고 demo/preflight/fallback 절차를 확인해주세요.
+3. README.md, docs/ops/README.md, docs/demo/demo_scenario.md, docs/demo/presentation_notes.md를 읽고 demo/preflight/fallback 절차를 확인해주세요.
 4. eval/README.md와 eval/reports/answer_evidence_2026-04-20.summary.md를 읽고 full 60 evidence 결과와 MVP acceptable 판단을 확인해주세요.
 5. docs/product/before_flow.md, docs/product/bridge_flow.md, docs/product/after_flow.md, docs/planning/14_frontend_implementation_handoff.md를 읽고 SCN-001 확장 전 contract 조건을 확인해주세요.
 
@@ -186,7 +186,7 @@ npm run dev
 다음 작업 우선순위:
 1. 사용자가 “제출/발표 전 확인”을 요청하면:
    - bash scripts/demo_preflight.sh
-   - 필요 시 backend/frontend 수동 실행 후 http://localhost:3000/after에서 SCN-004-DEMO-FREEZE dry-run
+   - 필요 시 backend/frontend 수동 실행 후 http://localhost:5090/after에서 SCN-004-DEMO-FREEZE dry-run
    - SCN-001-BRIDGE-DEMO answer-only 확인
 2. 사용자가 “팀원 Before-begin 코드가 준비됐다”고 하면:
    - 새 기능 구현 전에 contract만 먼저 확인

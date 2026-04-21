@@ -3,12 +3,33 @@ __pycache__/
 *.pyc
 .pytest_cache/
 .vscode/
+.idea/
+.DS_Store
+.claude/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.envrc
+.python-version
 scripts/*.json
 .env
 backend/.env
+frontend/.env.local
+frontend/.env.*.local
 backend/.pgdata/
 backend/logs/
+config/logs/
+*.log
+*.pid
+backend/data/before_artifacts/
+backend/data/after_artifacts/
+frontend/.next/
+frontend/node_modules/
+frontend/.turbo/
+config/secrets/
 law-service-main-page-design/
+z_before_begin/
 
 # Local agent/tool state
 .omx/

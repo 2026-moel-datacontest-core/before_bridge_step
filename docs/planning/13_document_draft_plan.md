@@ -12,10 +12,10 @@
 
 관련 기준 문서:
 
-- [Project Overview](/home/jongwon/personal_project/law_main_road/docs/planning/00_project_overview.md)
-- [Scenario Expansion Plan](/home/jongwon/personal_project/law_main_road/docs/planning/12_scenario_expansion_plan.md)
-- [Architecture](/home/jongwon/personal_project/law_main_road/docs/planning/04_architecture.md)
-- [MVP Scope](/home/jongwon/personal_project/law_main_road/docs/product/mvp_scope.md)
+- [Project Overview](00_project_overview.md)
+- [Scenario Expansion Plan](12_scenario_expansion_plan.md)
+- [Architecture](04_architecture.md)
+- [MVP Scope](../product/mvp_scope.md)
 
 ## 현재 구현 확인
 

@@ -26,6 +26,7 @@ from backend.app.services.answer_generation import (
     GroundedAnswerGenerationError,
     answer_question,
 )
+from backend.app.services.after_artifact_store import persist_answer_artifacts
 
 router = APIRouter(prefix="/api/v1", tags=["answer"])
 logger = logging.getLogger(__name__)
@@ -175,7 +176,7 @@ def answer(payload: AnswerRequest) -> AnswerResponse:
         str(result.grounding_query != result.query).lower(),
     )
 
-    return AnswerResponse(
+    response_payload = AnswerResponse(
         query=result.query,
         answer=result.answer,
         key_points=result.key_points,
@@ -188,3 +189,14 @@ def answer(payload: AnswerRequest) -> AnswerResponse:
         retrieval_total=result.retrieval_total,
         model_name=result.model_name,
     )
+
+    try:
+        persist_answer_artifacts(payload, response_payload)
+    except Exception:
+        logger.exception(
+            "answer.artifact_persist_failed query_hash=%s latency_ms=%d",
+            query_digest,
+            int((time.perf_counter() - started_at) * 1000),
+        )
+
+    return response_payload

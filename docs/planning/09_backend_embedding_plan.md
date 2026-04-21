@@ -6,7 +6,7 @@
 |------|------|
 | law_chunks 행 수 | 1722 (selected_as_of: 2026-04-11) |
 | embedding 컬럼 | `Vector(768)`, nullable, **1722 / 1722 populated** |
-| alembic head | `20260413_000003` |
+| alembic head | `20260421_000005` |
 | pgvector extension | enabled |
 | 임베딩 대상 필드 | `embedding_text` (ORM: `LawChunk.embedding_text`) |
 | Vertex AI SDK | `google-genai>=1.72` |
@@ -33,7 +33,7 @@
 - 소량 저장 검증 완료: `--limit 20`
 - 전체 실행 완료: 남은 `1693` rows 저장, historical final `1713 / 1713`
 - 최종 검증 완료: `embedded_rows=1713`, `null_rows=0`, sample dimension `768`
-- Alembic `20260413_000003` 적용 완료
+- historical Alembic head at Task 4 completion = `20260413_000003`; current repo head = `20260421_000005`
 - 최종 로그 상태: warning `1`, error `0`
 - truncation warning `1`건:
   - `산업안전보건법시행령__제115조__ord01__mst284771__ca0ca963752d`
@@ -187,7 +187,8 @@ Observed result:
   - `null_rows = 0`
   - sample dimension `768`
   - `hnsw_index_exists = True`
-- `alembic current` = `20260413_000003 (head)`
+- historical `alembic current` at embedding completion time = `20260413_000003 (head)`
+- current repo head = `20260421_000005`
 
 Current live note:
 
@@ -216,7 +217,7 @@ Current live note:
 2. 현재 다음 단계는 embedding 교체가 아니라 SCN-004 demo freeze 유지
 3. scenario data expansion이 필요한 경우에도 frozen snapshot 정합성을 우선 유지
 4. retrieval / grounding / answer regression이 재현될 때만 embedding 재평가 여부 결정
-5. latest end-to-end status는 `docs/ops/task6_answer_generation_status.md`, frontend QA status는 `docs/planning/14_frontend_implementation_handoff.md` 기준
+5. latest end-to-end status는 `docs/ops/README.md`, frontend QA status는 `docs/planning/14_frontend_implementation_handoff.md` 기준
 
 ---
 

@@ -46,7 +46,7 @@
 - Phase 3C 이후 확장 작업
 - sessionStorage backup/restore
 - transition animation
-- `/before`, `/bridge`, Recovery 구현
+- `/bridge`, Recovery 구현 및 `/before` 추가 기능 확장
 - 현재 SCN-004 freeze 작업 중 SCN-005 문서 타입 확장
 - 팀원 Before / Bridge contract 확인 없는 SCN-001 문서 타입 확장
 
@@ -150,7 +150,7 @@ live `/api/v1/answer` 호출 시 `ef_search`는 항상 100. preset exact path는
 
 - 로그인 / 회원가입 / 사용자 계정
 - OCR / 파일 업로드
-- Before 화면 (`/before`, `/before/result`)
+- 현재 repo에 포함된 `before` 화면 확장 작업
 - Bridge 화면 (`/bridge`)
 - 현재 SCN-004 freeze 작업 중 SCN-005 문서 타입
 - 팀원 Before / Bridge contract 확인 없는 SCN-001 문서 타입
@@ -1133,7 +1133,7 @@ npm run dev      # 개발 서버 실행
 
 ### 수동 smoke test
 
-1. `http://localhost:3000/after` 접근
+1. `http://localhost:5090/after` 접근
 2. 10자 이상 입력 → CTA 활성 확인
 3. "법 조문 찾기" → 로딩 → `/after/result` 이동
 4. document type 선택 → "사건 정보 입력하기" 활성
@@ -1171,7 +1171,7 @@ uvicorn backend.main:app --reload
 - `--kl-*`와 `--cds-*` token prefix 혼용 금지 (`--kl-*` canonical)
 - SCN-005 문서 타입은 SCN-004 freeze 기준을 유지한 별도 작업으로 진행 가능
 - SCN-001 문서 타입 구현 금지 (팀원 Before / Bridge contract 확인 전 범위 아님)
-- `/before`, `/bridge` 화면 구현 금지 (현재 freeze 범위 아님)
+- `/bridge` 화면 구현 금지 (현재 freeze 범위 아님). `/before`는 repo에 포함되지만 이 handoff 문서의 직접 구현 범위는 아니다.
 - 법률 판단 확정 문구 하드코딩 금지 ("위법 확정", "반드시 승소" 등)
 - cited_articles 없는 법률 답변을 결과 화면에 표시 금지
 - 검색되지 않은 조문 인용 금지

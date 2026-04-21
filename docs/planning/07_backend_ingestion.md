@@ -11,7 +11,7 @@
 - `backend/.env` configured
 - conda env `law_main_road` has required backend packages
 - local PostgreSQL + pgvector configured and running on `localhost:5432`
-- `law_chunks` migration applied through Alembic head `20260413_000003`
+- `law_chunks` migration applied through Alembic head `20260421_000005`
 
 ## Implemented Path
 
@@ -69,14 +69,14 @@ python3 scripts/ingest_chunks.py --dry-run
   - embedding generation script implemented
   - `law_chunks.embedding` populated for all `1713` rows
   - sample vector dimension verified at `768`
-  - HNSW vector index added through Alembic `20260413_000003`
+  - HNSW vector index added through Alembic `20260413_000003`; current repo head is `20260421_000005`
   - retrieval 단계로 진행 예정이었음
 - Current status (2026-04-13):
   - retrieval MVP 구현 및 검증 완료
   - latest retrieval details live in `docs/planning/10_backend_retrieval_plan.md`
 - Current status (2026-04-14):
   - answer generation MVP 및 안정화 완료
-  - latest end-to-end backend baseline lives in `docs/ops/task6_answer_generation_status.md`
+  - latest end-to-end backend baseline lives in `docs/ops/README.md`
   - scenario expansion update:
     - `SCN-003` 대응으로 장애인 관련 조문 9개를 최소 범위로 추가
     - current live `law_chunks` row count: `1722`

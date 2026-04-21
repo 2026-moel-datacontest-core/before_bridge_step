@@ -44,8 +44,14 @@ export function UnfairDismissalForm({
 
   return (
     <div className={styles.formSections}>
-      <fieldset className={styles.fieldset} disabled={disabled}>
-        <legend className={styles.legend}>당사자 정보</legend>
+      <fieldset
+        className={styles.fieldset}
+        disabled={disabled}
+        aria-labelledby="unfair-party-title"
+      >
+        <div id="unfair-party-title" className={styles.legend}>
+          당사자 정보
+        </div>
         <p className={styles.helper}>비워두면 초안에 확인 필요 항목으로 표시됩니다.</p>
         <div className={styles.grid}>
           <label className={styles.field}>
@@ -165,8 +171,14 @@ export function UnfairDismissalForm({
         ) : null}
       </fieldset>
 
-      <fieldset className={styles.fieldset} disabled={disabled}>
-        <legend className={styles.legend}>근무 기간 및 해고 정보</legend>
+      <fieldset
+        className={styles.fieldset}
+        disabled={disabled}
+        aria-labelledby="unfair-dismissal-title"
+      >
+        <div id="unfair-dismissal-title" className={styles.legend}>
+          근무 기간 및 해고 정보
+        </div>
         <div className={styles.grid}>
           <label className={styles.field}>
             <span className={styles.label}>입사일</span>
@@ -289,8 +301,11 @@ export function UnfairDismissalForm({
           className={styles.inlineFieldset}
           hidden={noticeMethod !== 'written'}
           disabled={disabled || noticeMethod !== 'written'}
+          aria-labelledby="written-notice-subtitle"
         >
-          <legend className={styles.inlineLegend}>서면 통지서 수령 여부</legend>
+          <div id="written-notice-subtitle" className={styles.inlineLegend}>
+            서면 통지서 수령 여부
+          </div>
           <label className={styles.checkboxLabel}>
             <input
               type="checkbox"
@@ -395,8 +410,14 @@ export function UnfairDismissalForm({
         </label>
       </fieldset>
 
-      <fieldset className={styles.fieldset} disabled={disabled}>
-        <legend className={styles.legend}>추가 메모</legend>
+      <fieldset
+        className={styles.fieldset}
+        disabled={disabled}
+        aria-labelledby="unfair-notes-title"
+      >
+        <div id="unfair-notes-title" className={styles.legend}>
+          추가 메모
+        </div>
         <label className={styles.field}>
           <span className={styles.label}>초안에 반영할 메모</span>
           <textarea

@@ -1,17 +1,17 @@
 # Before Flow
 
-기준일: `2026-04-20`
+기준일: `2026-04-21`
 
 ## 현재 상태
 
-Before는 제품 구조상 핵심 단계이지만, 현재 이 저장소의 frontend 구현 범위에는 포함하지 않는다.
+Before는 제품 구조상 핵심 단계이며, 현재 이 저장소에는 `/before` frontend와 backend 구현이 포함되어 있다.
 
 현재 기준:
 
-- 제품 문서상 역할은 유지
-- `/before`, `/before/result` frontend route는 구현하지 않음
-- SCN-004 demo freeze 유지 중에는 Before 기능을 새로 확장하지 않음
-- 팀 내 Before 담당 작업과 통합될 때 별도 문서/contract로 연결
+- `/before` route가 구현되어 있고 계약서 업로드/결과 확인 흐름을 제공한다.
+- backend는 DB source 기반 법령 캐시, job DB 저장, artifact 로컬 저장 구조를 사용한다.
+- 다만 현재 제출/메인 demo 범위는 여전히 `/after` 중심이다.
+- `/before`는 repo에 포함된 별도 흐름으로 유지하며, 추가 확장은 별도 범위에서 진행한다.
 
 ## 제품상 목표
 
@@ -21,13 +21,20 @@ Before는 제품 구조상 핵심 단계이지만, 현재 이 저장소의 front
 - 관련 조문과 근거 요약 표시
 - Bridge로 넘길 최소 요약 생성
 
-## 현재 제외
+## 현재 구현 범위
 
 - 계약서 파일 업로드 UI
-- OCR 직접 연동
-- 최저임금 연도별 자동 비교
-- 단순노무 직종 자동 판정
-- Before 결과 local/server 저장
+- OCR/리뷰 파이프라인 연동
+- job polling
+- `before_review_jobs` DB 저장
+- `backend/data/before_artifacts/runs/` 로컬 artifact 저장
+- DB source + startup cache 기반 법령 조회
+
+## 현재 제외
+
+- Bridge와의 정식 handoff contract 확정
+- Cloud Run 기준 artifact GCS 전환
+- 완전한 전역 공유 상태 저장
 
 ## 후속 연결 기준
 

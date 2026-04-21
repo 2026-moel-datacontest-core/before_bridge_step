@@ -2,7 +2,7 @@
 
 작성일: `2026-04-17`
 
-업데이트 메모: 이 문서는 2026-04-17 option 3/4 상세 설명 초안으로 보존한다. 2026-04-20 기준 기능/QA 최신 상태는 `docs/demo/demo_scenario.md`, `docs/ops/runbook.md`, `eval/reports/answer_evidence_2026-04-20.summary.md`를 우선한다.
+업데이트 메모: 이 문서는 2026-04-17 option 3/4 상세 설명 초안으로 보존한다. 2026-04-21 기준 기능/QA 최신 상태는 `docs/demo/demo_scenario.md`, `docs/ops/README.md`, `eval/reports/answer_evidence_2026-04-20.summary.md`를 우선한다.
 
 ## 문서 목적
 
@@ -234,10 +234,10 @@ API 계층과 LLM 계층은 자원 특성이 다릅니다.
 
 `04_infrastructure_expansion.md`에서는 아래처럼 정리되어 있습니다.
 
-- 기본은 `Cloud Run` 중심 serverless-first [04_infrastructure_expansion.md](/home/jongwon/personal_project/law_main_road/docs/presentation/04_infrastructure_expansion.md:112)
-- Local LLM이 필요할 때만 GPU VM 추가 [04_infrastructure_expansion.md](/home/jongwon/personal_project/law_main_road/docs/presentation/04_infrastructure_expansion.md:113)
-- 1단계는 `Cloud Run + Cloud SQL + Secret Manager + Cloud Build` 중심 baseline [04_infrastructure_expansion.md](/home/jongwon/personal_project/law_main_road/docs/presentation/04_infrastructure_expansion.md:119)
-- 2단계는 `Compute Engine GPU + Ollama + Qwen` 기반 Local LLM 확장 [04_infrastructure_expansion.md](/home/jongwon/personal_project/law_main_road/docs/presentation/04_infrastructure_expansion.md:142)
+- 기본은 `Cloud Run` 중심 serverless-first [04_infrastructure_expansion.md](04_infrastructure_expansion.md)
+- Local LLM이 필요할 때만 GPU VM 추가 [04_infrastructure_expansion.md](04_infrastructure_expansion.md)
+- 1단계는 `Cloud Run + Cloud SQL + Secret Manager + Cloud Build` 중심 baseline [04_infrastructure_expansion.md](04_infrastructure_expansion.md)
+- 2단계는 `Compute Engine GPU + Ollama + Qwen` 기반 Local LLM 확장 [04_infrastructure_expansion.md](04_infrastructure_expansion.md)
 
 즉, `06` 문서의 `3안`, `4안`은 기존 인프라 계획을 다시 구조 선택 관점에서 풀어쓴 버전이라고 보면 됩니다.
 

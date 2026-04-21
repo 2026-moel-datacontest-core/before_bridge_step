@@ -41,8 +41,14 @@ export function WageComplaintForm({
 
   return (
     <div className={styles.formSections}>
-      <fieldset className={styles.fieldset} disabled={disabled}>
-        <legend className={styles.legend}>당사자 정보</legend>
+      <fieldset
+        className={styles.fieldset}
+        disabled={disabled}
+        aria-labelledby="wage-worker-employer-title"
+      >
+        <div id="wage-worker-employer-title" className={styles.legend}>
+          당사자 정보
+        </div>
         <p className={styles.helper}>비워두면 초안에 확인 필요 항목으로 표시됩니다.</p>
         <div className={styles.grid}>
           <label className={styles.field}>
@@ -153,8 +159,14 @@ export function WageComplaintForm({
         </div>
       </fieldset>
 
-      <fieldset className={styles.fieldset} disabled={disabled}>
-        <legend className={styles.legend}>근무 및 임금 정보</legend>
+      <fieldset
+        className={styles.fieldset}
+        disabled={disabled}
+        aria-labelledby="wage-employment-title"
+      >
+        <div id="wage-employment-title" className={styles.legend}>
+          근무 및 임금 정보
+        </div>
         <div className={styles.grid}>
           <label className={styles.field}>
             <span className={styles.label}>입사일</span>
@@ -304,8 +316,14 @@ export function WageComplaintForm({
         </div>
       </fieldset>
 
-      <fieldset className={styles.fieldset} disabled={disabled}>
-        <legend className={styles.legend}>미지급 금품</legend>
+      <fieldset
+        className={styles.fieldset}
+        disabled={disabled}
+        aria-labelledby="wage-unpaid-title"
+      >
+        <div id="wage-unpaid-title" className={styles.legend}>
+          미지급 금품
+        </div>
         <div className={styles.grid}>
           <label className={styles.field}>
             <span className={styles.label}>미지급 임금 금액</span>
@@ -432,8 +450,14 @@ export function WageComplaintForm({
         </div>
       </fieldset>
 
-      <fieldset className={styles.fieldset} disabled={disabled}>
-        <legend className={styles.legend}>추가 메모</legend>
+      <fieldset
+        className={styles.fieldset}
+        disabled={disabled}
+        aria-labelledby="wage-notes-title"
+      >
+        <div id="wage-notes-title" className={styles.legend}>
+          추가 메모
+        </div>
         <label className={styles.field}>
           <span className={styles.label}>초안에 반영할 메모</span>
           <textarea

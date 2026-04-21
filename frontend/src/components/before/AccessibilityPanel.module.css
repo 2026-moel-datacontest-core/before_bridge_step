@@ -1,0 +1,221 @@
+.panel {
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+  border-radius: var(--kl-radius-2xl);
+  background: linear-gradient(180deg, #0f172a 0%, #101828 100%);
+  box-shadow: var(--kl-shadow-strong);
+  color: #ffffff;
+}
+
+.header {
+  display: grid;
+  gap: 12px;
+}
+
+.badge,
+.selectorLabel,
+.overviewEyebrow,
+.cardKind {
+  display: inline-flex;
+  margin: 0;
+  font-size: 0.74rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.badge {
+  align-self: start;
+  padding: 6px 12px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 999px;
+  background: rgba(59, 130, 246, 0.12);
+  color: #bfdbfe;
+}
+
+.title,
+.cardTitle {
+  margin: 0;
+  color: #ffffff;
+  line-height: 1.15;
+  letter-spacing: -0.05em;
+}
+
+.title {
+  font-size: 1.55rem;
+}
+
+.cardTitle {
+  font-size: 1.05rem;
+}
+
+.description,
+.overviewText,
+.cardDescription,
+.cardHint,
+.emptyState,
+.infoBox,
+.warningBox {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.description,
+.overviewText,
+.cardDescription,
+.emptyState,
+.infoBox {
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.selectorBlock,
+.overviewCard,
+.recommendationCard,
+.nextStepCard,
+.emptyState,
+.infoBox,
+.warningBox {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 22px;
+}
+
+.selectorBlock,
+.overviewCard,
+.recommendationCard,
+.nextStepCard,
+.emptyState,
+.infoBox,
+.warningBox {
+  padding: 18px;
+}
+
+.selectorLabel,
+.overviewEyebrow,
+.cardKind {
+  color: rgba(191, 219, 254, 0.9);
+}
+
+.optionRow,
+.lawRefRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.optionChip {
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #e2e8f0;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background-color 160ms ease;
+}
+
+.optionChip:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.optionChipActive {
+  border-color: rgba(96, 165, 250, 0.28);
+  background: rgba(59, 130, 246, 0.18);
+  color: #ffffff;
+}
+
+.warningBox {
+  border-color: rgba(251, 191, 36, 0.18);
+  background: rgba(245, 158, 11, 0.12);
+  color: #fef3c7;
+}
+
+.cardStack {
+  display: grid;
+  gap: 14px;
+}
+
+.overviewCard,
+.nextStepCard {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.recommendationCard {
+  display: grid;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.24);
+}
+
+.recommendationRight {
+  border-color: rgba(96, 165, 250, 0.16);
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.16) 0%, rgba(15, 23, 42, 0.24) 100%);
+}
+
+.recommendationSupport {
+  border-color: rgba(52, 211, 153, 0.16);
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.14) 0%, rgba(15, 23, 42, 0.24) 100%);
+}
+
+.recommendationQuestion {
+  border-color: rgba(251, 191, 36, 0.16);
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.14) 0%, rgba(15, 23, 42, 0.24) 100%);
+}
+
+.recommendationLaw {
+  border-color: rgba(167, 139, 250, 0.16);
+  background: linear-gradient(180deg, rgba(139, 92, 246, 0.14) 0%, rgba(15, 23, 42, 0.24) 100%);
+}
+
+.recommendationHeader {
+  display: flex;
+  gap: 14px;
+  align-items: start;
+  justify-content: space-between;
+}
+
+.cardArrow {
+  color: #93c5fd;
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.cardHint {
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #e2e8f0;
+}
+
+.lawRef {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 999px;
+  background: rgba(59, 130, 246, 0.12);
+  color: #bfdbfe;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+@media (max-width: 671px) {
+  .optionRow {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .optionChip {
+    width: 100%;
+  }
+}

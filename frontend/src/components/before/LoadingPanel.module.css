@@ -1,0 +1,151 @@
+.panel {
+  display: grid;
+  gap: 20px;
+  padding: 22px;
+  border-radius: var(--kl-radius-2xl);
+  background: linear-gradient(180deg, #0f172a 0%, #101828 100%);
+  box-shadow: var(--kl-shadow-strong);
+  color: #ffffff;
+}
+
+.grid {
+  display: grid;
+  gap: 24px;
+}
+
+.mainColumn {
+  display: grid;
+  gap: 18px;
+}
+
+.badge,
+.stepLabel,
+.sideEyebrow {
+  display: inline-flex;
+  margin: 0;
+  color: rgba(191, 219, 254, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.title {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(1.55rem, 2vw, 2.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.05em;
+}
+
+.description,
+.statusText,
+.statusSubtext,
+.stepMessage,
+.sideList {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 0.96rem;
+  line-height: 1.7;
+}
+
+.statusBox {
+  display: grid;
+  gap: 6px;
+  padding: 16px 18px;
+  border: 1px solid rgba(59, 130, 246, 0.18);
+  border-radius: 20px;
+  background: rgba(59, 130, 246, 0.12);
+}
+
+.statusTitle,
+.stepTitle {
+  margin: 0;
+  color: #ffffff;
+}
+
+.statusTitle {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.stepList {
+  display: grid;
+  gap: 12px;
+}
+
+.stepRow {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.stepIndicator {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(15, 23, 42, 0.36);
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.stepIndicatorRunning {
+  border-color: rgba(96, 165, 250, 0.28);
+  background: rgba(59, 130, 246, 0.18);
+  color: #bfdbfe;
+}
+
+.stepIndicatorCompleted {
+  border-color: rgba(52, 211, 153, 0.24);
+  background: rgba(16, 185, 129, 0.16);
+  color: #bbf7d0;
+}
+
+.stepIndicatorFailed {
+  border-color: rgba(248, 113, 113, 0.24);
+  background: rgba(239, 68, 68, 0.16);
+  color: #fecaca;
+}
+
+.stepBody {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.stepTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.sideColumn {
+  display: grid;
+  gap: 12px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  background: rgba(0, 0, 0, 0.24);
+}
+
+.sideList {
+  display: grid;
+  gap: 10px;
+  padding-left: 18px;
+}
+
+@media (min-width: 1056px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr) 320px;
+    align-items: start;
+  }
+}

@@ -17,7 +17,7 @@
 - embedding populated: `1722 / 1722`
 - vector dimension: `768`
 - HNSW index: `idx_law_chunks_embedding`
-- alembic head: `20260413_000003`
+- alembic head: `20260421_000005`
 - answer model: `gemini-2.5-flash`
 - embedding model: `gemini-embedding-001`
 - frontend: Next.js `16.2.4`, React `19.2.5`
@@ -199,7 +199,7 @@
 - preset modified path는 `top_k=10`, `ef_search=100`으로 live `/api/v1/answer` 호출
 - 일반 자유 입력은 `top_k=5`, `ef_search=100` 유지
 - SCN-004 범위 밖 자유 입력은 answer-only로 처리
-- `/before`, `/bridge`, Recovery는 이번 frontend demo 범위에서 확장하지 않음
+- repo에는 `/before` 구현이 포함되지만, 이번 frontend main demo 범위는 `/after` 중심으로 유지한다. `/bridge`, Recovery는 이번 frontend demo 범위에서 확장하지 않음
 
 ### 3. 선택적 후속
 
@@ -226,13 +226,13 @@
 
 작업을 이어갈 때 우선 보면 되는 문서:
 
-1. [docs/ops/runbook.md](docs/ops/runbook.md)
-2. [docs/planning/14_frontend_implementation_handoff.md](docs/planning/14_frontend_implementation_handoff.md)
-3. [docs/planning/13_document_draft_plan.md](docs/planning/13_document_draft_plan.md)
-4. [docs/planning/00_project_overview.md](docs/planning/00_project_overview.md)
-5. [docs/ops/task6_answer_generation_status.md](docs/ops/task6_answer_generation_status.md)
-6. [docs/planning/02_rag_strategy.md](docs/planning/02_rag_strategy.md)
-7. [docs/planning/12_scenario_expansion_plan.md](docs/planning/12_scenario_expansion_plan.md)
+1. [docs/ops/README.md](docs/ops/README.md)
+2. [docs/ops/quick_start.md](docs/ops/quick_start.md)
+3. [docs/planning/14_frontend_implementation_handoff.md](docs/planning/14_frontend_implementation_handoff.md)
+4. [docs/planning/13_document_draft_plan.md](docs/planning/13_document_draft_plan.md)
+5. [docs/planning/00_project_overview.md](docs/planning/00_project_overview.md)
+6. [docs/ops/데이터_파이프라인.md](docs/ops/데이터_파이프라인.md)
+7. [docs/planning/02_rag_strategy.md](docs/planning/02_rag_strategy.md)
 
 ## Freeze QA 순서
 
@@ -284,7 +284,7 @@ full 60 retrieval / answer eval은 `backend/app/services/retrieval.py`, `backend
 
 - `bash scripts/demo_preflight.sh` 통과, exit code `0`
 - PostgreSQL readiness, backend import, document draft smoke, frontend build, WSL Playwright Chromium smoke 통과
-- `http://localhost:3000/after` 기준 browser dry-run 통과
+- `http://localhost:5090/after` 기준 browser dry-run 통과
 - `SCN-004-DEMO-FREEZE` fixed path는 `/api/v1/answer` 호출 0회
 - `/after/result`: `cited_articles=6`, `grounded_context_ids=[1, 2, 3, 5, 10, 4]`, 문서 타입 2개 표시
 - 임금체불 진정서 draft: `source_context_ids=[5, 10]`, `cited_articles=2`, `missing_legal_basis=[]`
@@ -308,7 +308,7 @@ full 60 retrieval / answer eval은 `backend/app/services/retrieval.py`, `backend
   - build route: `/`, `/after`, `/after/result`, `/after/intake`, `/after/draft`
 - dev server route smoke 통과
   - backend: `http://127.0.0.1:8000`
-  - frontend: `http://127.0.0.1:3000`
+  - frontend: `http://127.0.0.1:5090`
   - `/health`, `/`, `/after`, `/after/result`, `/after/intake`, `/after/draft` HTTP 200
 - live API smoke 통과
   - SCN-004 preset `/api/v1/answer`: `top_k=10`, `ef_search=100`, `cited_articles=6`, `grounded_context_ids=[1, 2, 3, 5, 10, 4]`, `retrieved_chunks=10`

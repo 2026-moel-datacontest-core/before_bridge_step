@@ -25,7 +25,7 @@ FastAPI 애플리케이션, RAG 엔진, PostgreSQL/pgvector DB 연결, 임베딩
 
 - `docs/planning/09_backend_embedding_plan.md`
 - `docs/planning/10_backend_retrieval_plan.md`
-- `docs/ops/task6_answer_generation_status.md`
+- `docs/ops/README.md`
 - `docs/planning/13_document_draft_plan.md`
 
 | Task | 산출물 |

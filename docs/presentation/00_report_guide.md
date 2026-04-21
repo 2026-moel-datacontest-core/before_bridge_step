@@ -2,7 +2,7 @@
 
 작성일: `2026-04-17`
 
-업데이트 메모: 이 문서는 2026-04-17 발표/보고서 초안 가이드로 보존한다. 2026-04-20 기준 최신 demo / QA 상태는 `docs/demo/demo_scenario.md`, `docs/demo/presentation_notes.md`, `docs/ops/runbook.md`, `eval/reports/answer_evidence_2026-04-20.summary.md`를 우선한다.
+업데이트 메모: 이 문서는 2026-04-17 발표/보고서 초안 가이드로 보존한다. 2026-04-21 기준 최신 demo / QA 상태는 `docs/demo/demo_scenario.md`, `docs/demo/presentation_notes.md`, `docs/ops/README.md`, `eval/reports/answer_evidence_2026-04-20.summary.md`를 우선한다.
 
 ## 목적
 

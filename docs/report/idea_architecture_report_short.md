@@ -2,7 +2,7 @@
 
 작성일: `2026-04-17`
 
-업데이트 메모: 이 요약 보고서는 2026-04-17 초안으로 보존한다. 2026-04-20 기준 최신 MVP 상태는 SCN-004-DEMO-FREEZE main path, SCN-001-BRIDGE-DEMO answer-only handoff, demo preflight pass, full 60 answer evidence `PASS=44 / PARTIAL=16 / FAIL=0`까지 반영된 상태다. 최신 운영/발표/eval 기준은 `docs/ops/runbook.md`, `docs/demo/demo_scenario.md`, `eval/reports/answer_evidence_2026-04-20.summary.md`를 우선한다.
+업데이트 메모: 이 요약 보고서는 2026-04-17 초안으로 보존한다. 2026-04-21 기준 최신 MVP 상태는 SCN-004-DEMO-FREEZE main path, SCN-001-BRIDGE-DEMO answer-only handoff, demo preflight pass, full 60 answer evidence `PASS=44 / PARTIAL=16 / FAIL=0`, `before` DB source/cache 전환까지 반영된 상태다. 최신 운영/발표/eval 기준은 `docs/ops/README.md`, `docs/demo/demo_scenario.md`, `eval/reports/answer_evidence_2026-04-20.summary.md`를 우선한다.
 
 기준선:
 

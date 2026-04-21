@@ -2,7 +2,7 @@
 
 작성일: `2026-04-17`
 
-업데이트 메모: 이 문서는 2026-04-17 강사 검토용 초안으로 보존한다. 2026-04-20 기준 최신 구현은 SCN-004-DEMO-FREEZE main path, SCN-001-BRIDGE-DEMO answer-only handoff, demo preflight pass, full 60 answer evidence `PASS=44 / PARTIAL=16 / FAIL=0`까지 반영된 상태다. 최신 운영 기준은 `docs/demo/demo_scenario.md`, `docs/ops/runbook.md`, `eval/README.md`를 우선한다.
+업데이트 메모: 이 문서는 2026-04-17 강사 검토용 초안으로 보존한다. 2026-04-21 기준 최신 구현은 SCN-004-DEMO-FREEZE main path, SCN-001-BRIDGE-DEMO answer-only handoff, demo preflight pass, full 60 answer evidence `PASS=44 / PARTIAL=16 / FAIL=0`까지 반영된 상태다. 최신 운영 기준은 `docs/demo/demo_scenario.md`, `docs/ops/README.md`, `eval/README.md`를 우선한다.
 
 기준 스냅샷:
 
@@ -128,5 +128,5 @@
 - `docs/planning/00_project_overview.md`
 - `docs/planning/02_rag_strategy.md`
 - `docs/planning/12_scenario_expansion_plan.md`
-- `docs/ops/task6_answer_generation_status.md`
+- `docs/ops/README.md`
 - `README.md`

@@ -6,8 +6,8 @@ import { FlowProvider } from '@/context/FlowContext';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'K-Labor Shield',
-  description: '외국인 근로자를 위한 노동권 보호 통합 AI',
+  title: '법대로',
+  description: '계약서 분석과 노동법 대응을 잇는 통합 AI',
 };
 
 interface RootLayoutProps {

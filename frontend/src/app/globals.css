@@ -95,11 +95,16 @@
   --kl-radius-control: 0px;
   --kl-radius-card: 0px;
   --kl-radius-pill: 24px;
+  --kl-radius-xl: 20px;
+  --kl-radius-2xl: 24px;
 
   /* Border styles */
   --kl-border-default: 1px solid var(--kl-border);
   --kl-border-subtle-line: 1px solid var(--kl-border-subtle);
   --kl-focus-ring: 2px solid var(--kl-focus);
+
+  /* Shadow */
+  --kl-shadow-strong: 0 24px 54px rgba(15, 29, 45, 0.12);
 
   /* Z-index */
   --kl-z-masthead: 100;

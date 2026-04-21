@@ -50,7 +50,7 @@
   - Phase 3C 이후 확장 작업
   - sessionStorage backup/restore
   - transition animation
-  - `/before`, `/bridge`, Recovery 본 구현
+  - `/bridge`, Recovery 본 구현 및 `/before` 추가 기능 확장
 - SCN-004 QA 정합성 검증, content display 확인, manual browser rehearsal은 통과 상태다.
 - 2026-04-20 기준 demo preflight와 browser dry-run도 통과 상태다.
 - 다음 단계는 SCN-004 demo freeze 유지 또는 팀원 Before / Bridge contract 확인 후 SCN-001 연결 검토다.

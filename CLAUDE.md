@@ -137,8 +137,8 @@ Evolution note:
 - 한국어 메인 / 영어 보조
 - 발표 데모 안정성 우선
 - backend schema 확인 없이 응답 필드 가정 금지
-- 현재 구현 범위는 SCN-004 After 4-route flow: `/after`, `/after/result`, `/after/intake`, `/after/draft`
-- `/before`, `/bridge`, Recovery 확장은 현재 freeze 범위에서 진행하지 않음
+- 현재 제출/메인 demo 범위는 SCN-004 After 4-route flow: `/after`, `/after/result`, `/after/intake`, `/after/draft`
+- repo에는 `/before` 구현도 포함되어 있다. 다만 `/bridge`, Recovery 확장은 현재 freeze 범위에서 진행하지 않음
 - 현재 SCN-004 demo freeze 유지 작업과 SCN-005 문서 타입 frontend 확장을 한 패치에 섞지 않음
 - SCN-005 After frontend / 문서 타입 확장은 SCN-004 freeze 기준을 유지한 별도 패치에서 진행 가능
 - SCN-001 `Before -> Bridge -> After` frontend 확장은 팀원 Before / Bridge 코드와 contract 확인 후 별도 단계에서 검토

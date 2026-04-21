@@ -87,7 +87,7 @@
 - 청크 수: `1722`
 - backend Task 2, 3, 4, 5 완료
 - PostgreSQL + pgvector 로컬 DB 구성 완료
-- Alembic migration 적용 완료 (`20260413_000003`)
+- Alembic migration 적용 완료 (`20260421_000005`)
 - `law_chunks` 테이블 생성 완료
 - `law_chunks` 1722건 ingestion 완료
 - `law_chunks.embedding` 1722건 저장 완료
@@ -206,7 +206,7 @@ Evolution note:
 - Phase 3C 이후 확장 작업은 보류한다.
   - sessionStorage backup/restore
   - transition animation
-  - `/before`, `/bridge`, Recovery frontend 확장
+  - `/bridge`, Recovery frontend 확장 및 `/before` 추가 기능 확장
   - 현재 SCN-004 freeze 작업 중 SCN-005 문서 타입 추가
   - 팀원 Before / Bridge contract 확인 없는 SCN-001 문서 타입 추가
 - 개인정보 저장 금지 원칙을 유지한다.
@@ -242,7 +242,7 @@ Evolution note:
 - `docs/planning/06_backend_db_foundation.md`
 - `docs/planning/07_backend_ingestion.md`
 - `docs/planning/08_frontend_app_plan.md`
-- `docs/ops/task6_answer_generation_status.md`
+- `docs/ops/README.md`
 
 ### Product
 - `docs/product/before_flow.md`

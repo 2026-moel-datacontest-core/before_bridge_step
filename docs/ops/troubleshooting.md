@@ -26,7 +26,7 @@ CondaError: Run 'conda init' before 'conda activate'
 해결:
 
 ```bash
-source /home/jongwon/anaconda3/etc/profile.d/conda.sh
+source "$(conda info --base)/etc/profile.d/conda.sh"
 conda activate law_main_road
 python -c "from backend.main import app; print('import_ok')"
 ```
@@ -63,17 +63,17 @@ git status -sb
 - `npm run build` 후에는 항상 `git status -sb`를 확인한다.
 - 의도한 변경이 아니라면 커밋에 포함하지 않는다.
 
-### 3. `localhost:3000`에 stale Next dev server가 이미 떠 있음
+### 3. `localhost:5090`에 stale Next dev server가 이미 떠 있음
 
 증상:
 
-- 새로 `npm run dev`를 실행하지 않았는데 `http://localhost:3000/after`가 응답한다.
+- 새로 `npm run dev`를 실행하지 않았는데 `http://localhost:5090/after`가 응답한다.
 - browser QA가 예상과 다르게 보이거나 이전 코드 상태를 보는 것처럼 느껴진다.
 
 확인:
 
 ```bash
-curl -I http://localhost:3000/after
+curl -I http://localhost:5090/after
 ```
 
 대응:
@@ -82,17 +82,17 @@ curl -I http://localhost:3000/after
 - 발표 전에는 stale server가 남아 있지 않은 상태에서 backend/frontend를 깨끗하게 재시작하는 편이 안전하다.
 - `scripts/demo_preflight.sh`는 dev server를 start/stop하지 않는다. preflight 통과 후 별도 터미널에서 수동 실행한다.
 
-### 4. `127.0.0.1:3000`에서 Next dev HMR cross-origin warning 또는 route guard 재현 차이
+### 4. `127.0.0.1:5090`에서 Next dev HMR cross-origin warning 또는 route guard 재현 차이
 
 증상:
 
-- `http://127.0.0.1:3000` 접근 시 Next dev HMR cross-origin warning이 보인다.
+- `http://127.0.0.1:5090` 접근 시 Next dev HMR cross-origin warning이 보인다.
 - direct URL guard 또는 browser runtime QA가 `localhost` 기준과 다르게 재현될 수 있다.
 
 해결:
 
-- demo / browser QA 기준 URL은 `http://localhost:3000`으로 고정한다.
-- `http://127.0.0.1:3000`은 QA 기준 URL로 쓰지 않는다.
+- demo / browser QA 기준 URL은 `http://localhost:5090`으로 고정한다.
+- `http://127.0.0.1:5090`은 QA 기준 URL로 쓰지 않는다.
 
 ### 5. WSL Playwright Chromium 실행 실패 또는 Windows Chrome CDP 우회로 시간 소모
 
@@ -228,7 +228,7 @@ bash scripts/demo_preflight.sh
 해결:
 
 ```bash
-cd /home/jongwon/personal_project/law_main_road
+cd <repo-root>
 git add .gitignore
 ```
 

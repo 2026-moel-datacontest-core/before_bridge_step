@@ -1,100 +1,95 @@
 .main {
   min-height: calc(100vh - var(--kl-masthead-height));
-  padding-bottom: var(--kl-space-8);
-  background: var(--kl-bg);
+  padding-bottom: 24px;
+  background:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.12), transparent 28%),
+    linear-gradient(180deg, #07111f 0%, #0d1726 25%, #f4f6f9 25%, #f4f6f9 100%);
 }
 
 .redirectMessage {
-  max-width: var(--kl-content-width);
-  margin: 0;
-  padding: var(--kl-space-8) var(--kl-margin-mobile);
-  color: var(--kl-text-secondary);
-  font-size: var(--kl-text-body);
-  line-height: var(--kl-lh-body);
-  letter-spacing: var(--kl-ls-body);
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 48px 20px;
+  color: #e2e8f0;
 }
 
 .headerBand {
-  background: var(--kl-surface-01);
-  border-bottom: var(--kl-border-subtle-line);
+  padding: 40px 0 28px;
 }
 
 .shell,
 .formContent,
 .formContentDisabled,
 .stickyInner {
-  max-width: var(--kl-max-width);
+  max-width: 1240px;
   margin: 0 auto;
-  padding-right: var(--kl-margin-mobile);
-  padding-left: var(--kl-margin-mobile);
+  padding-right: 20px;
+  padding-left: 20px;
 }
 
 .shell {
-  padding-top: var(--kl-space-8);
-  padding-bottom: var(--kl-space-8);
+  display: grid;
+  gap: 16px;
 }
 
 .eyebrow {
-  margin: 0 0 var(--kl-space-2);
-  color: var(--kl-text-secondary);
-  font-size: var(--kl-text-caption);
-  line-height: var(--kl-lh-caption);
-  letter-spacing: var(--kl-ls-caption);
+  margin: 0;
+  color: #78a6ff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 .title {
-  max-width: var(--kl-content-width);
+  max-width: 860px;
   margin: 0;
-  color: var(--kl-text-primary);
-  font-size: var(--kl-text-h1);
-  font-weight: 400;
-  line-height: var(--kl-lh-heading);
+  color: #f8fbff;
+  font-size: clamp(2.2rem, 5vw, 4.2rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.05em;
 }
 
 .badgeRow {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--kl-space-2);
-  margin-top: var(--kl-space-4);
+  gap: 10px;
+  margin-top: 4px;
 }
 
 .documentBadge {
   display: inline-flex;
   align-items: center;
-  max-width: 100%;
-  min-height: 24px;
-  padding: var(--kl-space-1) var(--kl-space-3);
-  border-radius: var(--kl-radius-pill);
-  background: var(--kl-primary-light);
-  color: var(--kl-primary);
-  font-size: var(--kl-text-caption);
-  line-height: var(--kl-lh-caption);
-  letter-spacing: var(--kl-ls-caption);
-  overflow-wrap: anywhere;
-  white-space: normal;
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: rgba(199, 217, 249, 0.2);
+  color: #dbeafe;
+  font-size: 0.82rem;
+  font-weight: 800;
 }
 
 .lead {
-  max-width: var(--kl-content-width);
-  margin: var(--kl-space-4) 0 0;
-  color: var(--kl-text-secondary);
-  font-size: var(--kl-text-body);
-  line-height: var(--kl-lh-body);
-  letter-spacing: var(--kl-ls-body);
+  max-width: 760px;
+  margin: 0;
+  color: rgba(226, 234, 245, 0.78);
+  font-size: 1rem;
+  line-height: 1.75;
 }
 
 .form {
   display: grid;
-  gap: var(--kl-space-8);
+  gap: 24px;
 }
 
 .formContent,
 .formContentDisabled {
   display: grid;
-  gap: var(--kl-space-8);
+  gap: 24px;
   width: 100%;
-  padding-top: var(--kl-space-8);
-  padding-bottom: var(--kl-space-8);
+  padding-top: 16px;
+  padding-bottom: 24px;
 }
 
 .formContentDisabled {
@@ -106,17 +101,17 @@
   position: sticky;
   bottom: 0;
   z-index: var(--kl-z-sticky-bar);
-  min-height: var(--kl-sticky-bar-height);
-  border-top: var(--kl-border-default);
-  background: var(--kl-bg);
+  padding-top: 12px;
+  padding-bottom: 16px;
+  background: linear-gradient(180deg, rgba(244, 246, 249, 0), rgba(244, 246, 249, 0.96) 20%);
 }
 
 .stickyInner {
   display: grid;
-  gap: var(--kl-space-4);
+  gap: 16px;
   min-width: 0;
-  padding-top: var(--kl-space-4);
-  padding-bottom: var(--kl-space-4);
+  padding-top: 16px;
+  padding-bottom: 8px;
 }
 
 .stickyMessage {
@@ -130,8 +125,7 @@
 .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--kl-space-3);
-  min-width: 0;
+  gap: 12px;
 }
 
 @media (max-width: 671px) {
@@ -147,13 +141,13 @@
   }
 }
 
-@media (min-width: 672px) {
+@media (min-width: 900px) {
   .shell,
   .formContent,
   .formContentDisabled,
   .stickyInner {
-    padding-right: var(--kl-margin-desktop);
-    padding-left: var(--kl-margin-desktop);
+    padding-right: 40px;
+    padding-left: 40px;
   }
 }
 

@@ -1,0 +1,406 @@
+.stack {
+  display: grid;
+  gap: 20px;
+}
+
+.heroCard,
+.card,
+.sideCard {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+  border-radius: var(--kl-radius-2xl);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: var(--kl-shadow-strong);
+}
+
+.heroCard {
+  background: linear-gradient(180deg, #0f172a 0%, #101828 100%);
+  color: #ffffff;
+}
+
+.heroGlow {
+  position: absolute;
+  right: -40px;
+  top: -20px;
+  width: 180px;
+  height: 180px;
+  border-radius: 999px;
+  background: rgba(59, 130, 246, 0.14);
+  filter: blur(60px);
+  pointer-events: none;
+}
+
+.heroInner,
+.issueHeader,
+.evidenceButton {
+  position: relative;
+  z-index: 1;
+}
+
+.heroInner {
+  display: grid;
+  gap: 16px;
+}
+
+.badge,
+.sectionEyebrow,
+.overviewLabel,
+.infoLabel,
+.evidenceIndex {
+  display: inline-flex;
+  margin: 0;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.badge {
+  align-self: start;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(96, 165, 250, 0.2);
+  background: rgba(59, 130, 246, 0.12);
+  color: #bfdbfe;
+}
+
+.heroTitle,
+.sectionTitle,
+.issueTitle,
+.evidenceTitle {
+  margin: 0;
+  color: #101828;
+  line-height: 1.15;
+  letter-spacing: -0.05em;
+}
+
+.heroTitle {
+  color: #ffffff;
+  font-size: clamp(1.65rem, 2.4vw, 2.7rem);
+}
+
+.sectionTitle {
+  font-size: 1.4rem;
+}
+
+.issueTitle,
+.evidenceTitle {
+  font-size: 1.05rem;
+}
+
+.heroDescription,
+.issueDescription,
+.actionItem,
+.summaryItem,
+.evidenceExcerpt {
+  margin: 0;
+  font-size: 0.96rem;
+  line-height: 1.7;
+}
+
+.heroDescription {
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.badgeBase {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.statusPass {
+  border-color: #bbf7d0;
+  background: #ecfdf3;
+  color: #027a48;
+}
+
+.statusWarning,
+.severityMedium {
+  border-color: #fde68a;
+  background: #fffbeb;
+  color: #b54708;
+}
+
+.statusViolation,
+.severityCritical {
+  border-color: #fecaca;
+  background: #fff1f2;
+  color: #b42318;
+}
+
+.severityNone {
+  border-color: #e4e7ec;
+  background: #f8fafc;
+  color: #667085;
+}
+
+.severityLow {
+  border-color: #bae6fd;
+  background: #f0f9ff;
+  color: #0369a1;
+}
+
+.severityHigh {
+  border-color: #fdba74;
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.overviewGrid,
+.contractInfo {
+  display: grid;
+  gap: 12px;
+}
+
+.overviewCard,
+.infoRow {
+  padding: 16px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.overviewLabel,
+.infoLabel,
+.evidenceIndex {
+  color: rgba(255, 255, 255, 0.58);
+}
+
+.overviewValue,
+.infoValue {
+  margin: 6px 0 0;
+  color: #ffffff;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.grid {
+  display: grid;
+  gap: 20px;
+}
+
+.mainColumn,
+.sideColumn,
+.issueList,
+.actionList,
+.evidenceList,
+.summaryList,
+.warningList {
+  display: grid;
+  gap: 16px;
+}
+
+.sectionHeader {
+  display: grid;
+  gap: 6px;
+}
+
+.sectionEyebrow,
+.overviewLabel,
+.infoLabel {
+  color: #667085;
+}
+
+.issueCard,
+.actionItem,
+.summaryItem,
+.evidenceCard,
+.warningItem,
+.uploadCard {
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 22px;
+  background: linear-gradient(180deg, #fbfdff 0%, #f6f9fd 100%);
+}
+
+.issueCard,
+.actionItem,
+.summaryItem,
+.warningItem {
+  padding: 18px;
+}
+
+.uploadBlock {
+  display: grid;
+  gap: 18px;
+}
+
+.uploadGrid {
+  display: grid;
+  gap: 16px;
+}
+
+.uploadCard {
+  overflow: hidden;
+}
+
+.uploadImage {
+  display: block;
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  background: #e5e7eb;
+}
+
+.uploadMeta {
+  padding: 14px 16px;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.uploadName {
+  margin: 0;
+  color: #0f172a;
+  font-size: 0.94rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.issueHeader {
+  display: grid;
+  gap: 12px;
+}
+
+.issueLawRef {
+  margin: 6px 0 0;
+  color: #667085;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.issueBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.issueDescription,
+.actionItem,
+.summaryItem {
+  color: #475467;
+}
+
+.emptyPositive {
+  padding: 18px;
+  border: 1px solid #bbf7d0;
+  border-radius: 22px;
+  background: #ecfdf3;
+  color: #027a48;
+  line-height: 1.7;
+}
+
+.warningCard {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+  border-radius: var(--kl-radius-2xl);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  background: linear-gradient(180deg, #fff7ed 0%, #ffffff 100%);
+  box-shadow: var(--kl-shadow-strong);
+}
+
+.warningField {
+  margin: 0 0 6px;
+  color: #92400e;
+  font-size: 0.86rem;
+  font-weight: 800;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.warningNote {
+  margin: 0;
+  color: #7c2d12;
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.warningMeta {
+  margin: 10px 0 0;
+  color: #9a3412;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.evidenceButton {
+  display: flex;
+  width: 100%;
+  gap: 14px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.evidenceIndex {
+  color: #667085;
+}
+
+.evidenceToggle {
+  color: #0f62fe;
+  font-size: 0.9rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.evidenceBody {
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  padding: 18px;
+}
+
+.evidenceExcerpt {
+  color: #475467;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 672px) {
+  .overviewGrid,
+  .contractInfo {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .uploadGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1056px) {
+  .heroInner {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+  }
+
+  .issueHeader {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+  }
+
+  .grid {
+    grid-template-columns: minmax(0, 1fr) 320px;
+    align-items: start;
+  }
+}

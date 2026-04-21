@@ -126,8 +126,14 @@ export function EvidenceSection({
         <p className={styles.helper}>빈 행은 초안 생성 전에 자동으로 제외됩니다.</p>
       </div>
 
-      <fieldset className={styles.fieldset} disabled={disabled}>
-        <legend className={styles.legend}>사건 경위</legend>
+      <fieldset
+        className={styles.fieldset}
+        disabled={disabled}
+        aria-labelledby="timeline-section-title"
+      >
+        <div id="timeline-section-title" className={styles.legend}>
+          사건 경위
+        </div>
         <div className={styles.rows}>
           {normalizedTimeline.map((item, index) => (
             <div className={styles.timelineRow} key={item.ui_id}>
@@ -176,8 +182,14 @@ export function EvidenceSection({
         </button>
       </fieldset>
 
-      <fieldset className={styles.fieldset} disabled={disabled}>
-        <legend className={styles.legend}>증거 목록</legend>
+      <fieldset
+        className={styles.fieldset}
+        disabled={disabled}
+        aria-labelledby="evidence-section-title"
+      >
+        <div id="evidence-section-title" className={styles.legend}>
+          증거 목록
+        </div>
         <div className={styles.rows}>
           {normalizedEvidenceItems.map((item, index) => (
             <div className={styles.evidenceRow} key={item.ui_id}>

@@ -2,7 +2,7 @@
 
 > Historical note: 이 문서는 retrieval 완료 시점의 handoff였다.
 > Task 6 answer generation MVP와 후속 안정화 작업은 이후 세션에서 완료되었다.
-> 최신 구현 상태와 검증 결과는 `docs/ops/task6_answer_generation_status.md`를 기준으로 본다.
+> 최신 구현 상태와 검증 결과는 `docs/ops/README.md`와 루트 `README.md`를 기준으로 본다.
 > Current live corpus는 scenario-driven minimal data addition 이후 `1722` chunks다.
 > 이 문서 내부의 `1713` count는 retrieval 완료 시점의 historical snapshot이다.
 
@@ -12,7 +12,7 @@
 
 다음 세션에서 우선 참고할 문서:
 
-1. `docs/ops/task6_answer_generation_status.md`
+1. `docs/ops/README.md`
 2. `docs/planning/13_document_draft_plan.md`
 3. `docs/planning/14_frontend_implementation_handoff.md`
 4. `docs/planning/02_rag_strategy.md`
@@ -30,7 +30,7 @@
 - `law_chunks.embedding`: `1713 / 1713` populated
 - sample embedding dimension: `768`
 - HNSW index: `idx_law_chunks_embedding`
-- alembic head: `20260413_000003`
+- alembic head at that historical snapshot: `20260413_000003` (current repo head: `20260421_000005`)
 
 retrieval MVP complete:
 
@@ -157,7 +157,7 @@ Task 6 answer generation MVP를 end-to-end로 진행해줘. 계획만 말하지 
 - embedding 완료: 1713 / 1713
 - sample vector dimension = 768 확인 완료
 - HNSW index 생성 완료
-- alembic head = 20260413_000003
+- historical alembic head at that time = `20260413_000003`; current repo head = `20260421_000005`
 - retrieval MVP 구현 완료
 - POST /api/v1/retrieve 구현 및 검증 완료
 - retrieval eval 결과:

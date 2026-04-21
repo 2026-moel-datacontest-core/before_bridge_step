@@ -2,7 +2,7 @@
 
 작성일: `2026-04-17`
 
-업데이트 메모: 이 문서는 2026-04-17 architecture option 검토 초안으로 보존한다. 2026-04-20 기준 MVP는 SCN-004 demo freeze, presentation-local presets, demo preflight, full 60 answer evidence report까지 정리된 상태이며, 배포/인프라 판단 전 최신 운영 기준은 `docs/ops/runbook.md`를 우선한다.
+업데이트 메모: 이 문서는 2026-04-17 architecture option 검토 초안으로 보존한다. 2026-04-21 기준 MVP는 SCN-004 demo freeze, presentation-local presets, demo preflight, full 60 answer evidence report, `before` DB source/cache 전환까지 정리된 상태이며, 배포/인프라 판단 전 최신 운영 기준은 `docs/ops/README.md`를 우선한다.
 
 ## 문서 목적
 

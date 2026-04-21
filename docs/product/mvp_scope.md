@@ -147,7 +147,7 @@
 - 팀원 Before / Bridge code / schema / API contract 확인 없는 SCN-001 frontend 확장
 - SCN-005 API / schema 검토 없는 독단적 문서 타입 확장
 - SCN-001 문서 타입의 독단적 확장
-- 현재 SCN-004 demo freeze 유지 중 `/before`, `/bridge` frontend 본 구현
+- 현재 SCN-004 demo freeze 유지 중 `/bridge` frontend 본 구현 및 `/before` 추가 기능 확장
 
 ---
 

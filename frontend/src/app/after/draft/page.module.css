@@ -1,189 +1,192 @@
 .main {
   min-height: calc(100vh - var(--kl-masthead-height));
-  background: var(--kl-bg);
+  padding-bottom: 32px;
+  background:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.12), transparent 28%),
+    linear-gradient(180deg, #07111f 0%, #0d1726 30%, #f4f6f9 30%, #f4f6f9 100%);
 }
 
 .redirectMessage {
-  max-width: var(--kl-content-width);
-  margin: 0;
-  padding: var(--kl-space-8) var(--kl-margin-mobile);
-  color: var(--kl-text-secondary);
-  font-size: var(--kl-text-body);
-  line-height: var(--kl-lh-body);
-  letter-spacing: var(--kl-ls-body);
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 48px 20px;
+  color: #e2e8f0;
 }
 
 .headerBand {
-  background: var(--kl-surface-01);
-  border-bottom: var(--kl-border-subtle-line);
+  padding: 48px 0 36px;
 }
 
 .shell,
 .contentGrid,
 .actionInner {
-  max-width: var(--kl-max-width);
+  max-width: 1240px;
   margin: 0 auto;
-  padding-right: var(--kl-margin-mobile);
-  padding-left: var(--kl-margin-mobile);
+  padding-right: 20px;
+  padding-left: 20px;
 }
 
 .shell {
-  padding-top: var(--kl-space-8);
-  padding-bottom: var(--kl-space-8);
+  display: grid;
+  gap: 16px;
 }
 
 .eyebrow {
-  margin: 0 0 var(--kl-space-2);
-  color: var(--kl-text-secondary);
-  font-size: var(--kl-text-caption);
-  line-height: var(--kl-lh-caption);
-  letter-spacing: var(--kl-ls-caption);
+  margin: 0;
+  color: #78a6ff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 .title {
-  max-width: var(--kl-content-width);
+  max-width: 860px;
   margin: 0;
-  color: var(--kl-text-primary);
-  font-size: var(--kl-text-h1);
-  font-weight: 400;
-  line-height: var(--kl-lh-heading);
+  color: #f8fbff;
+  font-size: clamp(2.2rem, 5vw, 4.2rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.05em;
 }
 
 .metaGrid {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--kl-space-2);
-  margin-top: var(--kl-space-4);
+  gap: 10px;
+  margin-top: 4px;
 }
 
 .documentBadge,
 .metaItem {
   display: inline-flex;
   align-items: center;
-  max-width: 100%;
-  min-height: 24px;
-  padding: var(--kl-space-1) var(--kl-space-3);
-  font-size: var(--kl-text-caption);
-  line-height: var(--kl-lh-caption);
-  letter-spacing: var(--kl-ls-caption);
-  overflow-wrap: anywhere;
-  white-space: normal;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 800;
 }
 
 .documentBadge {
-  border-radius: var(--kl-radius-pill);
-  background: var(--kl-primary-light);
-  color: var(--kl-primary);
+  background: rgba(199, 217, 249, 0.2);
+  color: #dbeafe;
 }
 
 .metaItem {
-  background: var(--kl-bg);
-  color: var(--kl-text-secondary);
+  background: rgba(15, 23, 42, 0.38);
+  color: rgba(226, 234, 245, 0.92);
 }
 
 .contentGrid {
   display: grid;
-  gap: var(--kl-space-8);
-  padding-top: var(--kl-space-8);
-  padding-bottom: var(--kl-space-8);
+  gap: 24px;
+  padding-top: 16px;
+  padding-bottom: 24px;
 }
 
 .previewColumn,
 .sideColumn {
-  display: grid;
-  align-content: start;
-  gap: var(--kl-space-6);
   min-width: 0;
 }
 
+.previewColumn {
+  display: grid;
+  gap: 18px;
+}
+
+.sideColumn {
+  display: grid;
+  gap: 18px;
+  align-content: start;
+}
+
 .screenDisclaimer {
-  min-width: 0;
+  display: block;
 }
 
 .documentActions {
   display: grid;
-  gap: var(--kl-space-2);
-  min-width: 0;
+  gap: 12px;
+  padding: 20px 22px;
+  border: 1px solid rgba(162, 181, 208, 0.24);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 18px 44px rgba(15, 29, 45, 0.08);
 }
 
 .actionGroup {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--kl-space-3);
-  min-width: 0;
+  gap: 12px;
 }
 
 .copyStatus {
-  min-height: calc(var(--kl-text-body) * var(--kl-lh-body));
+  min-height: 1.4rem;
   margin: 0;
-  color: var(--kl-text-secondary);
-  font-size: var(--kl-text-body);
-  line-height: var(--kl-lh-body);
-  letter-spacing: var(--kl-ls-body);
-  overflow-wrap: anywhere;
+  color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.5;
 }
 
 .copyStatusSuccess {
-  color: var(--kl-text-success);
+  color: #15803d;
 }
 
 .copyStatusError {
-  color: var(--kl-text-danger);
+  color: #b45309;
 }
 
 .actionBar {
   position: sticky;
   bottom: 0;
   z-index: var(--kl-z-sticky-bar);
-  min-height: var(--kl-sticky-bar-height);
-  border-top: var(--kl-border-default);
-  background: var(--kl-bg);
+  padding-top: 12px;
+  padding-bottom: 16px;
+  background: linear-gradient(180deg, rgba(244, 246, 249, 0), rgba(244, 246, 249, 0.96) 20%);
 }
 
 .actionInner {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--kl-space-3);
-  min-width: 0;
-  padding-top: var(--kl-space-4);
-  padding-bottom: var(--kl-space-4);
+  gap: 12px;
+  padding-top: 16px;
+  padding-bottom: 8px;
 }
 
 @media (max-width: 671px) {
+  .actionGroup,
   .actionInner {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
+    width: 100%;
   }
 
+  .actionGroup > button,
   .actionInner > button {
     width: 100%;
     justify-content: center;
   }
-
-  .actionGroup {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .actionGroup > button {
-    width: 100%;
-    justify-content: center;
-  }
 }
 
-@media (min-width: 672px) {
+@media (min-width: 900px) {
   .shell,
   .contentGrid,
   .actionInner {
-    padding-right: var(--kl-margin-desktop);
-    padding-left: var(--kl-margin-desktop);
+    padding-right: 40px;
+    padding-left: 40px;
   }
 }
 
 @media (min-width: 1056px) {
   .contentGrid {
-    grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.8fr);
+    grid-template-columns: minmax(0, 1.6fr) minmax(320px, 0.95fr);
     align-items: start;
+  }
+
+  .sideColumn {
+    position: sticky;
+    top: calc(var(--kl-masthead-height) + 20px);
   }
 
   .actionInner {
@@ -192,31 +195,22 @@
 }
 
 @media print {
-  :global(header),
-  :global(nav),
-  :global(button),
   .headerBand,
   .screenDisclaimer,
   .documentActions,
   .sideColumn,
-  .actionBar,
-  .redirectMessage {
+  .actionBar {
     display: none !important;
   }
 
   .main {
-    min-height: auto;
     background: #ffffff;
+    padding-bottom: 0;
   }
 
   .contentGrid {
     display: block;
     max-width: none;
-    margin: 0;
     padding: 0;
-  }
-
-  .previewColumn {
-    display: block;
   }
 }
