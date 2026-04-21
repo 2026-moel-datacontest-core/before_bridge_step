@@ -12,6 +12,7 @@ __pycache__/
 htmlcov/
 .envrc
 .python-version
+.codex
 scripts/*.json
 .env
 backend/.env
@@ -19,6 +20,11 @@ frontend/.env.local
 frontend/.env.*.local
 backend/.pgdata/
 backend/logs/
+config/cache/
+config/codex.sqlite3
+config/codex.sqlite3-shm
+config/codex.sqlite3-wal
+config/secret_key
 config/logs/
 *.log
 *.pid
@@ -32,6 +38,7 @@ law-service-main-page-design/
 z_before_begin/
 
 # Local agent/tool state
+.claude/
 .omx/
 frontend/.codex
 frontend/.omx/
